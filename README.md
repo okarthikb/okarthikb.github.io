@@ -2,6 +2,4 @@
 
 ![](julia_set.gif)
 
-<br>
-
 Pretty fractal!
