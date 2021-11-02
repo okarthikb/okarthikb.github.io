@@ -1,3 +1,7 @@
 # okarthikb.github.io
 
-Personal website where I share whatever...[check it](https://okarthikb.github.io).
+![](julia_set.gif)
+
+<br>
+
+Pretty fractal!
