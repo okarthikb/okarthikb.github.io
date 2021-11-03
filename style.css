@@ -23,6 +23,7 @@ body {
 .page-header {
   border-bottom: 1px grey solid;
   background: url("mandelbrot.gif");
+  background-position: center center;
   height: 4em;
   padding-left: 1em;
   color: white; 
