@@ -1,3 +1,5 @@
+/* main */
+
 * {
   box-sizing: border-box;
 }
@@ -11,7 +13,36 @@ body {
   margin: 0;
   font-size: 17px;
   font-family: "CMU Sans Serif", sans-serif;
+  color: black;
 }
+
+/* misc */
+
+.text-center {
+  text-align: center;
+}
+
+a {
+  color: black;
+  text-decoration: none;
+}
+
+a:hover {
+  color: grey;
+  text-decoration: underline;
+}
+
+.thumbnail {
+  width: 300px;
+  height: 300px;
+}
+
+.font-date {
+  font-size: 0.8em;
+  color: grey;
+}
+
+/* page */
 
 .page {
   position: relative;
@@ -19,31 +50,99 @@ body {
   margin: 4em auto;
 }
 
-.page-header {
-  display: flex;
-  align-items: center;
-  background-color: rgb(243, 243, 215);
-  border: 1px rgb(184, 184, 46) solid;
-  height: 8em;
-  padding-left: 1em;
+/*.page-header {
+  height: 6em;
   color: black;
-}
+}*/
 
 .page-content {
-
+  margin: 1em;
 }
 
-.page-footer {
+/* padding */
 
+.padding-top {
+  padding-top: 1em;
 }
+
+.padding-bottom {
+  padding-bottom: 1em;
+}
+
+.padding-left {
+  padding-left: 1em;
+}
+
+/* margin */
+
+.margin-top {
+  margin-top: 1em;
+}
+
+.margin-bottom {
+  margin-bottom: 1em;
+}
+
+.margin {
+  margin: 1em;
+}
+
+/* flex */
+
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.align-stretch {
+  align-items: stretch;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.space-around {
+  justify-content: space-around;
+}
+
+/* border */
+
+.border-bottom {
+  border-bottom: 0.5px grey solid;
+}
+
+.border-top {
+  border-top: 0.5px grey solid;
+}
+
+.border {
+  border: 0.5px grey solid;
+}
+
+/* media queries */
 
 @media only screen and (max-width: 800px) {
   body {
-    font-size: 14px;
+    font-size: 15px;
   }
 
   .page {
     width: 90%;
     margin: 2em auto;
+  }
+
+  .thumbnail {
+    width: 256px;
+    height: 256px;
   }
 }

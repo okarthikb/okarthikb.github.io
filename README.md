@@ -1,3 +1,3 @@
 # okarthikb.github.io
 
-![](julia_set.gif)
+![](img/julia_set.gif)
