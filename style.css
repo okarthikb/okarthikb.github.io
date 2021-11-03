@@ -17,16 +17,16 @@ body {
   position: relative;
   width: 768px;
   margin: 4em auto;
-  border: 1px lightgrey solid;
 }
 
 .page-header {
-  border-bottom: 1px grey solid;
-  background: url("mandelbrot.gif");
-  background-position: center center;
-  height: 4em;
+  display: flex;
+  align-items: center;
+  background-color: rgb(243, 243, 215);
+  border: 1px rgb(184, 184, 46) solid;
+  height: 8em;
   padding-left: 1em;
-  color: white; 
+  color: black;
 }
 
 .page-content {
@@ -34,12 +34,12 @@ body {
 }
 
 .page-footer {
-  border-top: 1px grey solid;
+
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 800px) {
   body {
-    font-size: 15px;
+    font-size: 14px;
   }
 
   .page {
