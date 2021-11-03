@@ -20,6 +20,22 @@ body {
   border: 1px lightgrey solid;
 }
 
+.page-header {
+  border-bottom: 1px grey solid;
+  background: url("mandelbrot.gif");
+  height: 4em;
+  padding-left: 1em;
+  color: white; 
+}
+
+.page-content {
+
+}
+
+.page-footer {
+  border-top: 1px grey solid;
+}
+
 @media only screen and (max-width: 768px) {
   body {
     font-size: 15px;
