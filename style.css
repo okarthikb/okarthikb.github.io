@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: "CMU Sans Serif";
-  src: url("/cmunss.ttf");
+  src: url("fonts/cmunss.ttf");
 }
 
 body {
