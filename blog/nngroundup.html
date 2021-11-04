@@ -1,22 +1,65 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Neural nets from the ground up!</title>
-        <link rel="stylesheet" href="../style.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
-        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js" integrity="sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF" crossorigin="anonymous"onload="renderMathInElement(document.body);"></script>
-    </head>
-    <body>
-        <div class="page">
-            <div class="flex align-center justify-center border-top border-bottom">
-                <h1>Neural nets from the ground up!</h1>
-            </div>
-            <div class="flex align-center">
-                <a class="border-bottom padding" href="../index.html">← back</a>
-            </div>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neural nets from the ground up!</title>
+    <link rel="stylesheet" href="../style.css">
+    <!--katex-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css"
+        integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js"
+        integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js"
+        integrity="sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <!--highlight code-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css"
+        integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"
+        integrity="sha512-hpZ5pDCF2bRCweL5WoA0/N1elet1KYL5mx3LP555Eg/0ZguaHawxNvEjF6O3rufAChs16HVNhEc6blF/rZoowQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/plugins/autoloader/prism-autoloader.min.js"
+        integrity="sha512-sv0slik/5O0JIPdLBCR2A3XDg/1U3WuDEheZfI/DI5n8Yqc3h5kjrnr46FGBNiUAJF7rE4LHKwQ/SoSLRKAxEA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body class="margin-0">
+    <div class="page">
+        <div class="flex align-center justify-center border-top border-bottom">
+            <h1>Neural nets from the ground up!</h1>
         </div>
-    </body>
+        <div class="flex align-center">
+            <a class="padding border-bottom" href="../index.html">back</a>
+        </div>
+        <h2>
+            Intro
+        </h2>
+        <p>
+            A neural network is simply a function which is tuned to fit a dataset (input-output pairs), i.e., a curve
+            fitter. Linear and polynomial regression are elementary examples of curve fitting - we have data points, and
+            we need to find a curve that fits those points. More formally, we have a dataset \(\small{D}\), a function
+            \(\small{f}\) with parameters \(\small{\theta}\), and we need to find optimal parameters
+            \(\small{\theta^*}\) that minimizes a loss function \(\small{L(D, \theta)}\), where the loss function
+            measures how wrong our model is.
+        </p>
+        <p>
+            In the case of linear regression, the dataset \(\small{D}\) is a set of \(\small{n}\) pairs of numbers, the
+            function to find is a straight line \(\small{f(x)=mx+c}\), the parameters \(\small{\theta}\) being
+            \(\small{m}\) and \(\small{c}\), and the loss function being
+        </p>
+        <p class="text-center">
+            \(\small{L(D, m,c)}\) \(\small{=\sum_{x,y\in D}(y-(mx+c))^2}\) 
+        <p>
+            which we need to minimise by finding \(\small{\theta^*}\), i.e., the right values for
+            \(\small{m}\) and \(\small{c}\). Note that \(\small{x}\) and \(\small{y}\) are constants in the loss function \(\small{L}\). The dataset is
+            constant, the parameters are alterable. How do we find the right values for \(\small{m}\) and \(\small{c}\)?
+            We use a technique called gradient descent.
+        </p>
+    </div>
+</body>
+
 </html>
