@@ -50,11 +50,11 @@ a:hover {
   margin: 4em auto;
 }
 
-.page-content {
-  margin: 1em;
-}
-
 /* padding */
+
+.padding {
+  padding: 1em;
+}
 
 .padding-top {
   padding-top: 1em;
@@ -66,6 +66,10 @@ a:hover {
 
 .padding-left {
   padding-left: 1em;
+}
+
+.padding-right {
+  padding-right: 1em;
 }
 
 /* margin */
