@@ -35,6 +35,61 @@
         <div class="flex align-center">
             <a class="padding border-bottom" href="../index.html">back</a>
         </div>
+        <br>
+        <p class="font-08em grey">
+            I'll be assuming knowledge of gradient, regression, and basic optimisation.
+        </p>
+        <h2>
+            Intro
+        </h2>
+        <p>
+            We have a dataset \(\small{D}\) of size \(\small{m}\) (\(\small{m}\) points on the cartesian plane), and we
+            need to find a polynomial (simplest case being a straight line, or linear regression)
+            that best fits the dataset. We have
+        </p>
+        <p class="text-center">
+            \(\small{p_{\theta}(x)=\sum\limits_{k=1}^n\theta_kx^k}\)
+        </p>
+        <p>
+            and we need to find \(\small{\theta^*}\) - the optimal coefficients of \(\small{p_{\theta}}\) - that
+            minimises
+            the objective function
+        </p>
+        <p class="text-center">
+            \(\small{L(\theta)=\sum\limits_{i=1}^m(y_i-p_{\theta}(x_i))^2}\)
+            \(\small{=\sum\limits_{k=1}^m(y_i-\sum\limits_{i=1}^n\theta_kx_i^k)^2}\)
+        </p>
+        <p>
+            This is a simple objective function. Squaring the difference between actual value \(\small{y_i}\) and
+            prediction \(\small{p_{\theta}(x_i)}\) gives us the individial error
+        </p>
+        <p class="text-center">
+            \(\small{\delta_i(\theta)=(y_i-p_{\theta}(x_i))^2}\)
+        </p>
+        <p>
+            and summing gives us the objective function
+        </p>
+        <p class="text-center">
+            \(\small{L(\theta)=\sum\limits_{i=1}^m\delta_i(\theta)}\)
+        </p>
+        <p>
+            We square the difference because we want to preserve convexity, i.e., if we didn't square, there won't be 
+            a global minima since \(\small{\delta_i(\theta)=y_i-p_{\theta}(x_i)}\) is a hyperplane (nowhere is derivative zero).
+            We don't want this!
+        </p>
+        <p>
+            Note that \(\small{L}\) is a function of \(\small{\theta}\) (because for all \(\small{i}\), \(\small{x_i}\)
+            and \(\small{y_i}\) are known points and are constants in \(\small{L}\) - \(\small{\theta}\) is variable).
+            Varying \(\small{\theta}\) varies the loss \(\small{L}\). Suppose \(\small{n=4}\), then 4 axes represent the
+            4 coefficients \(\small{\theta_1\dots \theta_4}\), and axis 5 represents the loss. \(\small{\theta=\theta^*}\) 
+            is the global minima of this graph.
+        </p>
+        <p>
+            When the number of data points is greater than or equal to the degree of the polynomial (i.e.,
+            \(\small{m\geq n}\)), we can find \(\small{\theta^*}\) such that \(\small{L(\theta^*)=0}\), which 
+            is to say there exists a polynomial that passes through all the data points (a perfect fit exists). Let's start
+            with linear regression to make things clear.
+        </p>
     </div>
 </body>
 
