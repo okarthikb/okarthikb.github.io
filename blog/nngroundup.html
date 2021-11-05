@@ -39,15 +39,20 @@
             Regression
         </h2>
         <p>
-            Before we get into neural nets, let’s start with linear regression. We have a bunch of points \(\small{(x_1,
-            y_1), \dots, (x_n, y_n)}\), and we need to find a line \(\small{y=\theta_1x+\theta_2}\) that best fits those
-            points, i.e., we need to find \(\small{\theta_1}\) and \(\small{\theta_2}\) that minimises the model error.
-            We need to minimise the sum of the squares of the difference between the actual value and the predicted value
-            for each \(\small{x}\), i.e., we need to find \(\small{\theta_1}\) and \(\small{\theta_2}\) that minimises the
-            following function
-         </p>
+            We have a dataset \(\small{D}\), i.e., a set of points \(\small{\{(x_i, y_i)\;|\;i=1\dots m\}}\), and we need to find a polynomial (simplest case being a straight line, or linear regression)
+            that best fits the dataset. More formally, we have a polynomial
+        </p>
         <p class="text-center">
-            \(\small{L(\theta_1, \theta_2)=\sum_{i=1}^n(y_i-(\theta_1x_i+\theta_2))^2}\)
+            \(\small{p(x)=\sum\limits_{k=1}^n\theta_kx^k}\)
+        </p>
+        <p>
+            and we need to find \(\small{\theta}\) that minimises the objective function
+        </p>
+        <p class="text-center">
+            \(\small{L(\theta)=\sum\limits_{k=1}^m(y_i-p(x_i))^2}\) \(\small{=\sum\limits_{k=1}^m(y_i-\sum\limits_{k=1}^n\theta_kx_i^k)^2}\)
+        </p>
+        <p>
+            where \(\small{\theta}\) is the set \(\small{\{\theta_k\;|\;k=1\dots n}\}\) and \(\small{m}\) is the number of data points.
         </p>
     </div>
 </body>
