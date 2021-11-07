@@ -170,7 +170,7 @@
             which is a paraboloid. Substituing values from dataset above, our loss function simplifies to
         </p>
         <p class="text-center">
-            \(\small{L(\theta)}\) \(\small{=8\theta_1^2 + 592\theta_2^2 + 2514\theta_1 + 1708\theta_2 +
+            \(\small{L(\theta)}\) \(\small{=8\theta_1^2 + 592\theta_2^2 - 178\theta_1 - 1708\theta_2 +
             116\theta_1\theta_2 + 1257}\)
         </p>
         <p>
@@ -185,11 +185,7 @@
             The loss function of datasets in linear regression is a paraboloid, and it varies with each dataset since
             the paraboloid
             coefficients are a function of the data points. In the paraboloid, we can see that there is an absolute
-            minimum. The
-            optimal set \(\small{\theta^*=\{\theta_1^*, \theta_2^*\}}\) that results in this absolute minimum (and hence
-            gives us the line of
-            best fit \(\small{f(x_i, \theta^*)=\theta_1^* + \theta_2^*x_i}\)) is the solution. At the absolute minimum,
-            the gradient
+            minimum where the gradient
             of \(\small{L}\) w.r.t \(\small{\theta}\) is \(\small{\textbf{0}}\) (I'm assuming knowledge of gradient, and
             maxima/minima of multivariate functions). We can find derivatives w.r.t to \(\small{\theta_1}\)
             and \(\small{\theta_2}\) and solve the system of equations to find the optimal values.
@@ -205,7 +201,7 @@
         <p class="text-center">
             \(\small{\nabla_{\theta}L=\begin{bmatrix}2\sum\limits_{i=1}^m(\theta_1+\theta_2x_i-y_i) \\ \\
             2\sum\limits_{i=1}^m(\theta_1+\theta_2x_i-y_i)x_i\end{bmatrix}}\)
-            \(\small{=\begin{bmatrix}16\theta_1 + 116\theta_2 + 2514\\ \\ 1184\theta_2 + 116\theta_1 +
+            \(\small{=\begin{bmatrix}16\theta_1 + 116\theta_2 -178\\ \\ 1184\theta_2 + 116\theta_1 -
             1708\end{bmatrix}=\begin{bmatrix}0 \\ \\ 0\end{bmatrix}}\)
         </p>
         <p>
@@ -213,7 +209,7 @@
         </p>
         <p class="text-center">
             \(\small{\begin{bmatrix}16\theta_1 + 116\theta_2\\ \\ 116\theta_1\ + 1184\theta_2
-            \end{bmatrix}=\begin{bmatrix}-2514 \\ \\ -1708\end{bmatrix}}\)
+            \end{bmatrix}=\begin{bmatrix}178 \\ \\ 1708\end{bmatrix}}\)
         </p>
         <p>
             which is a simple system of linear equations. Solving them gives \(\small{\theta_1=2.30029}\) and
@@ -224,6 +220,21 @@
         <div class="flex justify-center">
             <img src="../img/best_fit.png" alt="best_fit" class="responsive">
         </div>
+        <p>
+            For simple linear regression, the general solution is
+        </p>
+        <p class="text-center">
+            <span>\(\small{\theta_1=\dfrac{(\sum\limits_{i=1}^my_i)(\sum\limits_{i=1}^mx_i^2)-(\sum\limits_{i=1}^mx_i)(\sum\limits_{i=1}^mx_iy_i)}{m(\sum\limits_{i=1}^mx_i^2)-(\sum\limits_{i=1}^mx_i)^2}}\)</span>
+            <br>
+            <span>\(\small{\theta_2=\dfrac{m(\sum\limits_{i=1}^mx_iy_i)-(\sum\limits_{i=1}^mx_i)(\sum\limits_{i=1}^my_i)}{m(\sum\limits_{i=1}^mx_i^2)-(\sum\limits_{i=1}^mx_i)^2}}\)</span>
+        </p>
+        <p>
+            Looks scary, but it's just basic symbol manipulation. Try coding it up in Python or something. Anyways, we have arrived
+            at an explicit solution to the optimisation problem of finding the straight line that best fits a bunch of points. Here,
+            we only needed to find two parameters. What if you want to model more complex relationships? What if you want to use more
+            than two parameters? Ten parameters? Ten thousand? Ten billion? We cannot find an explicit solution when the problem becomes
+            more complex. We can, however, find an approximate solution by using a technique called gradient descent.
+        </p>
     </div>
 </body>
 
