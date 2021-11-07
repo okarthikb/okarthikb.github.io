@@ -46,6 +46,10 @@ a:hover {
   overflow: auto;
 }
 
+.overflow-scroll {
+  overflow: scroll;
+}
+
 p {
   line-height: 1.7em;
 }
@@ -162,6 +166,23 @@ p {
 
 .border {
   border: 0.5px grey solid;
+}
+
+/* table */
+
+table, th, td {
+  border: 0.5px grey solid;
+}
+
+table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+td {
+  padding: 0.3em;
+  text-align: center;
 }
 
 /* media queries */

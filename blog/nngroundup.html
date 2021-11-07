@@ -36,139 +36,192 @@
             <a class="padding border-bottom" href="../index.html">back</a>
         </div>
         <h2>Regression</h2>
-        <br>
         <p>
+            Before we dive into how neural nets and backprop work, let's review regression and gradient descent.
             Regression is the method by which you find the relationship between one or more independent variable(s)
             \(\small{x}\) and a dependent variable \(\small{y}\). A regression model assumes the following relationship
             holds among the dependent and independent variables
         </p>
-        <p class=”text-center”>
+        <p class="text-center">
             \(\small{y_i=f(x_i, \theta)+\epsilon}\)
         </p>
         <p>
             where \(\small{\theta}\) is the set of parameters we tune to fit the model, and \(\small{\epsilon}\) is the
-            error term (no model is perfect!). Let’s take linear regression for example. It’s the simplest example of
+            error term (models aren't always perfect!). Let’s take linear regression for example. It’s the simplest
+            example of
             regression. You have a bunch of points \(\small{(x_i, y_i)}\), where \(\small{y_i}\) is the dependent
             variable, \(\small{x_i}\) is the independent variable, and we need to find a function
         </p>
-        <p class=”text-center”>
+        <p class="text-center">
             \(\small{f(x_i, \theta)=\theta_1+\theta_2x_i}\)
         </p>
         <p>
             so \(\small{f(x_i, \theta)}\) is as close as possible to \(\small{y_i}\). More precisely, we need to find
             \(\small{\theta_1}\) (y-intercept) and \(\small{\theta_2}\) (the slope) that best relates all \(\small{(x_i,
             y_i)}\) (where \(\small{\theta=\{\theta_1, \theta_2\}}\) is the set of parameters to tune). How do we find
-            \(\small{\theta_1}\) and \(\small{\theta_2}\)? We need a way to measure how wrong the model is.
+            optimal \(\small{\theta_1}\) and \(\small{\theta_2}\)? We need a way to measure how wrong the model is.
         </p>
         <p>
             Initially, we choose random values for \(\small{\theta_1}\) and \(\small{\theta_2}\). We tune
             \(\small{\theta_1}\) and \(\small{\theta_2}\) based on how wrong the model is until we reach
             \(\small{\theta^*}\), the optimal value. We measure the model’s wrongness using the mean-square error (MSE)
-            loss function. For a data point \(\small{(x_i, y_i)}\), the actual value is \(\small{y_i}\), and the model
+            loss function. For a data point \(\small{(x_i, y_i)}\), the actual value is \(\small{y_i}\), the model
             prediction is \(\small{f(x_i, \theta)}\), and the MSE for this data point is
         </p>
-        <p class=”text-center”>
-            \(\small{\delta_i=(y_i-f(x_i, \theta))^2=(y_i-(\theta_1+\theta_2x_i))^2}\)
+        <p class="text-center">
+            \(\small{\delta_i=(y_i-f(x_i, \theta))^2}\) \(\small{=(y_i-(\theta_1+\theta_2x_i))^2}\)
         </p>
         <p>
             and the total loss is the sum over \(\small{i}\)
         </p>
-        <p>
-            \(\small{L(\theta=\{\theta_1, \theta_2\})=\sum\limits_{i=1}^m\delta_i}\) \(\small{=\sum\limits_{i=1}^m(y_i-f(x_i,
-            \theta))^2=\sum\limits_{i=1}^m(y_i-(\theta_1+\theta_2x_i))^2}\)
+        <p class="text-center">
+            \(\small{L(\theta)=\sum\limits_{i=1}^m\delta_i}\)
+            \(\small{=\sum\limits_{i=1}^m(y_i-f(x_i,
+            \theta))^2}\) \(\small{=\sum\limits_{i=1}^m(y_i-(\theta_1+\theta_2x_i))^2}\)
         </p>
         <p>
-            Note that \(\small{L(\theta)}\) is a function of \(\small{\theta}\) (here, function of \(\small{\theta_1}\)
+            where \(\small{m}\) is the number of data points. Note that \(\small{L(\theta)}\) is a function of
+            \(\small{\theta}\) (here, function of \(\small{\theta_1}\)
             and \(\small{\theta_2}\)), and \(\small{x_i}\) and \(\small{y_i}\) are treated as constants whereas
             \(\small{\theta_1}\) and \(\small{\theta_2}\) are variables. If actual value (or label) \(\small{y_i}\) is
             very different from prediction \(\small{f(x_i, \theta)}\), \(\small{\delta_i}\) is very large. The residual
-            (difference b/w label and prediction) because we want to penalise large changes more than small changes, and
-            we need an even function because if two terms \(\small{\delta_i}\) and \(\small{\theta_j}\) are equal in
-            magnitude and opposite in sign, summing them cancels, so loss will be zero, which is not ideal. We need to
-            measure the magnitude of loss.
+            (difference b/w label and prediction) is squared because we want to penalise large changes more than
+            small changes, and we need an even function because if two terms \(\small{\delta_i}\) and
+            \(\small{\delta_j}\) are equal
+            in magnitude and opposite in sign, summing them cancels, so loss will be zero, which is not ideal. Squaring
+            them means
+            \(\small{\delta_i}\) and \(\small{\delta_j}\) will be equal and positive. Suppose \(\small{x_i}\) is 3,
+            \(\small{y_i}\) is 5, and \(\small{\theta_1}\) and \(\small{\theta_2}\) are 1 and 6 respectively, the
+            prediction is
         </p>
-        <p>
-            Suppose \(\small{x_i}\) is 3, \(\small{y_i}\) is 5, and \(\small{\theta_1}\) and \(\small{\theta_2}\) are 1
-            and 6 respectively, the prediction is
-        </p>
-        <p class=”text-center”>
-            \(\small{f(x_i, \theta)=\theta_1+\theta_2x_i=1+6(3)=19}\)
+        <p class="text-center">
+            \(\small{f(x_i, \theta)=\theta_1+\theta_2x_i}\) \(\small{=1+6(3)=19}\)
         </p>
         <p>
             then the error is
         </p>
-        <p class=”text-center”>
-            \(\small{\theta_i=(y_i-f(x_i, \theta))^2}\) \(\small{=(5-19)^2=(-14)^2=196}\)
+        <p class="text-center">
+            \(\small{\delta_i=(y_i-f(x_i, \theta))^2}\) \(\small{=(5-19)^2=(-14)^2=196}\)
         </p>
         <p>
-            If the residual is doubled, the error quadruples.
+            If the residual is doubled, the error quadruples. Consider the above example where \(\small{\theta_1}\) and
+            \(\small{\theta_2}\) are 1 and 6 respectively. We have dataset and initial plot below.
         </p>
-        <!--beware-->
-        <br>
-        <h2>
-            Gradient Descent
-        </h2>
+        <div class="flex justify-center margin-top margin-bottom">
+            <table>
+                <tr>
+                    <td><b>x</b></td>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>4</td>
+                    <td>6</td>
+                    <td>7</td>
+                    <td>11</td>
+                    <td>13</td>
+                    <td>14</td>
+                </tr>
+                <tr>
+                    <td><b>y</b></td>
+                    <td>3</td>
+                    <td>5</td>
+                    <td>6</td>
+                    <td>11</td>
+                    <td>12</td>
+                    <td>15</td>
+                    <td>16</td>
+                    <td>21</td>
+                </tr>
+                <tr>
+                    <td><b>\(\small{\delta_i}\)</b></td>
+                    <td>16</td>
+                    <td>64</td>
+                    <td>361</td>
+                    <td>676</td>
+                    <td>961</td>
+                    <td>2704</td>
+                    <td>3969</td>
+                    <td>4096</td>
+                </tr>
+            </table>
+        </div>
+        <div class="flex justify-center">
+            <img src="../img/xy.png" alt="plot" class="responsive">
+        </div>
         <p>
-            Gradient descent is well-known technique to find the minimum (or maximum) of some objective function.
-            Consider the loss function above.
-            It is a function of two variables \(\small{\theta_1}\) and \(\small{\theta_2}\). Where \(\small{\theta}\)
-            minimises \(\small{L}\), the gradient
-            is zero (I'm assuming knowledge of what a gradient is, and maxima/minima in >2 dimensions). We can
-            analytically solve for \(\small{\theta}\) for the above loss function because it's
-            simple (we're not fitting a fancy curve, just a line).
+            When \(\small{\theta_1}\) is 1 and \(\small{\theta_2}\) is 6, the loss (sum \(\small{\delta_i}\)) is 12847.
+            Our model is
+            way off. Expanding the loss function gives
+        </p>
+        <p class="text-center overflow-auto">
+            \(\small{L(\theta)}\) \(\small{=m\theta_1^2 + \left(\sum\limits_{i=1}^mx_i^2\right)\theta_2^2 -
+            \left(2\sum\limits_{i=1}^my_i\right)\theta_1 - \left(2\sum\limits_{i=1}^mx_iy_i\right)\theta_2 +
+            \left(2\sum\limits_{i=1}^mx_i\right)\theta_1\theta_2 + \sum\limits_{i=1}^my_i^2}\)
+        </p>
+        <p>
+            This is of the form
         </p>
         <p class="text-center">
-            \(\small{\nabla_{\theta} L=\begin{bmatrix}\dfrac{\partial L}{\partial \theta_1} \\ \\ \dfrac{\partial
-            L}{\partial \theta_2}\end{bmatrix}=\textbf{0}}\)
+            \(\small{L(\theta)=a\theta_1^2+b\theta_2^2+c\theta_1+d\theta_2+e\theta_1\theta_2+f}\)
         </p>
         <p>
-            But suppose the function is complex. If it's not something simple like a linear equation \(\small{f(x_i,
-            \theta)=\theta_1+\theta_2x_i}\), we may not be able to
-            analytically solve for \(\small{\theta}\). Here, we find the approximate solution by carefully adjusting
-            \(\small{\theta}\) until
-            \(\small{L\approx}\) 0 and \(\small{\nabla_\theta L\approx \textbf{0}}\). This method of careful adjusting
-            is gradient descent.
+            which is a paraboloid. Substituing values from dataset above, our loss function simplifies to
+        </p>
+        <p class="text-center">
+            \(\small{L(\theta)}\) \(\small{=8\theta_1^2 + 592\theta_2^2 + 2514\theta_1 + 1708\theta_2 +
+            116\theta_1\theta_2 + 1257}\)
+        </p>
+        <p>
+            The above function gives us loss value for every pair \(\small{(\theta_1, \theta_2)}\), and if you plot it
+            (\(\small{\theta_1}\) on x-axis and \(\small{\theta_2}\) on y-axis), it should look something like the
+            paraboloid below.
         </p>
         <div class="flex justify-center">
-            <img class="responsive" src="../img/x2y2z.png" alt="paraboloid">
+            <img src="../img/x2y2z.png" alt="plot" class="responsive">
         </div>
         <p>
-            Let's first understand two facts about the gradient.
+            The loss function of datasets in linear regression is a paraboloid, and it varies with each dataset since
+            the paraboloid
+            coefficients are a function of the data points. In the paraboloid, we can see that there is an absolute
+            minimum. The
+            optimal set \(\small{\theta^*=\{\theta_1^*, \theta_2^*\}}\) that results in this absolute minimum (and hence
+            gives us the line of
+            best fit \(\small{f(x_i, \theta^*)=\theta_1^* + \theta_2^*x_i}\)) is the solution. At the absolute minimum,
+            the gradient
+            of \(\small{L}\) w.r.t \(\small{\theta}\) is \(\small{\textbf{0}}\) (I'm assuming knowledge of gradient, and
+            maxima/minima of multivariate functions). We can find derivatives w.r.t to \(\small{\theta_1}\)
+            and \(\small{\theta_2}\) and solve the system of equations to find the optimal values.
         </p>
-        <ul>
-            <li>
-                The gradient is in the direction of steepest ascent, and
-            </li>
-            <li>
-                The gradient at a point is perpendicular to the level set through that point.
-            </li>
-        </ul>
+        <p class="text-center">
+            \(\small{\nabla_{\theta}L=\begin{bmatrix}\dfrac{\partial L}{\partial \theta_1} \\ \\ \dfrac{\partial
+            L}{\partial
+            \theta_2}\end{bmatrix}}\) \(\small{=\textbf{0}}\)
+        </p>
         <p>
-            The first point explains gradient descent. We initially start somewhere random on the graph. We compute the
-            gradient at
-            the point. Stepping along the gradient means we'll ascend the graph, stepping in the opposite direction
-            means we'll descend.
-            We multiply the gradient by some small constant (called learning rate \(\small{\eta}\)), and we subtract
-            this from the original
-            point to reach a new location. We keep doing this again and again until we reach a local minima where the
-            gradient and loss are
-            close to zero.
+            expanding above
+        </p>
+        <p class="text-center">
+            \(\small{\nabla_{\theta}L=\begin{bmatrix}2\sum\limits_{i=1}^m(\theta_1+\theta_2x_i-y_i) \\ \\
+            2\sum\limits_{i=1}^m(\theta_1+\theta_2x_i-y_i)x_i\end{bmatrix}}\)
+            \(\small{=\begin{bmatrix}16\theta_1 + 116\theta_2 + 2514\\ \\ 1184\theta_2 + 116\theta_1 +
+            1708\end{bmatrix}=\begin{bmatrix}0 \\ \\ 0\end{bmatrix}}\)
+        </p>
+        <p>
+            and rearranging gives
+        </p>
+        <p class="text-center">
+            \(\small{\begin{bmatrix}16\theta_1 + 116\theta_2\\ \\ 116\theta_1\ + 1184\theta_2
+            \end{bmatrix}=\begin{bmatrix}-2514 \\ \\ -1708\end{bmatrix}}\)
+        </p>
+        <p>
+            which is a simple system of linear equations. Solving them gives \(\small{\theta_1=2.30029}\) and
+            \(\small{\theta_2= 1.2172}\).
+            So the line of best fit is \(\small{f(x_i, \theta)=2.30029+1.2172x_i}\) because the absolute minimum of
+            \(\small{L}\) is at \(\small{(2.30029, 1.2172)}\).
         </p>
         <div class="flex justify-center">
-            <div class="overflow-auto">
-                <p class="border-top border-bottom" style="white-space: nowrap;"><b>Algorithm</b> Gradient Descent</p>
-                <p style="white-space: nowrap;">
-                    initialise \(\small{\theta}\) randomly
-                    <br>
-                    until \(\small{L\approx 0}\)
-                    <br>
-                    <span class="padding-left">\(\small{\theta\coloneqq\theta-\eta\nabla_{\theta}L}\)</span>
-                </p>
-            </div>
+            <img src="../img/best_fit.png" alt="best_fit" class="responsive">
         </div>
-        <p>
-
-        </p>
     </div>
 </body>
+
 </html>
