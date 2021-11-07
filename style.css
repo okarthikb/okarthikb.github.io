@@ -10,9 +10,10 @@
 }
 
 body {
-  font-size: 16px;
+  font-size: 17px;
   font-family: "CMU Sans Serif", sans-serif;
   color: black;
+  background: white;
 }
 
 /* misc */
@@ -32,12 +33,21 @@ a:hover {
 }
 
 .thumbnail {
-  width: 300px;
-  height: 300px;
+  width: 320px;
+  height: 320px;
+}
+
+.responsive {
+  max-width: 100%;
+  height: auto;
 }
 
 .overflow-auto {
   overflow: auto;
+}
+
+p {
+  line-height: 1.7em;
 }
 
 /* font */
@@ -60,7 +70,7 @@ a:hover {
 
 .page {
   position: relative;
-  width: 768px;
+  width: 720px;
   margin: 4em auto;
 }
 
@@ -106,6 +116,10 @@ a:hover {
 
 .margin-0 {
   margin: 0 !important;
+}
+
+.margin-auto {
+  margin: 0 auto;
 }
 
 /* flex */
@@ -154,11 +168,11 @@ a:hover {
 
 @media only screen and (max-width: 800px) {
   body {
-    font-size: 14px;
+    font-size: 15px;
   }
 
   .page {
-    width: 90%;
+    width: 85%;
     margin: 2em auto;
   }
 
