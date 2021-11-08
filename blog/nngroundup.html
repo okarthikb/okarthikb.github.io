@@ -30,14 +30,15 @@
 <body class="margin-0">
     <div class="page">
         <div class="flex align-center justify-center border-top border-bottom">
-            <h1>Backpropagation</h1>
+            <h1>Backpropagation (part one)</h1>
         </div>
         <div class="flex align-center">
             <a class="padding border-bottom" href="../index.html">back</a>
         </div>
         <h2>Regression</h2>
         <p>
-            Before we dive into how neural nets and backprop work, let's review regression and gradient descent.
+            Before we dive into how neural nets (next post!) and backprop work, let's review regression and gradient
+            descent.
             Regression is the method by which you find the relationship between one or more independent variable(s)
             \(\small{x}\) and a dependent variable \(\small{y}\). A regression model assumes the following relationship
             holds among the dependent and independent variables
@@ -237,8 +238,14 @@
             <span>\(\small{\theta_2=\dfrac{m(\sum\limits_{i=1}^mx_iy_i)-(\sum\limits_{i=1}^mx_i)(\sum\limits_{i=1}^my_i)}{m(\sum\limits_{i=1}^mx_i^2)-(\sum\limits_{i=1}^mx_i)^2}}\)</span>
         </p>
         <p>
-            Looks scary, but it's just basic symbol manipulation. Try coding it up in Python or something. Anyways, we
-            have arrived
+            Looks scary, but it's just basic symbol manipulation. Try coding it up in Python or something - and try
+            deriving it yourself! Look at the system of equations formed by the relation \(\small{\nabla L=0}\) and try
+            solving for \(\small{\theta_1}\) and \(\small{\theta_2}\). Above (before the plot), we have substituted, all
+            the \(\small{x_i}\) and \(\small{y_i]\) values and arrived at the system of equations for *this* data set.
+            Try solving it for the general case.
+        </p>
+        </p>    
+            Anyways, we have arrived
             at an explicit solution to the optimisation problem of finding the straight line that best fits a bunch of
             points. Here,
             we only needed to find two parameters. What if you want to model more complex relationships? What if you
@@ -270,7 +277,8 @@
             direction \(\small{dp=(0.01, 0.2)}\). The new point is \(\small{p + dp}\). How much will \(\small{f}\) have
             changed?
             Adding \(\small{\partial x_1}\) to \(\small{x_1}\) means \(\small{f}\) will increase by
-            \(\small{\frac{\partial f}{\partial x_1}|_p}\partial x_1\) (this is just basic calculus, change in function equals derivative times change in x),
+            \(\small{\frac{\partial f}{\partial x_1}|_p}\partial x_1\) (this is just basic calculus, change in function
+            equals derivative times change in x),
             and adding \(\small{\partial x_2}\) to \(\small{x_2}\) means \(\small{f}\) will increase by
             \(\small{\frac{\partial f}{\partial x_2}|_p}\partial x_2\),
             so the total change is
@@ -316,28 +324,100 @@
             </div>
         </div>
         <p>
-            where \(\small{L}\) is some objective function. 
+            where \(\small{L}\) is some objective function.
         </p>
         <div class="flex justify-center">
             <img src="../img/to_minima.png" alt="minima" class="responsive">
             <img src="../img/grad_descent.gif" alt="gradient_descent" classs="responsive">
         </div>
         <p>
-            Let's use gradient descent to solve linear regression! The derivatives of the loss function we first discussed are
+            Let's use gradient descent to solve linear regression. The derivatives of the loss function we first
+            discussed are
         </p>
         <p class="text-center">
-            \(\small{\dfrac{\partial L}{\partial \theta_1}}\) \(\small{=\dfrac{\partial}{\partial \theta_1}\sum\limits_{i=1}^m(y_i-(\theta_1+\theta_2x_i))^2}\)
+            \(\small{\dfrac{\partial L}{\partial \theta_1}}\)
             \(\small{=2\sum\limits_{i=1}^m​(\theta_1​+\theta_2​x_i​−y_i​)=16\theta_1​+116\theta_2​−178}\)
             <br>
             <br>
-            \(\small{\dfrac{\partial L}{\partial \theta_2}}\) \(\small{=\dfrac{\partial}{\partial \theta_2}\sum\limits_{i=1}^m(y_i-(\theta_1+\theta_2x_i))^2}\)
+            \(\small{\dfrac{\partial L}{\partial \theta_2}}\)
             \(\small{=2\sum\limits_{i=1}^m​(\theta_1​+\theta_2​x_i​−y_i​)x_i=116\theta_1​+1184\theta_2​−1708}\)
         </p>
         <p>
             and so the gradient is
         </p>
         <p class="text-center">
-            \(\small{\nabla L=\begin{bmatrix}16\theta_1+116\theta_2-178 \\ \\ 116\theta_1+1184\theta_2-1708\end{bmatrix}}\)
+            \(\small{\nabla L=\begin{bmatrix}16\theta_1+116\theta_2-178 \\ \\
+            116\theta_1+1184\theta_2-1708\end{bmatrix}}\)
+        </p>
+        <p>
+            Remember that \(\small{\theta_1}\) and \(\small{\theta_2}\) are 1 and 6 initially. Substituing in above
+        </p>
+        <p class="text-center">
+            \(\small{\nabla L=\begin{bmatrix}534 \\ \\ 5512\end{bmatrix}}\)
+        </p>
+        <p>
+            i.e., \(\small{\frac{\partial L}{\partial \theta_1}|_1=534}\), and \(\small{\frac{\partial L}{\partial
+            \theta_2}|_6=5512}\).
+            Multiply both of them by learning rate \(\small{\eta=0.001}\) and we have
+        </p>
+        <p class="text-center">
+            \(\small{\partial \theta=\eta\nabla L=\begin{bmatrix}0.534 \\ \\ 5.512\end{bmatrix}}\)
+        </p>
+        <p>
+            Now we update \(\small{\theta}\), i.e., subtract 0.534 from \(\small{\theta_1}\) to get new
+            \(\small{\theta_1}\) value
+            0.466, and subtract 5.512 from \(\small{\theta_2}\) to get new \(\small{\theta_2}\) value 0.488. Now we do
+            the same for the
+            new values. Subsitute them into \(\small{\nabla L}\), multiply by \(\small{\eta}\), and then subtract. We do
+            this over and over
+            until \(\small{\theta}\) gets sufficiently close to optimal value. For \(\small{\theta=0.001}\), 2000 steps
+            gives us solution close
+            to four decimal places.
+        </p>
+        <div class="flex justify-center overflow-auto">
+            <img src="../img/df.png" alt="df" style="max-width: 200px;">
+        </div>
+        <p>
+            In Python,
+        </p>
+        <div class="flex justify-center">
+            <pre class="background-white font-08em border overflow-auto padding"><code class="language-python"># for dataset above, following are loss function derivatives 
+
+# derivative of L w.r.t Θ1
+def dLdΘ1(Θ1, Θ2):
+    return 16 * Θ1 + 116 * Θ2 - 178
+
+
+# derivative of L w.r.t Θ2
+def dLdΘ2(Θ1, Θ2):
+    return 116 * Θ1 + 1184 * Θ2 - 1708
+
+
+Θ1, Θ2 = 1, 6  # initial values
+η = 0.001  # learning rate
+for i in range(2000):
+    dΘ1 = η * dLdΘ1(Θ1, Θ2)
+    dΘ2 = η * dLdΘ2(Θ1, Θ2)
+    Θ1 = Θ1 - dΘ1
+    Θ2 = Θ2 - dΘ2
+
+print(Θ1, Θ2)
+</code></pre>
+        </div>
+        <p>
+            In this way, we calculate the gradient of the loss function (which will have thousands to billions of
+            parameters if we're using a neural net) by computing the derivative of the loss function w.r.t every single
+            parameter at a point (here, there are only two parameters), multiplying the derivatives by a small constant
+            \(\small{\eta}\), and subtracting it from the parameters, and repeating the process over and over again
+            until optimality.
+        </p>
+        <p>
+            In the next post, we'll see how one can calculate
+            gradients of super complex
+            functions like neural nets using matrix operations, and then in the same post a bit about automatic
+            differentiation as an alternative
+            to matrix operations, and in the final one (if I get to it), implementing automatic differentiation in
+            Python (similar to PyTorch Autograd).
         </p>
     </div>
 </body>
