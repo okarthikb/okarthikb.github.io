@@ -190,14 +190,16 @@
             minimum where the gradient
             of \(\small{L}\) w.r.t \(\small{\theta}\) is \(\small{\textbf{0}}\) (I'm assuming knowledge of gradient, and
             maxima/minima of multivariate functions - check out <a
-                href="https://www.khanacademy.org/math/multivariable-calculus/multivariable-derivatives" class="grey">this</a> and <a
-                href="https://www.khanacademy.org/math/multivariable-calculus/applications-of-multivariable-derivatives/optimizing-multivariable-functions-videos/v/multivariable-maxima-and-minima" class="grey">this</a>
+                href="https://www.khanacademy.org/math/multivariable-calculus/multivariable-derivatives"
+                class="grey">this</a> and <a
+                href="https://www.khanacademy.org/math/multivariable-calculus/applications-of-multivariable-derivatives/optimizing-multivariable-functions-videos/v/multivariable-maxima-and-minima"
+                class="grey">this</a>
             for clarification). Here, the loss is lowest, so \(\small{\theta_1}\) and
             \(\small{\theta_2}\) here is optimal. We can find derivatives w.r.t to \(\small{\theta_1}\)
             and \(\small{\theta_2}\) and solve the system of equations to find the optimal values.
         </p>
         <p class="text-center">
-            \(\small{\nabla_{\theta}L=\begin{bmatrix}\dfrac{\partial L}{\partial \theta_1} \\ \\ \dfrac{\partial
+            \(\small{\nabla L=\begin{bmatrix}\frac{\partial L}{\partial \theta_1} \\ \\ \frac{\partial
             L}{\partial
             \theta_2}\end{bmatrix}}\) \(\small{=\textbf{0}}\)
         </p>
@@ -205,7 +207,7 @@
             expanding above
         </p>
         <p class="text-center">
-            \(\small{\nabla_{\theta}L=\begin{bmatrix}2\sum\limits_{i=1}^m(\theta_1+\theta_2x_i-y_i) \\ \\
+            \(\small{\nabla L=\begin{bmatrix}2\sum\limits_{i=1}^m(\theta_1+\theta_2x_i-y_i) \\ \\
             2\sum\limits_{i=1}^m(\theta_1+\theta_2x_i-y_i)x_i\end{bmatrix}}\)
             \(\small{=\begin{bmatrix}16\theta_1 + 116\theta_2 -178\\ \\ 1184\theta_2 + 116\theta_1 -
             1708\end{bmatrix}=\begin{bmatrix}0 \\ \\ 0\end{bmatrix}}\)
@@ -229,7 +231,7 @@
         <p>
             For simple linear regression, the general solution is
         </p>
-        <p class="text-center">
+        <p class="text-center overflow-auto">
             <span>\(\small{\theta_1=\dfrac{(\sum\limits_{i=1}^my_i)(\sum\limits_{i=1}^mx_i^2)-(\sum\limits_{i=1}^mx_i)(\sum\limits_{i=1}^mx_iy_i)}{m(\sum\limits_{i=1}^mx_i^2)-(\sum\limits_{i=1}^mx_i)^2}}\)</span>
             <br>
             <span>\(\small{\theta_2=\dfrac{m(\sum\limits_{i=1}^mx_iy_i)-(\sum\limits_{i=1}^mx_i)(\sum\limits_{i=1}^my_i)}{m(\sum\limits_{i=1}^mx_i^2)-(\sum\limits_{i=1}^mx_i)^2}}\)</span>
@@ -244,6 +246,98 @@
             than two parameters? Ten parameters? Ten thousand? Ten billion? We cannot find an explicit solution when the
             problem becomes
             more complex. We can, however, find an approximate solution by using a technique called gradient descent.
+        </p>
+        <br>
+        <h2>Gradient Descent</h2>
+        <p>
+            The gradient of a multivariate function at a point is a vector that points in the direction of steepest
+            ascent. For a
+            function \(\small{z=f(\textbf{x})}\) (where \(\small{\textbf{x}=(x_1, \dots, x_n)}\) is a point in
+            \(\small{n}\) dimensions),
+            the gradient at a point \(\small{p}\) is defined as
+        </p>
+        <p class="text-center">
+            \(\small{\nabla f|_p=\begin{bmatrix}\frac{\partial f}{\partial x_1}|_p\\ \vdots \\ \frac{\partial
+            f}{\partial
+            x_n}|_p\end{bmatrix}}\)
+        </p>
+        <p>
+            where \(\small{|_p}\) denotes "evaluated at \(\small{p}\)". If \(\small{f(\textbf{x})=x_1^2+x_2^2}\), then
+            \(\small{\frac{\partial f}{\partial x_1}|_2=(2x_1)|_2=2(2)=4}\). Here, \(\small{f}\) is a function of two
+            variables. Suppose
+            \(\small{p=(x_1, x_2)=(1, 2)}\). \(\small{f}\) is \(\small{1^2+2^2=5}\). Now suppose from \(\small{p}\) you
+            step in some
+            direction \(\small{dp=(0.01, 0.2)}\). The new point is \(\small{p + dp}\). How much will \(\small{f}\) have
+            changed?
+            Adding \(\small{\partial x_1}\) to \(\small{x_1}\) means \(\small{f}\) will increase by
+            \(\small{\frac{\partial f}{\partial x_1}|_p}\partial x_1\) (this is just basic calculus, change in function equals derivative times change in x),
+            and adding \(\small{\partial x_2}\) to \(\small{x_2}\) means \(\small{f}\) will increase by
+            \(\small{\frac{\partial f}{\partial x_2}|_p}\partial x_2\),
+            so the total change is
+        </p>
+        <p class="text-center">
+            \(\small{f(p + dp)-f(p)}\) \(\small{=\frac{\partial f}{\partial x_1}|_p}\partial x_1 + \frac{\partial
+            f}{\partial x_2|_p}\partial x_2\)
+            \(\small{=\nabla f|_p\cdot dp}\)
+        </p>
+        <p>
+            So value of \(\small{f}\) changes by \(\small{\nabla f|_p\cdot dp}\) if we go from \(\small{p}\) to
+            \(\small{p + dp}\) where
+            \(\small{dp}\) is some infinitesimal vector. From this, we can see why the gradient is the direction of
+            steepest ascent.
+        </p>
+        <p class="text-center">
+            \(\small{\nabla f|_p\cdot dp}\) \(\small{=||\nabla f|_p||||dp||\cos\theta}\)
+        </p>
+        <p>
+            Above expression is maximum when \(\small{\cos\theta}\) is maximum which is when \(\small{\theta}\) is 0,
+            i.e., when \(\small{dp}\)
+            is along \(\small{\nabla f|_p}\), which is why the gradient is along the direction of steepest ascent. It is
+            defined that way.
+            We can now see how gradient descent works.
+        </p>
+        <p>
+            We initially start at some random point, \(\small{\theta}\) in the case of some loss function.
+            We compute the gradient at that point. We scale it by some small constant (called learning rate)
+            \(\small{\eta}\), and step
+            in the direction opposite the gradient (because gradient is direction of steepest ascent, minus gradient is
+            direction of steepest descent).
+        </p>
+        <div class="flex justify-center">
+            <div style="width: clamp(256px, 70%, 400px);" class="overflow-scroll">
+                <p class="border-top border-bottom"><b>Algorithm</b> Gradient Descent</p>
+                <p>
+                    Initialise \(\small{\theta}\) randomly
+                    <br>
+                    Until \(\small{L\approx 0}\)
+                    <br>
+                    <span class="padding-left">\(\small{\theta\coloneqq\theta-\eta\nabla L|_{\theta}}\)</span>
+                </p>
+            </div>
+        </div>
+        <p>
+            where \(\small{L}\) is some objective function. 
+        </p>
+        <div class="flex justify-center">
+            <img src="../img/to_minima.png" alt="minima" class="responsive">
+            <img src="../img/grad_descent.gif" alt="gradient_descent" classs="responsive">
+        </div>
+        <p>
+            Let's use gradient descent to solve linear regression! The derivatives of the loss function we first discussed are
+        </p>
+        <p class="text-center">
+            \(\small{\dfrac{\partial L}{\partial \theta_1}}\) \(\small{=\dfrac{\partial}{\partial \theta_1}\sum\limits_{i=1}^m(y_i-(\theta_1+\theta_2x_i))^2}\)
+            \(\small{=2\sum\limits_{i=1}^m​(\theta_1​+\theta_2​x_i​−y_i​)=16\theta_1​+116\theta_2​−178}\)
+            <br>
+            <br>
+            \(\small{\dfrac{\partial L}{\partial \theta_2}}\) \(\small{=\dfrac{\partial}{\partial \theta_2}\sum\limits_{i=1}^m(y_i-(\theta_1+\theta_2x_i))^2}\)
+            \(\small{=2\sum\limits_{i=1}^m​(\theta_1​+\theta_2​x_i​−y_i​)x_i=116\theta_1​+1184\theta_2​−1708}\)
+        </p>
+        <p>
+            and so the gradient is
+        </p>
+        <p class="text-center">
+            \(\small{\nabla L=\begin{bmatrix}16\theta_1+116\theta_2-178 \\ \\ 116\theta_1+1184\theta_2-1708\end{bmatrix}}\)
         </p>
     </div>
 </body>
