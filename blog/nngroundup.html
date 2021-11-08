@@ -153,7 +153,9 @@
             way off. Expanding the loss function gives
         </p>
         <p class="text-center overflow-auto">
-            \(\small{L(\theta)}\) \(\small{=m\theta_1^2 + \left(\sum\limits_{i=1}^mx_i^2\right)\theta_2^2 - \left(2\sum\limits_{i=1}^my_i\right)\theta_1 - \left(2\sum\limits_{i=1}^mx_iy_i\right)\theta_2 + \left(2\sum\limits_{i=1}^mx_i\right)\theta_1\theta_2 + \sum\limits_{i=1}^my_i^2}\)
+            \(\small{L(\theta)}\) \(\small{=m\theta_1^2 + \left(\sum\limits_{i=1}^mx_i^2\right)\theta_2^2 -
+            \left(2\sum\limits_{i=1}^my_i\right)\theta_1 - \left(2\sum\limits_{i=1}^mx_iy_i\right)\theta_2 +
+            \left(2\sum\limits_{i=1}^mx_i\right)\theta_1\theta_2 + \sum\limits_{i=1}^my_i^2}\)
         </p>
         <!--<p class="text-center overflow-auto">
             \(\small{L(\theta)}\) \(\small{=m\theta_1^2 + \left(\sum\limits_{i=1}^mx_i^2\right)\theta_2^2 -
@@ -182,12 +184,16 @@
             <img src="../img/x2y2z.png" alt="plot" class="responsive">
         </div>
         <p>
-            The loss function of datasets in linear regression is a paraboloid, and it varies with each dataset since
+            The loss function here is a paraboloid, and it varies with each dataset since
             the paraboloid
             coefficients are a function of the data points. In the paraboloid, we can see that there is an absolute
             minimum where the gradient
             of \(\small{L}\) w.r.t \(\small{\theta}\) is \(\small{\textbf{0}}\) (I'm assuming knowledge of gradient, and
-            maxima/minima of multivariate functions). We can find derivatives w.r.t to \(\small{\theta_1}\)
+            maxima/minima of multivariate functions - check out <a
+                href="https://www.khanacademy.org/math/multivariable-calculus/multivariable-derivatives" class="grey">this</a> and <a
+                href="https://www.khanacademy.org/math/multivariable-calculus/applications-of-multivariable-derivatives/optimizing-multivariable-functions-videos/v/multivariable-maxima-and-minima" class="grey">this</a>
+            for clarification). Here, the loss is lowest, so \(\small{\theta_1}\) and
+            \(\small{\theta_2}\) here is optimal. We can find derivatives w.r.t to \(\small{\theta_1}\)
             and \(\small{\theta_2}\) and solve the system of equations to find the optimal values.
         </p>
         <p class="text-center">
@@ -229,10 +235,14 @@
             <span>\(\small{\theta_2=\dfrac{m(\sum\limits_{i=1}^mx_iy_i)-(\sum\limits_{i=1}^mx_i)(\sum\limits_{i=1}^my_i)}{m(\sum\limits_{i=1}^mx_i^2)-(\sum\limits_{i=1}^mx_i)^2}}\)</span>
         </p>
         <p>
-            Looks scary, but it's just basic symbol manipulation. Try coding it up in Python or something. Anyways, we have arrived
-            at an explicit solution to the optimisation problem of finding the straight line that best fits a bunch of points. Here,
-            we only needed to find two parameters. What if you want to model more complex relationships? What if you want to use more
-            than two parameters? Ten parameters? Ten thousand? Ten billion? We cannot find an explicit solution when the problem becomes
+            Looks scary, but it's just basic symbol manipulation. Try coding it up in Python or something. Anyways, we
+            have arrived
+            at an explicit solution to the optimisation problem of finding the straight line that best fits a bunch of
+            points. Here,
+            we only needed to find two parameters. What if you want to model more complex relationships? What if you
+            want to use more
+            than two parameters? Ten parameters? Ten thousand? Ten billion? We cannot find an explicit solution when the
+            problem becomes
             more complex. We can, however, find an approximate solution by using a technique called gradient descent.
         </p>
     </div>
