@@ -309,7 +309,8 @@
             We compute the gradient at that point. We scale it by some small constant (called learning rate)
             \(\small{\eta}\), and step
             in the direction opposite the gradient (because gradient is direction of steepest ascent, minus gradient is
-            direction of steepest descent).
+            direction of steepest descent). We keep stepping in the direction of steepest descent, until we hit a local minima (a bowl, if you may).
+            Here, the gradient is 0 (or just really, really small, because we don't usually hit zero gradient in practice). 
         </p>
         <div class="flex justify-center">
             <div style="width: clamp(256px, 70%, 400px);" class="overflow-scroll">
@@ -329,6 +330,7 @@
         <div class="flex justify-center">
             <img src="../img/to_minima.png" alt="minima" class="responsive">
             <img src="../img/grad_descent.gif" alt="gradient_descent" classs="responsive">
+            <span class="font-08em grey">There may be multiple local minima, and different initial conditions lead to different minima - in our case, paraboloid as only one minima which is the absolute minimum.</span>
         </div>
         <p>
             Let's use gradient descent to solve linear regression. The derivatives of the loss function we first
