@@ -60,7 +60,7 @@
             so \(\small{f(x_i, \theta)}\) is as close as possible to \(\small{y_i}\). More precisely, we need to find
             \(\small{\theta_1}\) (y-intercept) and \(\small{\theta_2}\) (the slope) that best relates all \(\small{(x_i,
             y_i)}\) (where \(\small{\theta=\{\theta_1, \theta_2\}}\) is the set of parameters to tune). How do we find
-            optimal \(\small{\theta_1}\) and \(\small{\theta_2}\)? We need a way to measure how wrong the model is.
+            optimal \(\small{\theta}\)? We need a way to measure how wrong the model is.
         </p>
         <p>
             Initially, we choose random values for \(\small{\theta_1}\) and \(\small{\theta_2}\). We tune
@@ -73,7 +73,7 @@
             \(\small{\delta_i=(y_i-f(x_i, \theta))^2}\) \(\small{=(y_i-(\theta_1+\theta_2x_i))^2}\)
         </p>
         <p>
-            and the total loss is the sum over \(\small{i}\)
+            and the total loss is the sum of error for all data points.
         </p>
         <p class="text-center">
             \(\small{L(\theta)=\sum\limits_{i=1}^m\delta_i}\)
@@ -158,11 +158,6 @@
             \left(2\sum\limits_{i=1}^my_i\right)\theta_1 - \left(2\sum\limits_{i=1}^mx_iy_i\right)\theta_2 +
             \left(2\sum\limits_{i=1}^mx_i\right)\theta_1\theta_2 + \sum\limits_{i=1}^my_i^2}\)
         </p>
-        <!--<p class="text-center overflow-auto">
-            \(\small{L(\theta)}\) \(\small{=m\theta_1^2 + \left(\sum\limits_{i=1}^mx_i^2\right)\theta_2^2 -
-            \left(2\sum\limits_{i=1}^my_i\right)\theta_1 - \left(2\sum\limits_{i=1}^mx_iy_i\right)\theta_2 +
-            \left(2\sum\limits_{i=1}^mx_i\right)\theta_1\theta_2 + \sum\limits_{i=1}^my_i^2}\)
-        </p>-->
         <p>
             This is of the form
         </p>
@@ -207,52 +202,51 @@
         <p>
             expanding above
         </p>
-        <p class="text-center">
+        <p class="text-center overflow-auto">
             \(\small{\nabla L=\begin{bmatrix}2\sum\limits_{i=1}^m(\theta_1+\theta_2x_i-y_i) \\ \\
             2\sum\limits_{i=1}^m(\theta_1+\theta_2x_i-y_i)x_i\end{bmatrix}}\)
-            \(\small{=\begin{bmatrix}16\theta_1 + 116\theta_2 -178\\ \\ 1184\theta_2 + 116\theta_1 -
-            1708\end{bmatrix}=\begin{bmatrix}0 \\ \\ 0\end{bmatrix}}\)
+            \(\small{=\begin{bmatrix}2m\theta_1 + \left(2\sum\limits_{i=1}^mx_i\right)\theta_2 -
+            2\sum\limits_{i=1}^my_i\\ \\ \left(2\sum\limits_{i=1}^mx_i\right)\theta_1 +
+            \left(2\sum\limits_{i=1}^mx_i^2\right)\theta_2-2\sum\limits_{i=1}^mx_iy_i\end{bmatrix}}\)
+            \(\small{=\begin{bmatrix}0 \\ \\ 0\end{bmatrix}}\)
+            <!--\(\small{=\begin{bmatrix}16\theta_1 + 116\theta_2 -178\\ \\ 1184\theta_2 + 116\theta_1 -
+            1708\end{bmatrix}=\begin{bmatrix}0 \\ \\ 0\end{bmatrix}}\)-->
         </p>
         <p>
             and rearranging gives
         </p>
         <p class="text-center">
-            \(\small{\begin{bmatrix}16\theta_1 + 116\theta_2\\ \\ 116\theta_1\ + 1184\theta_2
-            \end{bmatrix}=\begin{bmatrix}178 \\ \\ 1708\end{bmatrix}}\)
+            \(\small{\begin{bmatrix} m\theta_1 + \left(\sum\limits_{i=1}^mx_i\right)\theta_2 \\ \\
+            \left(\sum\limits_{i=1}^mx_i\right)\theta_1 +
+            \left(\sum\limits_{i=1}^mx_i^2\right)\theta_2
+            \end{bmatrix}=\begin{bmatrix}\sum\limits_{i=1}^my_i \\ \\ \sum\limits_{i=1}^mx_iy_i\end{bmatrix}}\)
         </p>
         <p>
-            which is a simple system of linear equations. Solving them gives \(\small{\theta_1=2.30029}\) and
-            \(\small{\theta_2= 1.2172}\).
-            So the line of best fit is \(\small{f(x_i, \theta)=2.30029+1.2172x_i}\) because the absolute minimum of
-            \(\small{L}\) is at \(\small{(2.30029, 1.2172)}\).
+            which is a simple system of linear equations. Solving them gives
+        </p>
+        <p class="text-center overflow-auto">
+            <span>\(\small{\theta_1=\dfrac{\left(\sum\limits_{i=1}^my_i\right)\left(\sum\limits_{i=1}^mx_i^2\right)-\left(\sum\limits_{i=1}^mx_i\right)\left(\sum\limits_{i=1}^mx_iy_i\right)}{m\left(\sum\limits_{i=1}^mx_i^2\right)-\left(\sum\limits_{i=1}^mx_i\right)^2}}\)</span>
+            <br>
+            <span>\(\small{\theta_2=\dfrac{m\left(\sum\limits_{i=1}^mx_iy_i\right)-\left(\sum\limits_{i=1}^mx_i\right)\left(\sum\limits_{i=1}^my_i\right)}{m\left(\sum\limits_{i=1}^mx_i^2\right)-\left(\sum\limits_{i=1}^mx_i\right)^2}}\)</span>
+        </p>
+        <p>
+            which is the general solution for linear regression on a dataset. Substituting values for \(\small{x_i}\)
+            and \(\small{y_i}\)
+            from the dataset gives \(\small{\theta_1=2.30029}\) and \(\small{\theta_2=1.2172}\) and so the line of best
+            fit is \(\small{f(x_i, \theta)=2.30029 + 1.2172x_i}\)
         </p>
         <div class="flex justify-center">
             <img src="../img/best_fit.png" alt="best_fit" class="responsive">
         </div>
         <p>
-            For simple linear regression, the general solution is
-        </p>
-        <p class="text-center overflow-auto">
-            <span>\(\small{\theta_1=\dfrac{(\sum\limits_{i=1}^my_i)(\sum\limits_{i=1}^mx_i^2)-(\sum\limits_{i=1}^mx_i)(\sum\limits_{i=1}^mx_iy_i)}{m(\sum\limits_{i=1}^mx_i^2)-(\sum\limits_{i=1}^mx_i)^2}}\)</span>
-            <br>
-            <span>\(\small{\theta_2=\dfrac{m(\sum\limits_{i=1}^mx_iy_i)-(\sum\limits_{i=1}^mx_i)(\sum\limits_{i=1}^my_i)}{m(\sum\limits_{i=1}^mx_i^2)-(\sum\limits_{i=1}^mx_i)^2}}\)</span>
-        </p>
-        <p>
-            Looks scary, but it's just basic symbol manipulation. Try coding it up in Python or something - and try
-            deriving it yourself! Look at the system of equations formed by the relation \(\small{\nabla L=0}\) and try
-            solving for \(\small{\theta_1}\) and \(\small{\theta_2}\). Above (before the plot), we have substituted, all
-            the \(\small{x_i}\) and \(\small{y_i}\) values and arrived at the system of equations for *this* data set.
-            Try solving it for the general case.
-        </p>
-        <p>
-        We have arrived
-        at an explicit solution to the optimisation problem of finding the straight line that best fits a bunch of
-        points. Here,
-        we only needed to find two parameters. What if you want to model more complex relationships? What if you
-        want to use more
-        than two parameters? Ten parameters? Ten thousand? Ten billion? We cannot find an explicit solution when the
-        problem becomes
-        more complex. We can, however, find an approximate solution by using a technique called gradient descent.
+            We have arrived
+            at an explicit solution to the optimisation problem of finding the straight line that best fits a bunch of
+            points. Here,
+            we only needed to find two parameters. What if you want to model more complex relationships? What if you
+            want to use more
+            than two parameters? Ten parameters? Ten thousand? Ten billion? We cannot find an explicit solution when the
+            problem becomes
+            more complex. We can, however, find an approximate solution by using a technique called gradient descent.
         </p>
         <br>
         <h2>Gradient Descent</h2>
@@ -345,7 +339,8 @@
             <br>
             <br>
             \(\small{\dfrac{\partial L}{\partial \theta_2}}\)
-            \(\small{=2\sum\limits_{i=1}^m​(\theta_1​+\theta_2​x_i​−y_i​)x_i}\) \(\small{=116\theta_1​+1184\theta_2​−1708}\)
+            \(\small{=2\sum\limits_{i=1}^m​(\theta_1​+\theta_2​x_i​−y_i​)x_i}\)
+            \(\small{=116\theta_1​+1184\theta_2​−1708}\)
         </p>
         <p>
             and so the gradient is
