@@ -38,7 +38,28 @@
         <div class="flex align-center">
             <a class="padding border-bottom" href="../index.html">back</a>
         </div>
-        <h2>Title</h2>
+        <h2>What <i>is</i> a neural net, anyway?</h2>
+        <p>
+            A neural net is just a complex function whose parameters we can adjust to fit some data. The input and output of a neural network are vectors, 
+            which are just lists of numbers. The input can be say, four numbers (a vector of size four) representing blood cholestrol level, oxygen level, etc.,
+            of a person, and the output may be a single number between 0 and 1 predicting the risk of heart disease (or something). Our goal is to take
+            a bunch of input-output vector pairs (datapoints), and adjust the neural nets parameters to fit the datapoints. Let's see the anatomy of a neural net.
+        </p>
+        <br>
+        <h2>The perceptron</h2>
+        <p>
+            The perceptron is the basic unit of a neural net. The perceptron represents the following function - take input numbers (a vector), 
+            scales each by a scalar, adds a bias, then apply a non-linearity.
+        </p>
+        <div class="flex justify-center">
+            <img src="../img/perceptron.png" alt="perceptron" class="responsive" width="400px">
+        </div>
+        <p class="text-center">
+            \(o=\varphi(\sum_{i=1}^nw_ix_i+b)\)
+        </p>
+        <p>
+            \(w_i\) and \(b\) (the weights and bias) are parameters of the perceptron that we can adjust.
+        </p>
     </div>    
 </body>
 
