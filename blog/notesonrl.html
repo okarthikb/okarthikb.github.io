@@ -576,11 +576,8 @@ wins: 43    draws: 3    losses: 54</code></pre>
       be too large to explore in reasonable time).
     </p>
     <p>
-      Since \(Q\)-learning is model-free, the agent cannot reason about the environment. It's not looking at the
-      environment and going, "Oh,
-      this state is clearly bad, this action is clearly the optimal action, etc." - it's just, "I played this episode, I
-      got this reward. I have
-      no idea about what game I'm playing - I'm blind". The agent cannot predict rewards because it doesn't have a model
+      Since \(Q\)-learning is model-free, the agent cannot reason about the environment. 
+      The agent cannot predict rewards because it doesn't have a model
       of the environment. If it had,
       then we don't need to enumerate over all the states. We can arrive at a good approximation in fewer episodes.
     </p>
@@ -943,7 +940,7 @@ episode: 100	return: 105.0</code></pre>
     <p>
       As we can see, the agent quickly improves. By episode 30, it's getting the maximum possible return. As
       training goes on, it starts
-      to overfit and we see a loss in return
+      to overfit and we see a reduction in return.
     </p>
     <div align="center">
       <img src="../dql_returns.png" alt="returns" class="height-auto border-05px-grey-solid">
@@ -1147,7 +1144,7 @@ frames = 1
 opt = torch.optim.Adam(pi.parameters(), lr=lr)</code></pre>
     </div>
     <p>
-      If we're training say, an Atari agent, a single frame may not contain information like velocity, or fire-rate, or whatever. So the policy network (or \(Q\) network)
+      If we're training say, an Atari agent, a single frame may not contain information like velocity, or fire-rate, or whatever. So the policy network (or \(Q\) network if we're doing \(Q\)-learning)
       will receive a pre-processed sequence of the previous \(k\) frames. We store the previous \(k\) frames in a Python <code>collections.deque</code> called <code>seq</code>.
       For CartPole-v0, the sequence length is just 1. We have enough info in a single frame.
     </p>
