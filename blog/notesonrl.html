@@ -1104,7 +1104,7 @@ episode: 100	return: 105.0</code></pre>
       <p class="indent">\(\theta\leftarrow \theta+\eta\nabla_{\theta}J\)</p>
     </div>
     <p>
-      Smol 'n cute, but can learn a lot of games! This is a classic model-based RL algorithm that directly implements the core idea of RL - take more actions that yield higher reward. Let's
+      Smol n' cute, but can learn a lot of games! This is a classic model-based RL algorithm that directly implements the core idea of RL - take more actions that yield higher reward. Let's
       implement this. We initialize the policy network the same way we did \(Q\)-network, but the output layer is softmax (because it's a probability distribution).
     </p>
     <div class="codeblock">
@@ -1224,7 +1224,7 @@ opt = torch.optim.Adam(pi.parameters(), lr=lr)</code></pre>
   return sum(sum(Gs) for Gs, _ in T) / len(T)</code></pre>
     </div>
     <p>
-      Now we define the main training loop.
+      Now we define the main training loop which is the PG algorithm.
     </p>
     <div class="codeblock">
       <pre class="prettyprint lang-python no-margin no-border"><code>def train():
