@@ -653,7 +653,7 @@ wins: 43    draws: 3    losses: 54</code></pre>
       returns in different episodes
       for the same state. But if the state space is large, the chances of visiting the same state diminishes, so it's
       not too bad. The pseudocode
-      for approximating the value function for some policy \(\pi=h_w\) looks like so
+      for approximating the value function for some policy \(\pi=h_w\) looks like so.
     </p>
     <div class="codeblock">
       <p>\(f_u\leftarrow\) initialize with arbitrary \(u\)</p>
@@ -697,7 +697,7 @@ wins: 43    draws: 3    losses: 54</code></pre>
     </p>
     <div class="overflow-scroll">
       <span>
-        \[\pi(s)=\operatorname{argmax}_a(g_{\theta}(s)_a)\]
+        \[\pi(s)=\operatorname{argmax}_a(g_{\theta}(s)_a).\]
       </span>
     </div>
     <p>
@@ -1022,12 +1022,12 @@ episode: 100	return: 105.0</code></pre>
       Since we care about the gradient of \(J\) w.r.t \(\theta\), we only care about the terms that are dependent on
       \(\theta\),
       which is \(p(\tau)\) (because it contains \(\pi_{\theta}\)). We make use of the following trick called the-log
-      trick for simplification.
+      trick for simplification
     </p>
     <div class="overflow-scroll">
       <span>
         \[\nabla_{\theta}\log(f(\theta)) = \frac{\nabla_{\theta}f(\theta)}{f(\theta)} \implies
-        \nabla_{\theta}f(\theta) = f(\theta)\nabla_{\theta}\log(f(\theta))\]
+        \nabla_{\theta}f(\theta) = f(\theta)\nabla_{\theta}\log(f(\theta)).\]
       </span>
     </div>
     <p>
@@ -1094,7 +1094,7 @@ episode: 100	return: 105.0</code></pre>
       to make it easier to compute the objective function, which is the expected return as a function of
       \(\theta\)). Just a single for loop. And
       we have automatic differentiation in PyTorch, so calling <code>J.backward()</code> after storing objective in
-      <code>J</code> computes the gradients for us. Neat! The vanilla policy gradient algorithm is as follows
+      <code>J</code> computes the gradients for us. Neat! The vanilla policy gradient algorithm is as follows.
     </p>
     <div class="codeblock">
       <p>\(\pi_{\theta}\leftarrow\) initialize policy network with arbitrary \(\theta\)</p>
@@ -1104,8 +1104,8 @@ episode: 100	return: 105.0</code></pre>
       <p class="indent">\(\theta\leftarrow \theta+\eta\nabla_{\theta}J\)</p>
     </div>
     <p>
-      How small and simple! This is a classic model-based RL algorithm that directly implements the core idea of RL - take more actions that yield higher reward. Let's
-      implement this. We initialize the policy network the same way we did \(Q\)-network, but the output layer is softmax (because it's a probability distribution)
+      Smol 'n cute, but can learn a lot of games! This is a classic model-based RL algorithm that directly implements the core idea of RL - take more actions that yield higher reward. Let's
+      implement this. We initialize the policy network the same way we did \(Q\)-network, but the output layer is softmax (because it's a probability distribution).
     </p>
     <div class="codeblock">
       <pre class="prettyprint lang-python no-margin no-border"><code># define the policy network
