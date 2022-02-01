@@ -95,7 +95,7 @@ code {
   overflow: scroll;
   width: 90%;
   max-width: 500px;
-  border: 0.5px black solid;
+  /*border: 0.5px black solid;*/
 }
 
 .overflow-scroll {
