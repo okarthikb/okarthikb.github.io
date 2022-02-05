@@ -282,7 +282,7 @@
       at the same time we want to
       encourage good behavior by using the partially trained policy and strengthening it.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 290px;">
       <p><span class="blue">for</span> \((s, a)\in\mathcal{S}\times\mathcal{A}\)</p>
       <p class="indent">\(Q(s, a)\leftarrow\) arbitrary</p>
       <p class="indent">\(G(s, a)\leftarrow []\)</p>
@@ -298,7 +298,7 @@
         href="https://github.com/openai/gym/blob/master/gym/envs/toy_text/blackjack.py"><u>Blackjack</u></a> using
       Monte-Carlo sampling. Import libraries first.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 330px;">
       <pre class="prettyprint lang-python no-margin no-border"><code>import gym
 from numpy.random import choice, rand
 from numpy import argmax
@@ -307,7 +307,7 @@ from tqdm import tqdm</code></pre>
     <p>
       Initialize the environment and hyperparameters.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 400px;">
       <pre class="prettyprint lang-python no-margin no-border"><code>e = gym.make("Blackjack-v1")  # init environment
 gamma = 1
 N = 3000000  # number of episodes
@@ -319,7 +319,7 @@ actions = list(range(e.action_space.n))</code></pre>
     <p>
       We create an empty \(Q\) and returns table.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 480px;">
       <pre class="prettyprint lang-python no-margin no-border"><code># initialize Q table and returns dict
 for sum in range(1, 22):
   for card in range(1, 11):
@@ -333,7 +333,7 @@ for sum in range(1, 22):
     <p>
       Define the training loop.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 500px;">
       <pre class="prettyprint lang-python no-margin no-border"><code>def train(N):
   for _ in tqdm(range(N)):
     d = False
@@ -360,7 +360,7 @@ for sum in range(1, 22):
     <p>
       We then compare the learned policy with a random policy (choosing random actions).
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 480px;">
       <pre class="prettyprint lang-python no-margin no-border"><code># run an episode w/ or w/o policy
 def play(policy=False):
   d = False
@@ -393,7 +393,7 @@ test(True)  # using Q table</code></pre>
     <p>
       The agent improves somewhat. First line is score before training, next line is after.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 300px;">
       <pre class="no-margin no-border"><code>wins: 28    draws: 4    losses: 68    
 wins: 43    draws: 8    losses: 49</code></pre>
     </div>
@@ -430,7 +430,7 @@ wins: 43    draws: 8    losses: 49</code></pre>
       likelihood it's off from the ideal
       correction term. The pseudocode is like so.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 400px;">
       <p><span class="blue">for</span> \((s, a)\in\mathcal{S}\times\mathcal{A}\)</p>
       <p class="indent">\(Q(s, a)\leftarrow\) arbitrary</p>
       <p><span class="blue">for</span> \(N\) episodes</p>
@@ -447,7 +447,7 @@ wins: 43    draws: 8    losses: 49</code></pre>
     <p>
       Again, we implement this for Blackjack. Only the training loop and initialization are different here.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 390px;">
       <pre class="prettyprint lang-python no-margin no-border"><code>e = gym.make("Blackjack-v1")
 eta = 3e-2  # learning rate
 N = 200000  # number of episodes
@@ -465,7 +465,7 @@ for sum in range(1, 33):
     <p>
       The training loop is much simpler than MC sampling.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 520px;">
       <pre class="prettyprint lang-python no-margin no-border"><code>def train(N):
   for _ in tqdm(range(N)):
     d = False
@@ -483,7 +483,7 @@ for sum in range(1, 33):
     <p>
       The results are much better for lower training time. SARSA is the OG RL algorithm.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 300px;">
       <pre class="no-margin no-border"><code>wins: 29    draws: 6    losses: 65
 wins: 42    draws: 7    losses: 51</code></pre>
     </div>
@@ -524,7 +524,7 @@ wins: 42    draws: 7    losses: 51</code></pre>
       which we generate the states. We're simply picking the maximum \(Q\) value for the next state. With this, the
       pseudocode is as follows.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 410px;">
       <p><span class="blue">for</span> \((s, a)\in\mathcal{S}\times\mathcal{A}\)</p>
       <p class="indent">\(Q(s, a)\leftarrow\) arbitrary</p>
       <p><span class="blue">for</span> \(N\) episodes</p>
@@ -539,7 +539,7 @@ wins: 42    draws: 7    losses: 51</code></pre>
     <p>
       The pseudocode looks very similiar! We have only made slight modifications to the training loop.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 500px;">
       <pre class="prettyprint lang-python no-margin no-border"><code>def train(N):
   for _ in tqdm(range(N)):
     d = False
@@ -555,7 +555,7 @@ wins: 42    draws: 7    losses: 51</code></pre>
       For the same hyperparameters, it performs similiarly to SARSA. Blackjack isn't super complex, so we may not see
       differences.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 300px;">
       <pre class="no-margin no-border"><code>wins: 32    draws: 7    losses: 61
 wins: 43    draws: 3    losses: 54</code></pre>
     </div>
@@ -655,7 +655,7 @@ wins: 43    draws: 3    losses: 54</code></pre>
       not too bad. The pseudocode
       for approximating the value function for some policy \(\pi=h_w\) looks like so.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 400px;">
       <p>\(f_u\leftarrow\) initialize with arbitrary \(u\)</p>
       <p><span class="blue">for</span> \(N\) episodes</p>
       <p>\(s\leftarrow\) initial state</p>
@@ -751,7 +751,7 @@ wins: 43    draws: 3    losses: 54</code></pre>
       We don't always pass the current state exactly. We sometimes pre-process sequences of previous-states and pass
       that into the \(Q\) network. The pseudocode for training is as follows.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 420px;">
       <p>\(D\leftarrow\) initialize replay memory with capacity \(C\)</p>
       <p>\(Q_{\theta}\leftarrow\) initialize \(Q\) with arbitrary \(\theta\)</p>
       <p><span class="blue">for</span> \(N\) episodes</p>
@@ -782,7 +782,7 @@ wins: 43    draws: 3    losses: 54</code></pre>
         href="https://gym.openai.com/envs/CartPole-v0/"><u>CartPole</u></a>.
       Import necessary libraries, define hyperparameters, and initialize Q network and environment.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 380px;">
       <pre class="prettyprint lang-python no-margin no-border"><code>import gym
 import time
 import torch
@@ -830,14 +830,14 @@ opt = torch.optim.Adam(Q.parameters(), lr=lr)</code></pre>
     <p>
       We define the state pre-processing function \(\phi\).
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 380px;">
       <pre class="prettyprint lang-python no-margin no-border"><code>def phi(s):
   return torch.tensor(s, dtype=torch.float32)</code></pre>
     </div>
     <p>
       We want to test out our \(Q\) network. We define a simple loop to calculate episode return.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 270px;">
       <pre class="prettyprint lang-python no-margin no-border"><code>def play():
   d = False
   s = e.reset()
@@ -853,7 +853,7 @@ opt = torch.optim.Adam(Q.parameters(), lr=lr)</code></pre>
     <p>
       Now we define the training loop.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 440px;">
       <pre class="prettyprint lang-python no-margin no-border"><code>def train():
   global Q, eps, opt
   # intiailize empty replay memory
@@ -908,7 +908,7 @@ opt = torch.optim.Adam(Q.parameters(), lr=lr)</code></pre>
     <p>
       Train the net, save the model and returns plot.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 290px;">
       <pre class="prettyprint lang-python no-margin no-border"><code>G = train()
 
 # save the trained model
@@ -925,7 +925,7 @@ plt.savefig("returns.png")</code></pre>
     <p>
       Output should look like so.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 250px;">
       <pre class="no-margin no-border"><code>episode: 10	return: 9.0
 episode: 20	return: 30.0
 episode: 30	return: 200.0
@@ -1096,7 +1096,8 @@ episode: 100	return: 105.0</code></pre>
       we have automatic differentiation in PyTorch, so calling <code>J.backward()</code> after storing objective in
       <code>J</code> computes the gradients for us. Neat! The vanilla policy gradient algorithm is as follows.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 370px;
+    ">
       <p>\(\pi_{\theta}\leftarrow\) initialize policy network with arbitrary \(\theta\)</p>
       <p><span class="blue">for</span> \(K\) epochs</p>
       <p class="indent">generate \(N\) trajectories \(\{\tau_1\ldots\tau_N\}\)</p>
@@ -1107,7 +1108,7 @@ episode: 100	return: 105.0</code></pre>
       Smol n' cute, but can learn a lot of games! This is a classic model-based RL algorithm that directly implements the core idea of RL - take more actions that yield higher reward. Let's
       implement this. We initialize the policy network the same way we did \(Q\)-network, but the output layer is softmax (because it's a probability distribution).
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 440px;">
       <pre class="prettyprint lang-python no-margin no-border"><code># define the policy network
 class network(torch.nn.Module):
   def __init__(self):
@@ -1128,7 +1129,7 @@ pi = network().to(torch.device("cpu"))</code></pre>
     <p>
       Initialize hyperparameters.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 350px;">
       <pre class="prettyprint lang-python no-margin no-border"><code># initialize the environment
 e = gym.make("CartPole-v0")
 actions = [0, 1]
@@ -1148,7 +1149,7 @@ opt = torch.optim.Adam(pi.parameters(), lr=lr)</code></pre>
       will receive a pre-processed sequence of the previous \(k\) frames. We store the previous \(k\) frames in a Python <code>collections.deque</code> called <code>seq</code>.
       For CartPole-v0, the sequence length is just 1. We have enough info in a single frame.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 400px;">
       <pre class="prettyprint lang-python no-margin no-border"><code>def phi(seq):
   seq = np.array(seq)
   return torch.tensor(seq, dtype=torch.float)</code></pre>
@@ -1157,7 +1158,7 @@ opt = torch.optim.Adam(pi.parameters(), lr=lr)</code></pre>
       We generate a trajectory \(\tau\) using the following function. It returns two lists - one that has the rewards \(r_t\) and the other that has the log probabilities of 
       actions, i.e., \(\log(\pi_{\theta}(a_t\vert s_t))\) for all \(t\).
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 400px;">
       <pre class="prettyprint lang-python no-margin no-border"><code>def tau():
   d = False
   s = e.reset()  # initial state
@@ -1189,7 +1190,7 @@ opt = torch.optim.Adam(pi.parameters(), lr=lr)</code></pre>
       We care about the return <b>after</b> timestep \(t\), but <code>Gs[t]</code> contains \(r_t\). We modify this list so <code>Gs[t]</code> is the return
       at timestep \(t\).
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 350px;">
       <pre class="prettyprint lang-python no-margin no-border"><code>def accumulate(Gs):
   for t in range(len(Gs) - 2, -1, -1):
     Gs[t] += gamma * Gs[t + 1]
@@ -1198,35 +1199,35 @@ opt = torch.optim.Adam(pi.parameters(), lr=lr)</code></pre>
     <p>
       Next, we calculate the inner sum in \(J\) - \(\sum_{t=0}^{T_k-1}G_t(\tau_k)\log(a_{k, t}\vert s_{k, t})\).
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 460px;">
       <pre class="prettyprint lang-python no-margin no-border"><code>def loss(Gs, logps):
   return sum(G * logp for G, logp in zip(Gs, logps))</code></pre>
     </div>
     <p>
       We sometimes normalize the returns array before calculating the above loss.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 450px;">
       <pre class="prettyprint lang-python no-margin no-border"><code>def normalize(x):
   return (x - np.mean(x)) / (np.std(x) + 1e-5)</code></pre>
     </div>
     <p>
       The outer sum - the objective \(J\) - is just the average loss for \(N\) episodes.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 600px;">
       <pre class="prettyprint lang-python no-margin no-border"><code>def meanloss(T):
   return -sum(loss(normalize(accumulate(Gs)), logps) for Gs, logps in T) / len(T)</code></pre>
     </div>
     <p>
       We also want to plot the average loss every epoch, so we define a function for that.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 430px;">
       <pre class="prettyprint lang-python no-margin no-border"><code>def meanGs(T):
   return sum(sum(Gs) for Gs, _ in T) / len(T)</code></pre>
     </div>
     <p>
       Now we define the main training loop which is the PG algorithm.
     </p>
-    <div class="codeblock">
+    <div class="codeblock" style="max-width: 450px;">
       <pre class="prettyprint lang-python no-margin no-border"><code>def train():
   returns = []
   for k in range(1, epochs + 1):
