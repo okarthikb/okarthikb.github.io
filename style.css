@@ -11,7 +11,7 @@ body {
   margin: 4em auto;
   max-width: 700px;
   width: 85%;
-  font-size: 17px;
+  font-size: 19px;
 }
 
 h1, h2, h3, p {
@@ -21,21 +21,21 @@ h1, h2, h3, p {
 
 @media screen and (max-width: 600px) {
   .page {
-    font-size: 16px;
+    font-size: 17px;
   }
 
   h1, h2, h3, p {
-    margin: 16px auto;
+    margin: 17px auto;
   }
 }
 
 @media screen and (max-width: 400px) {
   .page {
-    font-size: 14px;
+    font-size: 15px;
   }
 
   h1, h2, h3, p {
-    margin: 14px;
+    margin: 15px;
   }
 }
 
