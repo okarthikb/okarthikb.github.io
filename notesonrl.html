@@ -153,9 +153,9 @@ $\theta \leftarrow \theta + \eta\nabla_\theta J(\theta)$</code></pre>
       \begin{eqnarray}
         \nabla_\theta J(\theta) &=& \nabla_\theta \int_{\tau}\mathcal{R}(\tau)p(\tau)d\tau \\
         &=& \int_{\tau}\mathcal{R}(\tau)\nabla_\theta p(\tau) \\
-        &=& \int_{\tau}\mathcal{R}(\tau)\nabla_\theta\log (p(\tau)) p(\tau) \\ \tag{log trick}.
-        &=& \mathbb{E}\Big[R(\tau)\nabla_\theta\log (p(\tau))\Big] \\
-        &\sim& \frac{1}{N}\sum_{i=0}^N R(\tau_i)\nabla_\theta\log(p(\tau_i)). \tag{4}
+        &=& \int_{\tau}\mathcal{R}(\tau)\nabla_\theta\log (p(\tau)) p(\tau) \tag{log trick} \\
+        &=& \mathbb{E}\Big[\mathcal{R}(\tau)\nabla_\theta\log (p(\tau))\Big] \\
+        &\sim& \frac{1}{N}\sum_{i=0}^N \mathcal{R}(\tau_i)\nabla_\theta\log(p(\tau_i)). \tag{4}
       \end{eqnarray}
     </div>
 
@@ -186,7 +186,7 @@ $\theta \leftarrow \theta + \eta\nabla_\theta J(\theta)$</code></pre>
     </p>
 
     <div class="ovf">
-      $$\nabla_\theta J(\theta) = \frac{1}{N} \sum_{i=0}^N R(\tau_i) \nabla_\theta \sum_{t=0}^{n(\tau_i)} \log(\pi_\theta(a_{i, t} \vert s_{i, t})). \tag{6}$$
+      $$\nabla_\theta J(\theta) = \frac{1}{N} \sum_{i=0}^N \mathcal{R}(\tau_i) \nabla_\theta \sum_{t=0}^{n(\tau_i)} \log(\pi_\theta(a_{i, t} \vert s_{i, t})). \tag{6}$$
     </div>
 
     <p>
