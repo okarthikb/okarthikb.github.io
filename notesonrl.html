@@ -95,7 +95,7 @@
 
     <div class="psd">
       <div class="code ovf">
-<pre><code class="language-plaintext"><b>compute</b> $J(\theta)$
+<pre><code class="language-plaintext">compute $J(\theta)$
 
 $\theta \leftarrow \theta + \eta\nabla_\theta J(\theta)$</code></pre>
       </div>
@@ -165,8 +165,8 @@ $\theta \leftarrow \theta + \eta\nabla_\theta J(\theta)$</code></pre>
 
     <div class="ovf">
       \begin{eqnarray}
-        \nabla_\theta\log(p(\tau)) &=& \nabla_\theta\log(\prod_{t=0}^T P(s_{t+1} \vert s_t, a_t)\pi_\theta(a_t \vert s_t)) \\
-        &=& \nabla_\theta\log(\prod_{t=0}^T P(s_{t+1} \vert s_t, a_t)) + \nabla_\theta\log(\prod_{t=0}^T \pi_\theta(a_t \vert s_t)) \\
+        \nabla_\theta\log(p(\tau)) &=& \nabla_\theta\log\Big(\prod_{t=0}^T P(s_{t+1} \vert s_t, a_t)\pi_\theta(a_t \vert s_t)\Big) \\
+        &=& \nabla_\theta\log\Big(\prod_{t=0}^T P(s_{t+1} \vert s_t, a_t)\Big) + \nabla_\theta\log\Big(\prod_{t=0}^T \pi_\theta(a_t \vert s_t)\Big).
       \end{eqnarray}
     </div>
 
@@ -176,7 +176,7 @@ $\theta \leftarrow \theta + \eta\nabla_\theta J(\theta)$</code></pre>
 
     <div class="ovf">
       \begin{eqnarray}
-        \nabla_\theta\log(p(\tau)) &=& \nabla_\theta\log(\prod_{t=0}^T \pi_\theta(a_t \vert s_t)) \\
+        \nabla_\theta\log(p(\tau)) &=& \nabla_\theta\log\Big(\prod_{t=0}^T \pi_\theta(a_t \vert s_t)\Big) \\
         &=& \nabla_\theta\sum_{t=0}^T \log(\pi_\theta(a_t \vert s_t)) \tag{5}
       \end{eqnarray}
     </div>
