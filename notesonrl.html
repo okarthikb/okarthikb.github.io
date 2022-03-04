@@ -31,7 +31,7 @@
   <div class="page">
     <h2>Policy gradient, DQL, and A2C</h2>
 
-    <p><a href="index.html" style="border: 1px grey solid; padding: 0.25em;">\(\leftarrow\)</a></p>
+    <p><a href="index.html" style="border: 1px black solid; padding: 0.25em;">←</a></p>
 
     <br>
 
@@ -74,7 +74,7 @@
     </p>
 
     <div class="ovf">
-      \[J(\theta) = \mathbb{E}\big[G = \sum_{t=0}^T\gamma^tr_t\big] = \int_{\tau}\mathcal{R}(\tau)p(\tau)d\tau\]
+      \[J(\theta) = \mathbb{E}\big[G = \sum_{t=0}^T\gamma^tr_t\big] = \int_{\tau}\mathcal{R}(\tau)p(\tau)d\tau \tag{1}\]
     </div>
     
     <p>
@@ -93,7 +93,22 @@
     </div>
 
     <p>
-      where \(\eta\) is the learning rate.
+      where \(\eta\) is the learning rate. We need to compute \(J(\theta)\). \(J\) is the expected return according to \((1)\).
+      The expected value of a random variable is just the average of the values that appear in \(N\) trials as \(N\) approaches
+      \(\infty\). Flip a coin a 100 times (heads 0, tails 1), take the average, and that's your <i>approximate</i>
+      expected value (approximation gets better for larger \(N\)). So, to approximate \(J\), i.e., the expected return for
+      an agent following a policy \(\pi\), we can take the average of the returns from \(N\) trajectories
+    </p>
+
+    <div class="ovf">
+      \[J(\theta) \sim \frac{1}{N}\sum_{i=0}^NG_i \tag{2}\]
+    </div>
+
+    <p>
+      where \(G_i\) is the return from the \(i\)th episode or trajectory. The problem with the above expression is that it's
+      not dependent on \(\theta\), so we can't compute \(\nabla_\theta J\). The return is a function of the environment dynamics 
+      and not the policy model. We need a different objective function, one that's equivalent to \((2)\) but differentiable w.r.t
+      \(\theta\).
     </p>
   </div>
 </body>
