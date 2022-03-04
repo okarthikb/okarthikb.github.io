@@ -95,7 +95,7 @@
 
     <div class="psd">
       <div class="code ovf">
-<pre><code class="language-plaintext">compute $J(\theta)$
+<pre><code class="language-plaintext"><b>compute</b> $J(\theta)$
 
 $\theta \leftarrow \theta + \eta\nabla_\theta J(\theta)$</code></pre>
       </div>
@@ -165,24 +165,51 @@ $\theta \leftarrow \theta + \eta\nabla_\theta J(\theta)$</code></pre>
 
     <div class="ovf">
       \begin{eqnarray}
-      \nabla_\theta\log(p(\tau)) &=& \nabla_\theta\log(\prod_{t=0}^T P(s_{t+1} \vert s_t, a_t)\pi_\theta(a_t \vert s_t)) \\
-      &=& \nabla_\theta\log(\prod_{t=0}^T P(s_{t+1} \vert s_t, a_t)) + \nabla_\theta\log(\prod_{t=0}^T \pi_\theta(a_t \vert s_t)) \\
-      &=& \nabla_\theta\log(\prod_{t=0}^T \pi_\theta(a_t \vert s_t)) \\
-      &=& \nabla_\theta\sum_{t=0}^T \log(\pi_\theta(a_t \vert s_t)) \tag{5}
+        \nabla_\theta\log(p(\tau)) &=& \nabla_\theta\log(\prod_{t=0}^T P(s_{t+1} \vert s_t, a_t)\pi_\theta(a_t \vert s_t)) \\
+        &=& \nabla_\theta\log(\prod_{t=0}^T P(s_{t+1} \vert s_t, a_t)) + \nabla_\theta\log(\prod_{t=0}^T \pi_\theta(a_t \vert s_t)) \\
       \end{eqnarray}
     </div>
 
     <p>
-      Substitute $(5)$ in $(4)$
+      The first term goes away because it is not dependent on \(\theta\), so we're left with
     </p>
 
     <div class="ovf">
-      $$\nabla_\theta J(\theta) = \frac{1}{N}\sum_{i=0}^N R(\tau_i)\nabla_\theta\sum_{t=0}^{n(\tau_i)}\log(\pi_\theta(a_{i, t} \vert s_{i, t})). \tag{6}$$
+      \begin{eqnarray}
+        \nabla_\theta\log(p(\tau)) &=& \nabla_\theta\log(\prod_{t=0}^T \pi_\theta(a_t \vert s_t)) \\
+        &=& \nabla_\theta\sum_{t=0}^T \log(\pi_\theta(a_t \vert s_t)) \tag{5}
+      \end{eqnarray}
     </div>
 
     <p>
-      This is the policy gradient with which we update the parameters of the policy model!
+      Substitute $(5)$ in $(4)$, and we get
     </p>
+
+    <div class="ovf">
+      $$\nabla_\theta J(\theta) = \frac{1}{N} \sum_{i=0}^N R(\tau_i) \nabla_\theta \sum_{t=0}^{n(\tau_i)} \log(\pi_\theta(a_{i, t} \vert s_{i, t})). \tag{6}$$
+    </div>
+
+    <p>
+      where $N$ is the # trajectories, $\tau_i$ is the $i$th trajectory, $n(\tau_i)$ is the # timesteps in the $i$th trajectory,
+      and $a_{i, t}$ refers to the action taken at timestep $t$ in the $i$th trajectory (similiar for $s$). This is the policy
+      gradient! We have arrived at an expression that is equivalent to the expected return and is dependent on the parameters 
+      \(\theta\) of the policy network \(\pi\). The policy gradient tells us how much \(\theta\) should be tuned to encourage 
+      (or discourage) the agent. The pseudocode for the policy gradient algorithm looks like
+    </p>
+
+    <div class="psd">
+      <div class="code ovf">
+<pre><code class="language-plaintext"><b>repeat</b>
+
+  rollout $N$ trajectories
+
+  compute $J(\theta) = \frac{1}{N}\sum\limits_{i=0}^N \sum\limits_{t=0}^{n(\tau_i)} \log(\pi_\theta(a_{i, t} \vert s_{i, t}))$
+
+  $\theta \leftarrow \theta + \nabla_\theta J(\theta)$  <span class="grey"># compute $\nabla$ using autograd</span>
+
+<b>until convergence</b></code></pre>
+      </div>
+    </div>
   </div>
 </body>
 
