@@ -33,9 +33,6 @@
     </p>
     -->
 
-    <br>
-
-
     <h3>1. Finite difference method</h3>
 
     <p>
@@ -127,7 +124,7 @@ print(df_over_da)</code></pre>
 
     <p>
       where \(\circ\) is some binary operation (e.g., adding), \(u\) is some unary operation (e.g., log), and \(i\), \(j\), \(k\) may or may 
-      not be equal to one another. We start from \(t_7\) and work our way to lesser terms using the chain rule.
+      not be equal to one another. We start from \(t_7\) and work our way to lesser terms using the chain rule
     </p>
 
     <div class="ovf">
@@ -141,7 +138,7 @@ print(df_over_da)</code></pre>
         \frac{\partial t_7}{\partial t_2} &=& t_1\frac{\partial t_7}{\partial t_3} \\
         \frac{\partial t_7}{\partial t_1} &=& t_2\frac{\partial t_7}{\partial t_3} \\
         \frac{\partial t_2}{\partial x_1} &=& x_2 \tag{2} \\
-        \frac{\partial t_1}{\partial x_1} &=& 1 \tag{3}
+        \frac{\partial t_1}{\partial x_1} &=& 1. \tag{3}
       \end{eqnarray}
     </div> 
 
@@ -155,7 +152,7 @@ print(df_over_da)</code></pre>
 
     <p>
       We keep subsituting the values of the partial derivative of \(t_7\) w.r.t to the intermediate terms until the final expression is only 
-      dependent on \(t_1,\ldots,t_n\) and \(x_1,\ldots,x_n\).
+      dependent on \(t_1,\ldots,t_n\) and \(x_1,\ldots,x_n\)
     <p>
 
     <div class="ovf">
@@ -164,7 +161,7 @@ print(df_over_da)</code></pre>
         &=& \frac{\partial t_7}{\partial t_5} + x_2\frac{\partial t_7}{\partial t_2} + \frac{\partial t_7}{\partial t_1} \\
         &=& 2t_5\frac{\partial t_7}{\partial t_6} + x_2t_1\frac{\partial t_7}{\partial t_3} + t_2\frac{\partial t_7}{\partial t_3} \\
         &=& \frac{-2t_5t_4}{t_6^2} + \frac{x_2t_1}{t_3}\frac{\partial t_7}{\partial t_4} + \frac{t_2}{t_3}\frac{\partial t_7}{\partial t_4} \\
-        &=& \frac{-2t_5t_4}{t_6^2} + \frac{x_2t_1}{t_3t_6} + \frac{t_2}{t_3t_6}
+        &=& \frac{-2t_5t_4}{t_6^2} + \frac{x_2t_1}{t_3t_6} + \frac{t_2}{t_3t_6}.
       \end{eqnarray}
     </div>
 
@@ -189,7 +186,7 @@ print(df_over_da)</code></pre>
       where \(\tau \subset T\) is the set of all \(t \in T\) dependent on \(x_i\). \((4)\) and \((5)\) are equivalent; we have stated both
       because we're treating a function's parameter as something different from an intermediate term, when the former can also be the latter.
       The equations above are important because it's how we "backpropagate" the derivative from the final term (i.e., \(f(\ldots)\)) to it's
-      parameters \(x_1,\ldots,x_n\). Let's implement this in Python!
+      parameters \(x_1,\ldots,x_n\). Let's implement this in Python.
     </p>
 
     <br>
