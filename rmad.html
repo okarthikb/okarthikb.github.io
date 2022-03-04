@@ -28,20 +28,22 @@
   <div class="page">
     <h2>Automatic differentiation in Python</h2>
 
-    <p><u><a href="index.html">Home</a></u></p>
+    <p><a href="index.html" style="border: 1px black solid; padding: 0.25em;">\(\leftarrow\)</a></p>
 
     <br>
 
+    <!--
     <p align="center">
       <img src="imgs/bnorm.png" alt="Eye candy">
       <br>
       <span class="grey">Batch norm compute graph!</span>
     </p>
+    -->
 
     <br>
 
 
-    <h3>Finite difference method</h3>
+    <h3>1. Finite difference method</h3>
 
     <p>
       The simplest way to compute the derivative of a function comes from the definition of a partial derivative
@@ -86,7 +88,7 @@ print(df_over_da)</code></pre>
 
     <br>
 
-    <h3>Reverse-mode automatic differentiation (RMAD)</h3>
+    <h3>2. Reverse-mode automatic differentiation (RMAD)</h3>
     
     <p>
       The basic idea of automatic differentiation is to break down a complex function into a series of primitive operations and use the chain
@@ -204,7 +206,7 @@ print(df_over_da)</code></pre>
     <p>
       We create a class in Python with the following variables.
     </p>
-    
+
     <div class="psd">
       <div class="code ovf">
 <pre><code class="language-python">class Value:
