@@ -122,7 +122,7 @@ $\theta \leftarrow \theta + \eta\nabla_\theta J(\theta)$</code></pre>
     </p>
 
     <div class="ovf">
-      $$\tau = \{(s_0, a_0, r_0),\ldots,(s_T, a_T, r_T)\}$$
+      $$\tau = \{(s_0, a_0, r_0),\ldots,(s_T, a_T, r_T)\}.$$
     </div>
 
     <p>
@@ -130,7 +130,7 @@ $\theta \leftarrow \theta + \eta\nabla_\theta J(\theta)$</code></pre>
       The probability the agent will take action $a$ in state $s$ is, by definition, $\pi(a \vert s)$. Let
       $P(s' \vert s, a)$ be the probability the environment will transition to state $s'$ given the agent took action $a$
       in state $s$. Then the transition probability is $P(s' \vert s, a)\pi_\theta(a \vert s)$. 
-      The probability of the trajectory is just the product of all transition probabilities.
+      The probability of the trajectory is just the product of all transition probabilities
     </p>
 
     <div class="ovf">
@@ -177,7 +177,7 @@ $\theta \leftarrow \theta + \eta\nabla_\theta J(\theta)$</code></pre>
     <div class="ovf">
       \begin{eqnarray}
         \nabla_\theta\log(p(\tau)) &=& \nabla_\theta\log\Big(\prod_{t=0}^T \pi_\theta(a_t \vert s_t)\Big) \\
-        &=& \nabla_\theta\sum_{t=0}^T \log(\pi_\theta(a_t \vert s_t)) \tag{5}
+        &=& \nabla_\theta\sum_{t=0}^T \log(\pi_\theta(a_t \vert s_t)). \tag{5}
       \end{eqnarray}
     </div>
 
@@ -186,7 +186,7 @@ $\theta \leftarrow \theta + \eta\nabla_\theta J(\theta)$</code></pre>
     </p>
 
     <div class="ovf">
-      $$\nabla_\theta J(\theta) = \frac{1}{N} \sum_{i=0}^N \mathcal{R}(\tau_i) \nabla_\theta \sum_{t=0}^{n(\tau_i)} \log(\pi_\theta(a_{i, t} \vert s_{i, t})). \tag{6}$$
+      $$\nabla_\theta J(\theta) = \frac{1}{N} \sum_{i=0}^N \mathcal{R}(\tau_i) \nabla_\theta \sum_{t=0}^{n(\tau_i)} \log(\pi_\theta(a_{i, t} \vert s_{i, t})) \tag{6}$$
     </div>
 
     <p>
