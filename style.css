@@ -3,11 +3,6 @@
   src: url("DroidSansMono.ttf");
 }
 
-@font-face {
-  font-family: "cmu sans";
-  src: url("cmu.sans-serif-medium.ttf");
-}
-
 * {
   box-sizing: border-box;
 }
@@ -30,7 +25,7 @@ html {
   padding: 0 1em;
   border: 1px black solid;
   font-size: 18px;
-  font-family: "cmu sans", sans-serif;
+  font-family: sans-serif;
   background: white;
 }
 
@@ -40,7 +35,7 @@ html {
 }
 
 code {
-  font-size: 0.85em;
+  font-size: 0.875em;
   font-family: "mono", monospace, sans-serif;
 }
 
