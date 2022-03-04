@@ -15,26 +15,22 @@ body {
 .page {
   width: 95%;
   max-width: 768px;
-  min-height: 100vh;
-  margin: 0 auto;
+  margin: 1em auto;
   padding: 0 1em;
-  border-top: 1px white solid;
-  border-right: 1px black solid;
-  border-bottom: 1px white solid; 
-  border-left: 1px black solid;
+  border: 1px black solid;
   font-size: 16px;
-  font-family: "Open Sans", sans-serif;
+  font-family: sans-serif;
   background: white;
 }
 
 .code {
   margin: 1em auto;
-  background: whitesmoke;
   border: 0.5px black solid;
 }
 
 code {
   font-size: 0.9em;
+  font-family: monospace;
 }
 
 .ovf {
@@ -67,7 +63,16 @@ pre {
 }
 
 pre > * {
-  background: whitesmoke !important;
+  background: white !important;
   padding: 1em 0 !important;
   margin: 0 1em !important;
+}
+
+.grey {
+  color: grey;
+}
+
+.psd {
+  display: flex;
+  justify-content: center;
 }

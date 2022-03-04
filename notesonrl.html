@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Policy gradient, DQL, and A2C</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+
+  <!-- syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/styles/default.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <!-- MathJax -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+    type="text/javascript"></script>
+  <script>
+    MathJax.Hub.Config({
+      "HTML-CSS": {
+        preferredFont: "TeX"
+      },
+      tex2jax: {
+        skipTags: ["script","noscript","style","textarea"]
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <div class="page">
+    <h2>Policy gradient, DQL, and A2C</h2>
+
+    <p><u><a href="index.html">Home</a></u></p>
+
+    <br>
+
+    <p align="center">
+      <img src="imgs/fusion.gif" alt="DeepMind controls fusion reactor w/ RL">
+      <br>
+      <span class="grey">DeepMind controls fusion reactor w/ RL (post <u><a class="grey" href="https://deepmind.com/blog/article/Accelerating-fusion-science-through-learned-plasma-control">here</a></u>)</span>
+    </p>
+
+    <br>
+
+    <h3>Intro</h3>
+
+    <p>
+      In this blogpost, I'll revise some RL concepts, go through some popular deep reinforcement
+      learning algorithms, and implement them in Python using PyTorch and OpenAI gym. I'm assuming familiarity
+      with PyTorch and basic knowledge of RL. For a quick primer on RL, 
+      <u><a href="https://www.youtube.com/watch?v=ISk80iLhdfU&list=PLqYmG7hTraZBKeNJ-JE_eyJHZ7XgBoAyb&index=1">this</a></u>
+      video from DeepMind's UCL RL series is good. Take a look at 
+      <u><a href="https://gym.openai.com/docs/">gym's documentation</a></u> as well.
+    </p>
+
+    <br>
+
+    <h3>Policy gradient</h3>
+
+    <p>
+      Policy gradient is based on the most classic idea in RL - encourage actions in proportion to reward earned.
+      Actions that yield positive returns are encouraged. Actions that yield negative returns are discouraged. We 
+      have a differentiable model - e.g., a neural net - which returns the probability distribution of actions to 
+      take given the current state. The action to take is sampled from this probability distribution.
+    </p>
+
+    <p>
+      The goal in RL is to find a policy that maximizes the expected return for the agent. 
+      The objective function is the expected return and it's used to tune the parameters of the policy model \(\pi\), 
+      i.e., the policy neural net
+    </p>
+
+    <div class="ovf">
+      \[J(\theta) = \mathbb{E}\big[G = \sum_{t=0}^T\gamma^tr_t\big] = \int_{\tau}\mathcal{R}(\tau)p(\tau)d\tau\]
+    </div>
+    
+    <p>
+      where \(\tau\) is a trajectory, \(\mathcal{R}(\tau)\) is the trajectory's return, and \(p(\tau)\) is the
+      probability the trajectory is taken. The integral is just the formula for the expectation of a random variable
+      (here, \(\mathcal{R}(\tau)\)) with a continuous probability distribution. Now, we use gradient ascent
+      to maximize the objective function. Except...what's the gradient? What does the training loop look like?
+    </p>
+
+    <div class="psd">
+      <div class="code ovf">
+<pre><code class="language-plaintext">compute \(J(\theta)\)
+
+\(\theta \leftarrow \theta + \eta\nabla_\theta J(\theta)\)</code></pre>
+      </div>
+    </div>
+
+    <p>
+      where \(\eta\) is the learning rate.
+    </p>
+  </div>
+</body>
+
+</html>
