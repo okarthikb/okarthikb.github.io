@@ -12,6 +12,12 @@ body {
   background: whitesmoke;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
 .page {
   width: 95%;
   max-width: 768px;
