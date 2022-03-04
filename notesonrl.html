@@ -203,12 +203,18 @@ $\theta \leftarrow \theta + \eta\nabla_\theta J(\theta)$</code></pre>
 
   rollout $N$ trajectories
 
-  compute $J(\theta) = \frac{1}{N}\sum\limits_{i=0}^N \sum\limits_{t=0}^{n(\tau_i)} \log(\pi_\theta(a_{i, t} \vert s_{i, t}))$
-
-  $\theta \leftarrow \theta + \nabla_\theta J(\theta)$  <span class="grey"># compute $\nabla$ using autograd</span>
+  compute $J(\theta) = \frac{1}{N}\sum_{i=0}^N\mathcal{R}(\tau_i)\sum_{t=0}^{n(\tau_i)} \log(\pi_\theta(a_{i, t} \vert s_{i, t}))$
+  
+  $\theta \leftarrow \theta + \nabla_\theta J(\theta)$  <span class="grey"># $\nabla$ using autograd</span>
 
 <b>until convergence</b></code></pre>
       </div>
+    </div>
+
+      <p>
+        These few lines of pseudocode are sufficient to build a working AI agent that can learn to play
+        Atari games! The formula may look complicated, but the program is straighforward to implement using PyTorch.
+      </p>
     </div>
   </div>
 </body>

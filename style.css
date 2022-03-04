@@ -14,7 +14,7 @@
 
 body {
   margin: 0;
-  background: whitesmoke;
+  background: rgb(248, 248, 248);
 }
 
 html {
@@ -40,7 +40,7 @@ html {
 }
 
 code {
-  font-size: 0.85em;
+  font-size: 0.8em;
   font-family: "Mono", monospace, sans-serif;
 }
 
@@ -71,12 +71,13 @@ a:hover {
 
 pre {
   margin: 0;
-  background: whitesmoke !important;
+  background: rgb(247, 247, 247) !important;
 }
 
 pre > * {
   padding: 1em 0 !important;
   margin: 0 1em !important;
+  background: rgb(248, 248, 248) !important;
 }
 
 .grey {
@@ -86,9 +87,4 @@ pre > * {
 .psd {
   display: flex;
   justify-content: center;
-}
-
-.language-plaintext {
-  font-family: "CM Sans" !important;
-  font-size: 1em !important;
 }
