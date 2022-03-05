@@ -25,13 +25,19 @@ html {
 
 .page {
   width: 95%;
-  max-width: 729px;
+  max-width: 736px;
   margin: 1em auto;
   padding: 0 1em;
   border: 1px black solid;
   font-size: 18px;
   font-family: "CM Sans", sans-serif;
   background: white;
+}
+
+@media screen and (max-width: 500px) {
+  .page {
+    font-size: 16px;
+  }
 }
 
 .code {
