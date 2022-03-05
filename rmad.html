@@ -13,6 +13,25 @@
   <script>hljs.initHighlightingOnLoad();</script>
 
   <!-- MathJax -->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      "HTML-CSS": { 
+        preferredFont: "TeX", 
+        availableFonts: ["STIX", "TeX"], 
+        linebreaks: { automatic: true }, 
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) 
+      },
+      tex2jax: { 
+        inlineMath: [ ["\\(", "\\)"], ["\$", "\$"] ], 
+        displayMath: [ ["$$","$$"], ["\\[", "\\]"] ], 
+        processEscapes: true, 
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ["script", "noscript", "style", "textarea"]
+      },
+      TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } } },
+      messageStyle: "none"
+    });
+  </script>
   <script type="text/javascript" async
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </head>
@@ -40,7 +59,7 @@
     </p>
 
     <div class="ovf">
-      \[\frac{\partial f}{\partial x_i} = \lim_{h \rightarrow 0}\frac{f(x_1,\ldots,x_i + h,\ldots,x_n) - f(x_1,\ldots,x_n)}{h}.\]
+      $$\frac{\partial f}{\partial x_i} = \lim_{h \rightarrow 0}\frac{f(x_1,\ldots,x_i + h,\ldots,x_n) - f(x_1,\ldots,x_n)}{h}.$$
     </div>
 
     <p>
@@ -71,7 +90,7 @@ print(df_over_da)</code></pre>
     </div>
     
     <p>
-      This method is very slow because you need to evaluate the function \(O(P)\) times to compute the gradient (where \(P\) is 
+      This method is very slow because you need to evaluate the function $O(P)$ times to compute the gradient (where $P$ is 
       the # parameters). What if the function has billions of parameters (neural nets)? What if you need to compute the gradient 
       at billions of points?
     </p>
@@ -86,11 +105,11 @@ print(df_over_da)</code></pre>
     </p>
 
     <div id="f" class="ovf">
-      \[f(x_1, x_2) = \frac{\log(x_1x_2(x_1 + x_2))}{(x_1 - x_2)^2}.\]
+      $$f(x_1, x_2) = \frac{\log(x_1x_2(x_1 + x_2))}{(x_1 - x_2)^2}.$$
     </div>
 
     <p>
-      Our goal is to find \(\frac{\partial f}{\partial x_1}\). In Python code, we'll store the output of the function for inputs
+      Our goal is to find the derivative of $f$ w.r.t $x_1$. In Python code, we'll store the output of the function for inputs
       <code>x1</code> and <code>x2</code> in some object <code>y</code>. We then call some method of <code>y</code> that'll compute
       the derivative of <code>y</code> w.r.t it's parameters (here, <code>x1</code> and <code>x2</code>). How do we do this?
       We start by breaking the above down into simple terms like so
@@ -123,8 +142,8 @@ print(df_over_da)</code></pre>
     </div>
 
     <p>
-      where \(\circ\) is some binary operation (e.g., adding), \(u\) is some unary operation (e.g., log), and \(i\), \(j\), \(k\) may or may 
-      not be equal to one another. We start from \(t_7\) and work our way to lesser terms using the chain rule
+      where $\circ$ is some binary operation (e.g., adding), $u$ is some unary operation (e.g., log), and $i$, $j$, $k$ may or may 
+      not be equal to one another. We start from $t_7$ and work our way to lesser terms using the chain rule
     </p>
 
     <div class="ovf">
@@ -143,16 +162,16 @@ print(df_over_da)</code></pre>
     </div> 
 
     <p>
-      Consider \((1)\), \((2)\), and \((3)\). The neat thing is that
+      Consider $(1)$, $(2)$, and $(3)$. The neat thing is that
     </p>
 
     <div class="ovf">
-      \[\frac{\partial f}{\partial x_1} = \frac{\partial t_7}{\partial x_1} = \frac{\partial t_7}{\partial t_5}\frac{\partial t_5}{\partial x_1} + \frac{\partial t_7}{\partial t_2}\frac{\partial t_2}{\partial x_1} + \frac{\partial t_7}{\partial t_1}\frac{\partial t_1}{\partial x_1}.\]
+      $$\frac{\partial f}{\partial x_1} = \frac{\partial t_7}{\partial x_1} = \frac{\partial t_7}{\partial t_5}\frac{\partial t_5}{\partial x_1} + \frac{\partial t_7}{\partial t_2}\frac{\partial t_2}{\partial x_1} + \frac{\partial t_7}{\partial t_1}\frac{\partial t_1}{\partial x_1}.$$
     </div>
 
     <p>
-      We keep subsituting the values of the partial derivative of \(t_7\) w.r.t to the intermediate terms until the final expression is only 
-      dependent on \(t_1,\ldots,t_n\) and \(x_1,\ldots,x_n\)
+      We keep subsituting the values of the partial derivative of $t_7$ w.r.t to the intermediate terms until the final expression is only 
+      dependent on $t_1,\ldots,t_n$ and $x_1,\ldots,x_n$
     <p>
 
     <div class="ovf">
@@ -166,12 +185,12 @@ print(df_over_da)</code></pre>
     </div>
 
     <p>
-      Let's state this more generally. Suppose you break a function \(f\) with parameters \(x_1,\ldots,x_n\) into many intermediate terms 
-      \(T = \{t_1,\ldots,t_n\}\) (as we did above). Let \(\tau \subset T\) be the set of all \(t \in T\) dependent on \(t_i\). Then
+      Let's state this more generally. Suppose you break a function $f$ with parameters $x_1,\ldots,x_n$ into many intermediate terms 
+      $T = \{t_1,\ldots,t_n\}$ (as we did above). Let $\tau \subset T$ be the set of all $t \in T$ dependent on $t_i$. Then
     </p>
 
     <div>
-      \[\frac{\partial f}{\partial t_i} = \sum_{t \in \tau}\frac{\partial f}{\partial t}\frac{\partial t}{\partial t_i}. \tag{4}\]
+      $$\frac{\partial f}{\partial t_i} = \sum_{t \in \tau}\frac{\partial f}{\partial t}\frac{\partial t}{\partial t_i}. \tag{4}$$
     </div>
 
     <p>
@@ -179,14 +198,14 @@ print(df_over_da)</code></pre>
     </p>
 
     <div>
-      \[\frac{\partial f}{\partial x_i} = \sum_{t \in \tau}\frac{\partial f}{\partial t}\frac{\partial t}{\partial x_i} \tag{5}\]
+      $$\frac{\partial f}{\partial x_i} = \sum_{t \in \tau}\frac{\partial f}{\partial t}\frac{\partial t}{\partial x_i} \tag{5}$$
     </div>
 
     <p>
-      where \(\tau \subset T\) is the set of all \(t \in T\) dependent on \(x_i\). \((4)\) and \((5)\) are equivalent; we have stated both
+      where $\tau \subset T$ is the set of all $t \in T$ dependent on $x_i$. $(4)$ and $(5)$ are equivalent; we have stated both
       because we're treating a function's parameter as something different from an intermediate term, when the former can also be the latter.
-      The equations above are important because it's how we "backpropagate" the derivative from the final term (i.e., \(f(\ldots)\)) to it's
-      parameters \(x_1,\ldots,x_n\). Let's implement this in Python.
+      The equations above are important because it's how we "backpropagate" the derivative from the final term (i.e., $f(\ldots)$) to it's
+      parameters $x_1,\ldots,x_n$. Let's implement this in Python.
     </p>
 
     <br>
@@ -290,7 +309,7 @@ y = (a * b) * c
 
     <p>
       When two <code>Value</code> object are multiplied. The dunder method <code>__mul__</code> returns a new object, i.e.,
-      a new intermediate term \(t_i\). Suppose \(t_i = t_jt_k\) and we know \(\frac{\partial f}{\partial t_i}\). Then
+      a new intermediate term $t_i$. Suppose $t_i = t_jt_k$ and we know $\frac{\partial f}{\partial t_i}$. Then
     </p>
 
     <div class="ovf">

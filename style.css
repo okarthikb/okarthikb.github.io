@@ -29,7 +29,7 @@ html {
   margin: 1em auto;
   padding: 0 1em;
   border: 1px black solid;
-  font-size: 19px;
+  font-size: 18px;
   font-family: "CM Sans", sans-serif;
   background: white;
 }
@@ -87,4 +87,9 @@ pre > * {
 .psd {
   display: flex;
   justify-content: center;
+}
+
+.language-plaintext {
+  font-family: "CM Sans", sans-serif !important;
+  font-size: 1em !important;
 }
