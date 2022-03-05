@@ -203,7 +203,7 @@ $\theta \leftarrow \theta + \eta\nabla_\theta J(\theta)$</code></pre>
 
   compute $\displaystyle{J(\theta) = \frac{1}{N}\sum\limits_{i=0}^N\mathcal{R}(\tau_i)\sum\limits_{t=0}^{n(\tau_i)} \log(\pi_\theta(a_{i, t} \vert s_{i, t}))}$
   
-  $\theta \leftarrow \theta + \nabla_\theta J(\theta)$  <span class="grey"># $\nabla$ using autograd</span>
+  $\displaystyle{\theta \leftarrow \theta + \nabla_\theta J(\theta)}$
 
 <b>until convergence</b></code></pre>
       </div>
