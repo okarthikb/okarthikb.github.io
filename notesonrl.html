@@ -34,186 +34,29 @@
   </script>
   <script type="text/javascript" async
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+  <!-- js -->
+  <script async src="script.js"></script>
 </head>
 
 <body>
   <div class="page">
-    <h2>Policy gradient</h2>
+    <h2>Policy gradient, DQL, and A2C</h2>
 
     <p><a href="index.html" style="font-size: 1.2em;">←</a></p>
 
     <br>
 
-    <!--
-    <p align="center">
-      <img src="imgs/fusion.gif" alt="DeepMind controls fusion reactor w/ RL">
-      <br>
-      <span class="grey">DeepMind controls fusion reactor w/ RL (post <u><a class="grey" href="https://deepmind.com/blog/article/Accelerating-fusion-science-through-learned-plasma-control">here</a></u>)</span>
-    </p>
-    -->
-
     <h3>1. Intro</h3>
 
     <p>
-      In this blogpost, I'll revise some RL concepts, go through policy gradient, and implement it 
-      in Python using PyTorch and OpenAI gym. I'm assuming familiarity with PyTorch and basic knowledge of RL. 
-      For a quick primer on RL, 
-      <u><a href="https://www.youtube.com/watch?v=ISk80iLhdfU&list=PLqYmG7hTraZBKeNJ-JE_eyJHZ7XgBoAyb&index=1">this</a></u>
-      video from DeepMind's UCL RL series is good. Take a look at 
-      <u><a href="https://gym.openai.com/docs/">gym's documentation</a></u> as well.
+      In this blogpost, I'll go through some popular reinforcement learning algorithms and implement them in Python. I'm assuming
+      familiarity with the language and libraries like PyTorch. I also recommend watching 
+      <u><a href="https://www.youtube.com/watch?v=ISk80iLhdfU&list=PLqYmG7hTraZBKeNJ-JE_eyJHZ7XgBoAyb&index=1">this</a></u> 
+      video on RL to get an idea about what I'll explain below. The whole playlist is good, and I recommend watching it for an 
+      in-depth introduction to RL. Go through OpenAI's <u><a href="https://gym.openai.com">gym</a></u> documentation beforehand 
+      as well, since it'll be in the code snippets below. It's a library to implement RL algorithms.
     </p>
-
-    <br>
-
-    <h3>2. Policy gradient</h3>
-
-    <p>
-      Policy gradient is based on the most classic idea in RL - encourage actions in proportion to reward earned.
-      Actions that yield positive returns are encouraged. Actions that yield negative returns are discouraged. We 
-      have a differentiable model - e.g., a neural net - which returns the probability distribution of actions to 
-      take given the current state. The action to take is sampled from this probability distribution.
-    </p>
-
-    <p>
-      The goal in RL is to find a policy that maximizes the expected return for the agent. 
-      The objective function is the expected return and it's used to tune the parameters of the policy model $\pi$, 
-      i.e., the policy neural net
-    </p>
-
-    <div class="ovf">
-      $$J(\theta) = \mathbb{E}\Big[G = \sum_{t=0}^T\gamma^tr_t\Big] = \int_{\tau}\mathcal{R}(\tau)p(\tau) \tag{1}$$
-    </div>
-    
-    <p>
-      where $\tau$ is a trajectory, $\mathcal{R}(\tau)$ is the trajectory's return, and $p(\tau)$ is the
-      probability the trajectory is taken. The integral is just the formula for the expectation of a random variable
-      (here, $\mathcal{R}(\tau)$) with a continuous probability distribution. Now, we use gradient ascent
-      to maximize the objective function. Except...what's the gradient? What does the training loop look like?
-    </p>
-
-    <div class="psd">
-      <div class="code ovf">
-<pre><code class="language-plaintext">compute $J(\theta)$
-  
-$\theta \leftarrow \theta + \eta\nabla_\theta J(\theta)$</code></pre>
-      </div>
-    </div>
-
-    <p>
-      where $\eta$ is the learning rate. We need to compute $J(\theta)$. $J$ is the expected return according to $(1)$.
-      The expected value of a random variable is just the average of the values that appear in $N$ trials as $N$ approaches
-      $\infty$. Flip a coin a 100 times (heads 0, tails 1), take the average, and that's your <i>approximate</i>
-      expected value (approximation gets better for larger $N$). So, to approximate $J$, i.e., the expected return for
-      an agent following a policy $\pi$, we can take the average of the returns from $N$ trajectories
-    </p>
-
-    <div class="ovf">
-      $$J(\theta) \sim \frac{1}{N}\sum_{i=0}^NG_i \tag{2}$$
-    </div>
-
-    <p>
-      where $G_i$ is the return from the $i$th episode or trajectory. The problem with the above expression is that it's
-      not dependent on $\theta$, so we can't compute $\nabla_\theta J$. The return is a function of the environment dynamics 
-      and not the policy model. We need a different objective function, one that's equivalent to $(2)$ but differentiable w.r.t
-      $\theta$. We start with the integral in $(1)$. Consider $p(\tau)$. It's the probability of the agent following the
-      trajectory $\tau$. A trajectory is the set of state-action-reward tuples
-    </p>
-
-    <div class="ovf">
-      $$\tau = \{(s_0, a_0, r_0),\ldots,(s_T, a_T, r_T)\}.$$
-    </div>
-
-    <p>
-      What's the probability of this trajectory? It's just the product of probabilities of transitioning from one tuple to the next!
-      The probability the agent will take action $a$ in state $s$ is, by definition, $\pi(a \vert s)$. Let
-      $P(s' \vert s, a)$ be the probability the environment will transition to state $s'$ given the agent took action $a$
-      in state $s$. Then the transition probability is $P(s' \vert s, a)\pi_\theta(a \vert s)$. 
-      The probability of the trajectory is just the product of all transition probabilities
-    </p>
-
-    <div class="ovf">
-      $$p(\tau) = \prod_{t=0}^TP(s_{t+1} \vert s_t, a_t)\pi_\theta(a_t \vert s_t). \tag{3}$$
-    </div>
-
-    <p>
-      We use what's called the log trick to simplify
-    </p>
-
-    <div class="ovf">
-      $$\nabla_\theta f(\theta) = f(\theta)\nabla_\theta\log(f(\theta)).$$
-    </div>
-
-    <p>
-      Taking gradient on both sides of $(1)$
-    </p>
-
-    <div class="ovf">
-      \begin{eqnarray}
-        \nabla_\theta J(\theta) &=& \nabla_\theta \int_{\tau}\mathcal{R}(\tau)p(\tau)d\tau \\
-        &=& \int_{\tau}\mathcal{R}(\tau)\nabla_\theta p(\tau) \\
-        &=& \int_{\tau}\mathcal{R}(\tau)\nabla_\theta\log (p(\tau)) p(\tau) \tag{log trick} \\
-        &=& \mathbb{E}\Big[\mathcal{R}(\tau)\nabla_\theta\log (p(\tau))\Big] \\
-        &\sim& \frac{1}{N}\sum_{i=0}^N \mathcal{R}(\tau_i)\nabla_\theta\log(p(\tau_i)). \tag{4}
-      \end{eqnarray}
-    </div>
-
-    <p>
-      Substituting $(3)$ in $\nabla_\theta\log(p(\tau))$ in $(4)$
-    </p>
-
-    <div class="ovf">
-      \begin{eqnarray}
-        \nabla_\theta\log(p(\tau)) &=& \nabla_\theta\log\Big(\prod_{t=0}^T P(s_{t+1} \vert s_t, a_t)\pi_\theta(a_t \vert s_t)\Big) \\
-        &=& \nabla_\theta\log\Big(\prod_{t=0}^T P(s_{t+1} \vert s_t, a_t)\Big) + \nabla_\theta\log\Big(\prod_{t=0}^T \pi_\theta(a_t \vert s_t)\Big).
-      \end{eqnarray}
-    </div>
-
-    <p>
-      The first term goes away because it is not dependent on \(\theta\), so we're left with
-    </p>
-
-    <div class="ovf">
-      \begin{eqnarray}
-        \nabla_\theta\log(p(\tau)) &=& \nabla_\theta\log\Big(\prod_{t=0}^T \pi_\theta(a_t \vert s_t)\Big) \\
-        &=& \nabla_\theta\sum_{t=0}^T \log(\pi_\theta(a_t \vert s_t)). \tag{5}
-      \end{eqnarray}
-    </div>
-
-    <p>
-      Substitute $(5)$ in $(4)$, and we get
-    </p>
-
-    <div class="ovf">
-      $$\nabla_\theta J(\theta) = \frac{1}{N} \sum_{i=0}^N \mathcal{R}(\tau_i) \nabla_\theta \sum_{t=0}^{n(\tau_i)} \log(\pi_\theta(a_{i, t} \vert s_{i, t})) \tag{6}$$
-    </div>
-
-    <p>
-      where $N$ is the # trajectories, $\tau_i$ is the $i$th trajectory, $n(\tau_i)$ is the # timesteps in the $i$th trajectory,
-      and $a_{i, t}$ refers to the action taken at timestep $t$ in the $i$th trajectory (similiar for $s$). This is the policy
-      gradient! We have arrived at an expression that is equivalent to the expected return and is dependent on the parameters 
-      \(\theta\) of the policy network \(\pi\). The policy gradient tells us how much \(\theta\) should be tuned to encourage 
-      (or discourage) the agent. The pseudocode for the policy gradient algorithm looks like
-    </p>
-
-    <div class="psd">
-      <div class="code ovf">
-<pre><code class="language-plaintext"><b>repeat</b>
-
-  rollout $N$ trajectories
-
-  compute $\displaystyle{J(\theta) = \frac{1}{N}\sum\limits_{i=0}^N\mathcal{R}(\tau_i)\sum\limits_{t=0}^{n(\tau_i)} \log(\pi_\theta(a_{i, t} \vert s_{i, t}))}$
-  
-  $\displaystyle{\theta \leftarrow \theta + \nabla_\theta J(\theta)}$
-
-<b>until convergence</b></code></pre>
-      </div>
-    </div>
-
-      <p>
-        These few lines of pseudocode are sufficient to build a working AI agent that can learn to play
-        Atari games! The formula may look complicated, but the program is straighforward to implement using PyTorch.
-      </p>
-    </div>
   </div>
 </body>
 
