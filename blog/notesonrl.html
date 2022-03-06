@@ -156,9 +156,9 @@
 
   generate trajectories $\tau_1,\ldots,\tau_N$
 
-  compute $\displaystyle{\nabla_\theta J(\theta) = \frac{1}{N} \sum_{i=0}^N \mathcal{R}(\tau_i) \nabla_\theta \sum_{t=0}^{n(\tau_i)} \log(\pi_\theta(a_{i, t} \vert s_{i, t}))}$
+  compute $\nabla_\theta J(\theta) = \frac{1}{N} \sum_{i=0}^N \mathcal{R}(\tau_i) \nabla_\theta \sum_{t=0}^{n(\tau_i)} \log(\pi_\theta(a_{i, t} \vert s_{i, t}))$
 
-  $\displaystyle{\theta \leftarrow \theta + \nabla_\theta J(\theta)}$
+  $\theta \leftarrow \theta + \nabla_\theta J(\theta)$
 
 <b>until convergence</b></code></pre>
       </div>
