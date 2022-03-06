@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Policy gradient</title>
+  <title>Vanilla policy gradient, DQL, and A2C</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
@@ -41,21 +41,46 @@
 
 <body>
   <div class="page">
-    <h2>Policy gradient, DQL, and A2C</h2>
+    <h2>Vanilla policy gradient, DQL, and A2C</h2>
 
     <p><a href="index.html" style="font-size: 1.2em;">←</a></p>
 
     <br>
 
-    <h3>1. Intro</h3>
+    <h3>Intro</h3>
 
     <p>
-      In this blogpost, I'll go through some popular reinforcement learning algorithms and implement them in Python. I'm assuming
-      familiarity with the language and libraries like PyTorch. I also recommend watching 
-      <u><a href="https://www.youtube.com/watch?v=ISk80iLhdfU&list=PLqYmG7hTraZBKeNJ-JE_eyJHZ7XgBoAyb&index=1">this</a></u> 
-      video on RL to get an idea about what I'll explain below. The whole playlist is good, and I recommend watching it for an 
-      in-depth introduction to RL. Go through OpenAI's <u><a href="https://gym.openai.com">gym</a></u> documentation beforehand 
-      as well, since it'll be in the code snippets below. It's a library to implement RL algorithms.
+      In this post, I'll explain how to implement VPG, DQL, and A2C in Python using PyTorch and OpenAI's gym. I'm assuming
+      familiarity with basic RL concepts (watch <u><a href="https://www.youtube.com/watch?v=TCCjZe0y4Qc">this</a></u> 
+      video for a revision). Take a look at gym's <u><a href="https://gym.openai.com/docs/">documentation</a></u> as well.
+    </p>
+
+    <br>
+
+    <h3>Vanilla policy gradient</h3>
+
+    <p>
+      The idea behind policy gradient is to increase (or decrease) the probability of actions taken in proportion to returns.
+      $\pi_\theta$ is the policy model parametrized by $\theta$, and $\pi_\theta(s)$ is the probability distribution of actions 
+      given the environment state $s$. We need to find $\theta^*$ that maximizes the expected reward objective function
+    </p>
+
+    <div class="ovf">
+      $$J(\theta) = \mathbb{E}_{a \sim \pi_\theta}\Big[G = \sum_{t=0}^T \gamma^t r_t\Big] = \int_\tau \mathcal{R}(\tau)p_\theta(\tau). \tag{1}$$
+    </div>
+
+    <p>
+      $\mathcal{R}(\tau)$ is the return for trajectory $\tau$ (a trajectory or episode is a sequence of state-action-reward
+      tuples $\{(s_0, a_0, r_0),\ldots,(s_T, a_T, r_T)\}$) and $p_\theta(\tau)$ is the probability the agent follows trajectory
+      $\tau$. We use gradient ascent to maximize the objective function.
+    </p>
+
+    <div class="ovf">
+      $$\theta \leftarrow \theta + \eta\nabla_\theta J(\theta)$$
+    </div>
+
+    <p>
+      where $\eta$ is the learning rate. But how do we compute $\nabla_\theta J(\theta)$? We start with the integral in $(1)$.
     </p>
   </div>
 </body>

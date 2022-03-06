@@ -14,7 +14,7 @@
 
 body {
   margin: 0;
-  background: rgb(240, 240, 240);
+  background: rgb(219, 219, 219);
 }
 
 html {
@@ -63,7 +63,7 @@ img {
 
 p, h1, h2, h3 {
   margin: 15px 0;
-  line-height: 1.8;
+  line-height: 2;
 }
 
 a {

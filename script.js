@@ -2,7 +2,10 @@ let page = document.querySelector(".page"),
     body = document.querySelector("body");
 
 
-body.onresize = () => {
+body.onresize = body.onload = () => {
+  page.style.marginTop = "1em";
+  page.style.marginBottom = "1em";
+
   let bodyWidth = parseInt(window.getComputedStyle(body).width),
       pageWidth = parseInt(window.getComputedStyle(page).width);
 
