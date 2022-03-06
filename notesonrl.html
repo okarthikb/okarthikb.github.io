@@ -66,12 +66,12 @@
     </p>
 
     <div class="ovf">
-      $$J(\theta) = \mathbb{E}_{a \sim \pi_\theta}\Big[G = \sum_{t=0}^T \gamma^t r_t\Big] = \int_\tau \mathcal{R}(\tau)p_\theta(\tau). \tag{1}$$
+      $$J(\theta) = \mathbb{E}_{a \sim \pi_\theta}\Big[G = \sum_{t=0}^T \gamma^t r_{i, t}\Big] = \int_\tau \mathcal{R}(\tau)p_\theta(\tau). \tag{1}$$
     </div>
 
     <p>
       $\mathcal{R}(\tau)$ is the return for trajectory $\tau$ (a trajectory or episode is a sequence of state-action-reward
-      tuples $\{(s_0, a_0, r_0),\ldots,(s_T, a_T, r_T)\}$) and $p_\theta(\tau)$ is the probability the agent follows trajectory
+      tuples $\{(s_0, a_0, r_0),\ldots,(s_{i, T}, a_{i, T}, r_{i, T})\}$) and $p_\theta(\tau)$ is the probability the agent follows trajectory
       $\tau$. We use gradient ascent to maximize the objective function.
     </p>
 
@@ -120,7 +120,49 @@
       Substitute the above in $\nabla_\theta\log(p_\theta(\tau_i))$ in $(3)$
     </p>
 
-    
+    <div class="ovf">
+      \begin{eqnarray}
+        \nabla_\theta\log(p_\theta(\tau_i)) &=& \nabla_\theta\log\Big(\prod_{t=0}^T P(s_{i, t+1} \vert s_{i, t}, a_{i, t})\pi_\theta(a_{i, t} \vert s_{i, t})\Big) \\
+        &=& \nabla_\theta\log\Big(\prod_{t=0}^T P(s_{i, t+1} \vert s_{i, t}, a_{i, t})\Big) + \nabla_\theta\log\Big(\prod_{t=0}^T \pi_\theta(a_{i, t} \vert s_{i, t})\Big).
+      \end{eqnarray}
+    </div>
+
+    <p>
+      The first term goes away because it is not dependent on \(\theta\), so we're left with
+    </p>
+
+    <div class="ovf">
+      \begin{eqnarray}
+        \nabla_\theta\log(p_\theta(\tau_i)) &=& \nabla_\theta\log\Big(\prod_{t=0}^T \pi_\theta(a_{i, t} \vert s_{i, t})\Big) \\
+        &=& \nabla_\theta\sum_{t=0}^T \log(\pi_\theta(a_{i, t} \vert s_{i, t})). \tag{4}
+      \end{eqnarray}
+    </div>
+
+    <p>
+      Substitute $(4)$ in $(3)$, and we get
+    </p>
+
+    <div class="ovf">
+      $$\nabla_\theta J(\theta) = \frac{1}{N} \sum_{i=0}^N \mathcal{R}(\tau_i) \nabla_\theta \sum_{t=0}^{n(\tau_i)} \log(\pi_\theta(a_{i, t} \vert s_{i, t})). \tag{5}$$
+    </div>
+
+    <p>
+      This is the policy gradient! The VPG algorithm is as follows
+    </p>
+
+    <div class="psd">
+      <div class="code ovf">
+<pre><code class="language-plaintext"><b>repeat</b>         
+
+  generate trajectories $\tau_1,\ldots,\tau_N$
+
+  compute $\displaystyle{\nabla_\theta J(\theta) = \frac{1}{N} \sum_{i=0}^N \mathcal{R}(\tau_i) \nabla_\theta \sum_{t=0}^{n(\tau_i)} \log(\pi_\theta(a_{i, t} \vert s_{i, t}))}$
+
+  $\displaystyle{\theta \leftarrow \theta + \nabla_\theta J(\theta)}$
+
+<b>until convergence</b></code></pre>
+      </div>
+    </div>
   </div>
 </body>
 
