@@ -151,7 +151,7 @@
     </p>
 
     <div class="psd">
-      <div class="code ovf">
+        <div class="code ovf">
 <pre><code class="language-plaintext"><b>repeat</b>         
 
   generate trajectories $\tau_1,\ldots,\tau_N$
@@ -172,7 +172,8 @@
       The algorithm is pretty straightforward to implement. Import the necessary libraries first.
     </p>
 
-    <div class="code ovf">
+    <div class="psd">
+      <div class="code ovf">
 <pre><code class="language-python">import gym
 import sys
 import time
@@ -181,13 +182,15 @@ import torch
 import collections
 import numpy as np
 import matplotlib.pyplot as plt</code></pre>
+      </div>
     </div>
 
     <p>
       We initialize the environment and policy network.
     </p>
 
-    <div class="code ovf">
+    <div class="psd">
+      <div class="code ovf">
 <pre><code class="language-python"># change env name for different env
 env_name = "Pong-v0"
 env = gym.make(env_name)
@@ -207,16 +210,19 @@ class net(torch.nn.Module):
     # always softmax output
     x = torch.nn.functional.softmax(self.out(x), -1)
     return x</code></pre>
+      </div>
     </div>
 
     <p>
       Initialize policy network and choose number of frames to pre-process.
     </p>
 
-    <div class="code ovf">
+    <div class="psd">
+      <div class="code ovf">
 <pre><code class="language-python">pi = net()
 
 frames = 3  # num of consecutive frames to process</code></pre>
+      </div>
     </div>
 
     <p>
@@ -226,7 +232,8 @@ frames = 3  # num of consecutive frames to process</code></pre>
       sequence pre-processing function is as follows.
     </p>
 
-    <div class="code ovf">
+    <div class="psd">
+      <div class="code ovf">
 <pre><code class="language-python">def phi(seq):
   seq = np.array(seq)
   seq = seq[::2, 34:194, :, 1]
@@ -235,13 +242,15 @@ frames = 3  # num of consecutive frames to process</code></pre>
   seq = seq[1] - seq[0]
   seq = seq[::4, ::4]
   return seq.ravel()</code></pre>
+      </div>
     </div>
 
     <p>
       Define helper functions.
     </p>
 
-    <div class="code ovf">
+    <div class="psd">
+      <div class="code ovf">
 <pre><code class="language-python"># convert input to PyTorch tensor
 def tensor(x):
   return torch.as_tensor(x, dtype=torch.float32)
@@ -260,6 +269,7 @@ def act(s):
 def loss(S, A, V):
   logp = logits(S).log_prob(A)
   return -(logp * V).sum()</code></pre>
+      </div>
     </div>
 
     <p>
@@ -267,7 +277,8 @@ def loss(S, A, V):
       to generate a trajectory, i.e., an episode, and return the states visited, actions taken, and rewards received.
     </p>
 
-    <div class="code ovf">
+    <div class="psd">
+      <div class="code ovf">
 <pre><code class="language-python">def tau(render=False):
   done = False
   # states, actions, and rewards
@@ -294,13 +305,15 @@ def loss(S, A, V):
   # close env and return transitions
   env.close()
   return np.array(S), np.array(A), np.array(R)</code></pre>
+      </div>
     </div>
 
     <p>
       Finally, we define the main training loop.
     </p>
 
-    <div class="code ovf">
+    <div class="psd">
+      <div class="code ovf">
 <pre><code class="language-python">def train(epochs, N, mod, gamma, opt):
   losses = []
   rewards = []
@@ -338,6 +351,7 @@ def loss(S, A, V):
   print("train time: {:.2f}s".format(time.time() - start))
   # return losses and episode
   return losses, rewards</code></pre>
+      </div>
     </div>
 
     <p>
@@ -346,7 +360,8 @@ def loss(S, A, V):
       net.py for training. Here, we define the optimizer and hyperparameters.
     </p>
 
-    <div class="code ovf">
+    <div class="psd">
+      <div class="code ovf">
 <pre><code class="language-python">from net import *
 
 
@@ -359,25 +374,29 @@ gamma = 0.99  # reward discount
 
 # initialize optimiser
 opt = torch.optim.Adam(pi.parameters(), lr=lr)</code></pre>
+      </div>
     </div>
 
     <p>
       Create files to log loss and return from each epoch and train the agent.
     </p>
 
-    <div class="code ovf">
+    <div class="psd">
+      <div class="code ovf">
 <pre><code class="language-python">lossesf = open(prefix + f"losses.txt", "w")
 rewardsf = open(prefix + f"rewards.txt", "w")
 
 # train policy network
 losses, rewards = train(epochs, N, mod, gamma, opt)</code></pre>
+      </div>
     </div>
 
     <p>
       Plot and save the graphs.
     </p>
 
-    <div class="code ovf">
+    <div class="psd">
+      <div class="code ovf">
 <pre><code class="language-python">fig = plt.figure(figsize=(8, 8))
 
 x = list(range(1, epochs + 1))
@@ -393,34 +412,34 @@ plt.xlabel("epoch")
 plt.ylabel("reward")
 plt.plot(x, rewards)
 plt.savefig(prefix + f"rewards.png")</code></pre>
+      </div>
     </div>
 
-    <p align="center">
-      <img src="../imgs/rewards.png" alt="up">
+    <p>
+      So, how does the trained agent play Pong?
+    </p>
+
+    <div class="img">
+      <img src="../imgs/untrained.gif" alt="noob" style="max-width: 400px; width: 80%;">
       <br>
-      <span>Graph go up! The agent is learning...</span>
-    </p>
+      <span class="grey">Untrained</span>
+    </div>
+
+    <div class="img">
+      <img src="../imgs/trained.gif" alt="pro" style="max-width: 400px; width: 80%;">
+      <br>
+      <span class="grey">Trained</span>
+    </div>
 
     <p>
-      So, how does the trained agent play Pong-v0? Here's how the untrained agent plays (green).
+      It works! The agent has learned how to play Pong. The "Vanilla" in VPG is there because this is one of the most straightforward
+      model-based approach to train a reinforcement learning agent - directly optimizing the policy model. Still, that you can 
+      "learn" (albeit not as sophisticated as a human) by optimizing a simple objective function is so very cool :) 
     </p>
 
-    <p align="center">
-      <img src="../imgs/untrained.gif" alt="noob">
-    </p>
-
-    <p>
-      And here's how the trained agent plays.
-    </p>
-
-    <p align="center">
-      <img src="../imgs/trained.gif" alt="pro">
-    </p>
-
-    <p>
-      That you can condense "learning" (albeit not as sophisticated as a human) to optimizing a simple 
-      objective function is so very cool :) 
-    </p>
+    <div class="img">
+      <img src="../imgs/rewards.png" alt="up">
+    </div>
   </div>
 </body>
 
