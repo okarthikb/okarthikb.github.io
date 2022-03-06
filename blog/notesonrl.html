@@ -147,7 +147,7 @@
     </div>
 
     <p>
-      This is the policy gradient! The VPG algorithm is as follows
+      This is the policy gradient! The VPG algorithm is as follows.
     </p>
 
     <div class="psd">
@@ -163,6 +163,264 @@
 <b>until convergence</b></code></pre>
       </div>
     </div>
+
+    <br>
+
+    <h3>Implementation</h3>
+
+    <p>
+      The algorithm is pretty straightforward to implement. Import the necessary libraries first.
+    </p>
+
+    <div class="code ovf">
+<pre><code class="language-python">import gym
+import sys
+import time
+import tqdm
+import torch
+import collections
+import numpy as np
+import matplotlib.pyplot as plt</code></pre>
+    </div>
+
+    <p>
+      We initialize the environment and policy network.
+    </p>
+
+    <div class="code ovf">
+<pre><code class="language-python"># change env name for different env
+env_name = "Pong-v0"
+env = gym.make(env_name)
+actions = [2, 3]  # custom list or [i for i in range(env.action_space.n)]
+prefix = "checkpoints/"  # directory to save logs
+
+
+# change network architecture for diff env
+class net(torch.nn.Module):
+  def __init__(self):
+    super(net, self).__init__()
+    self.fc = torch.nn.Linear(1600, 128)
+    self.out = torch.nn.Linear(128, len(actions))
+
+  def forward(self, x):
+    x = torch.nn.functional.relu(self.fc(x))
+    # always softmax output
+    x = torch.nn.functional.softmax(self.out(x), -1)
+    return x</code></pre>
+    </div>
+
+    <p>
+      Initialize policy network and choose number of frames to pre-process.
+    </p>
+
+    <div class="code ovf">
+<pre><code class="language-python">pi = net()
+
+frames = 3  # num of consecutive frames to process</code></pre>
+    </div>
+
+    <p>
+      If we're training an Atari agent, a single frame may not contain information like velocity, or fire-rate, etc. 
+      So the policy network will receive a pre-processed sequence of the previous $k$ frames. We store the previous $k$ frames in a 
+      Python <code>collections.deque</code> instance called <code>seq</code>. Here, <code>frames = 3</code>. The frame
+      sequence pre-processing function is as follows.
+    </p>
+
+    <div class="code ovf">
+<pre><code class="language-python">def phi(seq):
+  seq = np.array(seq)
+  seq = seq[::2, 34:194, :, 1]
+  seq[seq == 72] = 0
+  seq[seq != 0] = 1
+  seq = seq[1] - seq[0]
+  seq = seq[::4, ::4]
+  return seq.ravel()</code></pre>
+    </div>
+
+    <p>
+      Define helper functions.
+    </p>
+
+    <div class="code ovf">
+<pre><code class="language-python"># convert input to PyTorch tensor
+def tensor(x):
+  return torch.as_tensor(x, dtype=torch.float32)
+  
+# convert probability distribution to logits
+def logits(s):
+  return torch.distributions.Categorical(pi(s))
+
+
+# sample an action from probability distribution
+def act(s):
+  return logits(s).sample().item()
+
+
+# compute loss or objective J given trajectory (states, actions, and rewards)
+def loss(S, A, V):
+  logp = logits(S).log_prob(A)
+  return -(logp * V).sum()</code></pre>
+    </div>
+
+    <p>
+      Look at the VPG pseudocode. We generate trajectories, and compute the objective gradient using them. Let's define a function
+      to generate a trajectory, i.e., an episode, and return the states visited, actions taken, and rewards received.
+    </p>
+
+    <div class="code ovf">
+<pre><code class="language-python">def tau(render=False):
+  done = False
+  # states, actions, and rewards
+  S, A, R = [], [], []
+  s = env.reset()
+  # store current (and previous) frame(s)
+  seq = collections.deque(
+    [np.zeros_like(s)] * (frames - 1) + [s], 
+    maxlen=frames
+  )
+  with torch.no_grad():
+    while not done:
+      s = phi(seq)  # pre-process frames
+      S.append(s)  # store processed
+      i = act(tensor(s))  # sample action index
+      a = actions[i]  # get action
+      s, r, done, _ = env.step(a)  # take action
+      seq.append(s)  # append next frame to seq
+      A.append(i)  # store action
+      R.append(r)  # store reward
+      if render:
+        env.render()
+        time.sleep(1 / 45)
+  # close env and return transitions
+  env.close()
+  return np.array(S), np.array(A), np.array(R)</code></pre>
+    </div>
+
+    <p>
+      Finally, we define the main training loop.
+    </p>
+
+    <div class="code ovf">
+<pre><code class="language-python">def train(epochs, N, mod, gamma, opt):
+  losses = []
+  rewards = []
+  lossesf = open(prefix + f"losses.txt", "w")
+  rewardsf = open(prefix + f"rewards.txt", "w")
+  # start clock
+  start = time.time()
+  # train loop
+  for epoch in range(1, epochs + 1):
+    J = 0  # reward
+    r = 0  # avg return for N episodes
+    # compute expected reward
+    for _ in range(N):
+      S, A, R = tau()
+      r += R.sum()
+      for t in range(len(R) - 2, -1, -1):
+        R[t] += gamma * R[t + 1]
+      R = (R - R.mean()) / R.std()  # normalize returns
+      J += loss(tensor(S), tensor(A), tensor(R))  # compute loss
+    # backprop and step
+    opt.zero_grad()
+    J /= N
+    J.backward()
+    opt.step()
+    # return reward and loss
+    rewards.append(r / N)
+    losses.append(J.item())
+    # boring logging :P
+    if epoch % mod == 0:
+      print("epoch: {}  reward: {:.3f}  loss: {:.3f}".format(epoch, rewards[-1], losses[-1]))
+      lossesf.write(f"{losses[-1]}\n")
+      rewardsf.write(f"{rewards[-1]}\n")
+      torch.save(pi.state_dict(), prefix + f"{epoch}.pt")
+  # end clock
+  print("train time: {:.2f}s".format(time.time() - start))
+  # return losses and episode
+  return losses, rewards</code></pre>
+    </div>
+
+    <p>
+      Take a look at my GitHub <u><a href="https://github.com/okarthikb/reinforce">repo</a></u>. The library imports
+      and above function and variable definitions are in a file called net.py. In train.py, we import everything from
+      net.py for training. Here, we define the optimizer and hyperparameters.
+    </p>
+
+    <div class="code ovf">
+<pre><code class="language-python">from net import *
+
+
+# choose hyperparameters
+lr = 2.5e-4
+epochs = 600
+N = 20  # E[R] ~ sum(pi(a_t | s_t)V_t) / N
+mod = 5  # checkpoint once every mod epochs
+gamma = 0.99  # reward discount
+
+# initialize optimiser
+opt = torch.optim.Adam(pi.parameters(), lr=lr)</code></pre>
+    </div>
+
+    <p>
+      Create files to log loss and return from each epoch and train the agent.
+    </p>
+
+    <div class="code ovf">
+<pre><code class="language-python">lossesf = open(prefix + f"losses.txt", "w")
+rewardsf = open(prefix + f"rewards.txt", "w")
+
+# train policy network
+losses, rewards = train(epochs, N, mod, gamma, opt)</code></pre>
+    </div>
+
+    <p>
+      Plot and save the graphs.
+    </p>
+
+    <div class="code ovf">
+<pre><code class="language-python">fig = plt.figure(figsize=(8, 8))
+
+x = list(range(1, epochs + 1))
+
+plt.xlabel("epoch")
+plt.ylabel("loss")
+plt.plot(x, losses)
+plt.savefig(prefix + f"losses.png")
+
+plt.clf()
+
+plt.xlabel("epoch")
+plt.ylabel("reward")
+plt.plot(x, rewards)
+plt.savefig(prefix + f"rewards.png")</code></pre>
+    </div>
+
+    <p align="center">
+      <img src="../imgs/rewards.png" alt="up">
+      <br>
+      <span>Graph go up! The agent is learning...</span>
+    </p>
+
+    <p>
+      So, how does the trained agent play Pong-v0? Here's how the untrained agent plays (green).
+    </p>
+
+    <p align="center">
+      <img src="../imgs/untrained.gif" alt="noob">
+    </p>
+
+    <p>
+      And here's how the trained agent plays.
+    </p>
+
+    <p align="center">
+      <img src="../imgs/trained.gif" alt="pro">
+    </p>
+
+    <p>
+      That you can condense "learning" (albeit not as sophisticated as a human) to optimizing a simple 
+      objective function is so very cool :) 
+    </p>
   </div>
 </body>
 
