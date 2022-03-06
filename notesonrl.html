@@ -76,12 +76,51 @@
     </p>
 
     <div class="ovf">
-      $$\theta \leftarrow \theta + \eta\nabla_\theta J(\theta)$$
+      $$\theta \leftarrow \theta + \eta\nabla_\theta J(\theta) \tag{2}$$
     </div>
 
     <p>
-      where $\eta$ is the learning rate. But how do we compute $\nabla_\theta J(\theta)$? We start with the integral in $(1)$.
+      where $\eta$ is the learning rate. But how do we compute $\nabla_\theta J(\theta)$? We start with the integral in $(1)$. 
+      We use what's called the log trick to simplify
     </p>
+
+    <div class="ovf">
+      $$\nabla_\theta f(\theta) = f(\theta)\nabla_\theta\log(f(\theta)).$$
+    </div>
+
+    <p>
+      Taking gradient on both sides of $(1)$
+    </p>
+
+    <div class="ovf">
+      \begin{eqnarray}
+        \nabla_\theta J(\theta) &=& \nabla_\theta \int_{\tau}\mathcal{R}(\tau)p_\theta(\tau) \\
+        &=& \int_{\tau}\mathcal{R}(\tau)\nabla_\theta p_\theta(\tau) \\
+        &=& \int_{\tau}\mathcal{R}(\tau)\nabla_\theta\log (p_\theta(\tau)) p_\theta(\tau) \tag{log trick} \\
+        &=& \mathbb{E}\Big[\mathcal{R}(\tau)\nabla_\theta\log (p_\theta(\tau))\Big] \\
+        &\approx& \frac{1}{N}\sum_{i=0}^N \mathcal{R}(\tau_i)\nabla_\theta\log(p_\theta(\tau_i)). \tag{3}
+      \end{eqnarray}
+    </div>
+
+    <p>
+      We simplify further. Consider $p_\theta(\tau_i)$ in $(3)$. It's the probability the agent will follow trajectory
+      $\tau_i$, and this probability is dependent on $\theta$. By definition, $\pi_\theta(a \vert s)$ is the probability the 
+      agent will take action $a$ in state $s$. Let $P(s' \vert s, a)$ be the probability the environment will transition to state 
+      $s'$ given that the agent took action $a$ in state $s$. Then the transition probability of the agent taking action $a$ in 
+      state $s$ and moving to state $s'$ is given by $P(s' \vert s, a)\pi_\theta(a \vert s)$. The probability of trajectory 
+      $\tau_i$ is the product of all transition probabilities
+    </p>
+
+    <div class="ovf">
+      $$p_\theta(\tau_i) = \prod_{t=0}^{n(\tau_i)} P(s_{i, t + 1} \vert s_{i, t}, a_{i, t})\pi_\theta(a_{i, t} \vert s_{i, t})$$
+    </div>
+
+    <p>
+      where $\tau_i$ refers to the $i$th trajectory, and $s_{i, t}$ refers to the state at timestep $t$ of trajectory $i$.
+      Substitute the above in $\nabla_\theta\log(p_\theta(\tau_i))$ in $(3)$
+    </p>
+
+    
   </div>
 </body>
 
