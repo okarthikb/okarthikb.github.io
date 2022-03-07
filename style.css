@@ -3,11 +3,6 @@
   src: url("DroidSansMono.ttf");
 }
 
-@font-face {
-  font-family: "CM Sans";
-  src: url("NewCMSans10-Regular.otf");
-}
-
 * {
   box-sizing: border-box;
 }
@@ -29,14 +24,14 @@ html {
   margin: 1em auto;
   padding: 0 1em;
   border: 1px black solid;
-  font-size: 18px;
-  font-family: "CM Sans", sans-serif;
+  font-size: 17px;
+  font-family: "Lato", sans-serif;
   background: white;
 }
 
 @media screen and (max-width: 512px) {
   .page {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -46,7 +41,7 @@ html {
 }
 
 code {
-  font-size: 0.8em;
+  font-size: 0.9em;
   font-family: "Mono", monospace, sans-serif;
 }
 
@@ -101,6 +96,7 @@ pre > * {
 }
 
 .language-plaintext {
-  font-family: "CM Sans", sans-serif !important;
+  font-family: "Lato", sans-serif !important;
   font-size: 1em !important;
+  color: black !important;
 }

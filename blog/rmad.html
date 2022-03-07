@@ -7,6 +7,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="../style.css">
 
+  <!-- font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"> 
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+  <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+
   <!-- syntax highlighting -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/styles/default.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
@@ -15,21 +20,25 @@
   <!-- MathJax -->
   <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
-      "HTML-CSS": { 
-        preferredFont: "TeX", 
-        availableFonts: ["TeX"], 
+      "HTML-CSS": {
         linebreaks: { automatic: true }, 
         EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50) 
       },
       tex2jax: { 
         inlineMath: [ ["\$", "\$"] ], 
         displayMath: [ ["$$","$$"] ], 
-        processEscapes: true, 
-        ignoreClass: "tex2jax_ignore|dno",
+        processEscapes: true,
         skipTags: ["script", "noscript", "style", "textarea"]
       },
-      TeX: {  noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } } },
-      messageStyle: "none"
+      TeX: {
+        noUndefined: { 
+          attributes: { 
+            mathcolor: "red", 
+            mathbackground: "#FFEEEE", 
+            mathsize: "90%" 
+          } 
+        } 
+      }
     });
   </script>
   <script type="text/javascript" async
