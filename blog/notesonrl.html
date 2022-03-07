@@ -158,11 +158,15 @@
 
   compute $\displaystyle{\nabla_\theta J(\theta) = \frac{1}{N} \sum_{i=0}^N \mathcal{R}(\tau_i) \nabla_\theta \sum_{t=0}^{n(\tau_i)} \log(\pi_\theta(a_{i, t} \vert s_{i, t}))}$
 
-  $\theta \leftarrow \theta + \nabla_\theta J(\theta)$
+  $\theta \leftarrow \theta + \eta\nabla_\theta J(\theta)$
 
 <b>until convergence</b></code></pre>
       </div>
     </div>
+
+    <p>
+      where $\eta$ is learning rate.
+    </p>
 
     <br>
 
