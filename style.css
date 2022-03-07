@@ -20,7 +20,7 @@ html {
 
 .page {
   width: 95%;
-  max-width: 736px;
+  max-width: 768px;
   margin: 1em auto;
   padding: 0 1em;
   border: 1px black solid;
