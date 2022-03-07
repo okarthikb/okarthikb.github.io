@@ -24,15 +24,9 @@ html {
   margin: 1em auto;
   padding: 0 1em;
   border: 1px black solid;
-  font-size: 17px;
+  font-size: 16px;
   font-family: "Lato", sans-serif;
   background: white;
-}
-
-@media screen and (max-width: 512px) {
-  .page {
-    font-size: 15px;
-  }
 }
 
 .code {
