@@ -9,7 +9,8 @@
 
 body {
   margin: 0;
-  background: rgb(247, 247, 247);
+  background: url("imgs/gogh.jpeg") /*rgb(247, 247, 247)*/;
+  background-size: repeat;
 }
 
 html {
