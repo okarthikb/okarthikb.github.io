@@ -29,6 +29,16 @@ html {
   background: white;
 }
 
+@media screen and (max-width: 512px) {
+  .page {
+    font-size: 14px;
+  }
+
+  p, h1, h2, h3 {
+    margin: 14px 0;
+  }
+}
+
 .code {
   margin: 1em auto;
   border: 0.7px black solid;
@@ -51,7 +61,7 @@ img {
 }
 
 p, h1, h2, h3 {
-  margin: 15px 0;
+  margin: 16px 0;
   line-height: 2;
 }
 
