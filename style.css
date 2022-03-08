@@ -31,11 +31,11 @@ html {
 
 @media screen and (max-width: 512px) {
   .page {
-    font-size: 14px;
+    font-size: 15px;
   }
 
   p, h1, h2, h3 {
-    margin: 14px 0;
+    margin: 15px 0;
   }
 }
 
