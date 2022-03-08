@@ -100,7 +100,6 @@ pre > * {
 }
 
 .language-plaintext {
-  font-family: "Lato", sans-serif !important;
-  font-size: 1em !important;
+  font-family: "Mono", sans-serif !important;
   color: black !important;
 }
