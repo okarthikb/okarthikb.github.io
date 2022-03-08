@@ -214,8 +214,7 @@ print(df_over_da)</code></pre>
     </div>
 
     <p>
-      where $\tau \subset T$ is the set of all $t \in T$ dependent on $x_i$. $(4)$ and $(5)$ are equivalent; we have stated both
-      because we're treating a function's parameter as something different from an intermediate term, when the former can also be the latter.
+      where $\tau \subset T$ is the set of all $t \in T$ dependent on $x_i$. $(4)$ and $(5)$ are equivalent.
       The equations above are important because it's how we "backpropagate" the derivative from the final term (i.e., $f(\ldots)$) to it's
       parameters $x_1,\ldots,x_n$. Let's implement this in Python.
     </p>
