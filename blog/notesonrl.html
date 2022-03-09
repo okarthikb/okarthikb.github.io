@@ -164,10 +164,8 @@
 <pre><code class="language-plaintext"><b>repeat</b>         
 
   generate trajectories $\tau_1,\ldots,\tau_N$
-
-  compute $\nabla_\theta J(\theta) = \frac{1}{N} \sum_{i=0}^N \mathcal{R}(\tau_i) \nabla_\theta \sum_{t=0}^{n(\tau_i)} \log(\pi_\theta(a_{i, t} \vert s_{i, t}))$
   
-  $\theta \leftarrow \theta + \eta\nabla_\theta J(\theta)$
+  $\theta \leftarrow \theta + \eta\nabla_\theta J(\theta)$  <span class="grey"># using (5)</span>
 
 <b>until convergence</b></code></pre>
       </div>
