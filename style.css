@@ -9,7 +9,7 @@
 
 body {
   margin: 0;
-  background: url("imgs/gogh.jpeg") /*rgb(247, 247, 247)*/;
+  background: whitesmoke;
   background-size: repeat;
 }
 
@@ -77,13 +77,13 @@ a:hover {
 
 pre {
   margin: 0;
-  background: rgb(250, 250, 250) !important;
+  background: whitesmoke !important;
 }
 
 pre > * {
   padding: 1em 0 !important;
   margin: 0 1em !important;
-  background: rgb(250, 250, 250) !important;
+  background: whitesmoke !important;
 }
 
 .img {
