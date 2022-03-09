@@ -57,7 +57,7 @@ code {
 img {
   height: auto;
   max-width: 90%;
-  border: 1px black solid;
+  border: 1.25px grey solid;
 }
 
 p, h1, h2, h3 {
