@@ -9,7 +9,6 @@
 
 body {
   margin: 0;
-  background: whitesmoke;
 }
 
 html {
@@ -20,18 +19,23 @@ html {
 
 .page {
   width: 95%;
-  max-width: 700px;
+  max-width: 729px;
   margin: 1em auto;
   padding: 0 1em;
-  border: 1px black solid;
-  font-size: 16px;
+  border: 1px white solid;
+  font-size: 17px;
   font-family: "Lato", sans-serif;
-  background: white;
 }
 
 @media screen and (max-width: 512px) {
+  body {
+    background: whitesmoke;
+  }
+
   .page {
     font-size: 15px;
+    border: 1px black solid;
+    background: white;
   }
 
   p, h1, h2, h3 {
@@ -61,8 +65,8 @@ img {
 }
 
 p, h1, h2, h3 {
-  margin: 16px 0;
-  line-height: 1.7;
+  margin: 17px 0;
+  line-height: 1.75;
 }
 
 a {
