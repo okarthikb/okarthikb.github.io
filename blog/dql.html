@@ -2,15 +2,10 @@
 <html>
 
 <head>
-  <title>Q-learnin and deep Q-learning</title>
+  <title>Deep Q-learning</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="../style.css">
-
-  <!-- font -->
-  <link rel="preconnect" href="https://fonts.googleapis.com"> 
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-  <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
 
   <!-- syntax highlighting -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/styles/default.min.css">
@@ -50,7 +45,7 @@
 
 <body>
   <div class="page">
-    <h2>Q-learning and deep Q-learning</h2>
+    <h2>Deep $Q$-learning</h2>
 
     <p><u><a href="../index.html">more posts</a></u></p>
 
@@ -59,8 +54,386 @@
     <h3>Intro</h3>
 
     <p>
-      
+      Deep $Q$-learning is an algorithm introduced by DeepMind in 2015 that kickstarted deep RL (reinforcement learning) field (IMO). 
+      The idea was to  combine a traditional RL algorithm ($Q$-learning) with model based learning, i.e.,
+      deep neural nets. The company got acquired by Google shortly after. Simple ideas, big results. I came across the algorithm
+      when I read <u><a href="https://www.amazon.in/Life-3-0-Max-Tegmark/dp/024123719X">Life 3.0</a></u> by 
+      <u><a href="https://twitter.com/tegmark">Max Tegmark</a></u>. In this post, I'll explain the algorithm and how to implement 
+      it in PyTorch using OpenAI's gym (we'll be using CartPole-v0 instead of Breakout-v0 since my laptop is pretty weak). 
+      Just like the policy gradient post, I'm assuming familiarity with PyTorch and basic RL.
     </p>
+
+    <div class="img">
+      <img src="../imgs/breakout.gif" alt="breakout" style="width: 400px;">
+      <br>
+      <span class="grey">DQL agent playing Atari Breakout</span>
+    </div>
+
+    <br>
+
+    <h3>
+      Algorithm
+    </h3>
+
+    <p>
+      The $Q$ function is the expected discounted return for an agent given that it took action $a$ in state $s$
+    </p>
+
+    <div class="ovf">
+      $$Q(s, a) = \mathbb{E}\Big[G = \sum_{t=0}^T \gamma^tr_t \vert s, a\Big]. \tag{1}$$
+    </div>
+
+    <p>
+      If we have the optimal $Q$ function $Q^*$ for some RL task, the policy that maximizes the return is to pick the action which 
+      yields the maximum return for a given state
+    </p>
+
+    <div class="ovf">
+      $$\pi^*(s) = \operatorname{max}_{a}(Q^*(s, a)) \tag{2}$$
+    </div>
+
+    <p>
+      Suppose the agent takes action $a$ in state $s$, receives reward $r$, transitions to state $s'$ and takes action $a'$. 
+      Then
+    </p>
+
+    <div class="ovf">
+      $$Q(s, a) = r + \gamma Q(s', a'). \tag{3}$$
+    </div>
+
+    <p>
+      This relation holds because of the definition of the $Q$ function. If the agent follows the optimal policy,
+      then the action it's going to pick next is that which yields the maximum expected return, i.e., maximum $Q$
+      value. So the optimal $Q$ function follows the relation
+    </p>
+
+    <div class="ovf">
+      $$Q^*(s, a) = r + \gamma \operatorname{max}_a(Q^*(s', a)). \tag{4}$$
+    </div>
+
+    <p>
+      The idea behind deep $Q$-learning is to approximate the $Q$ function using some model with parameters $\theta$, usually a 
+      neural net. The state of the environment is the input and the final layer of the neural net consists of the $Q$-values for
+      different actions.
+    </p>
+
+    <div class="img">
+      <img src="../imgs/dqn.png" alt="dqn">
+      <br>
+      <span class="grey">Deep $Q$-network for playing Atari Breakout</span>
+    </div>
+
+    <p>
+      As with all models, $\theta$ is randomly initialized, so $Q_\theta$ doesn't follow any relation. We want to find $\theta$
+      that satisfies
+    </p>
+
+    <div class="ovf">
+      $$Q_\theta(s, a) = r + \gamma \operatorname{max}_aQ_\theta(s', a) \tag{5}$$
+    </div>
+
+    <p>
+      which is the same relation as $(4)$. How do we find $\theta$ that satisfies the above equation? We use gradient descent.
+      We generate trajectories (or episodes) using an $\epsilon$-greedy policy, i.e., pick a random action with probability
+      $\epsilon$ or choose action with maximum $Q$ value with probability $1-\epsilon$ at each timestep. The transition tuples
+      of the generated trajectory
+    </p>
+
+    <div class="ovf">
+      $$\tau = \{(s_0, a_0, r_0, s_1),\ldots,(s_T, a_T, r_T, s_{T + 1})\}$$
+    </div>
+
+    <p>
+      are added to the replay memory $D$, which is the set of all transition tuples from all trajectories. We sample a bunch of
+      tuples of the form $(s_t, r_t, a_t, s_{t}')$ ($s'$ denotes $s$'s next state) from this memory and tune our model. Let's call 
+      this sampled batch $B$
+    </p>
+
+    <div class="ovf">
+      $$B = \{(s_1, r_1, a_1, s_1'),\ldots,(s_n, r_n, a_n, s_n')\}.$$
+    </div>
+
+    <p>
+      For each tuple in $B$, relation $(5)$ needs to hold up
+    </p>
+
+    <div class="ovf">
+      $$Q_\theta(s_i, a_i) = r_i + \gamma\operatorname{max}_a Q_\theta(s_i', a)$$
+    </div>
+
+    <p>
+      but it doesn't because $\theta$ was initialized randomly and the model is outputting garbage values. We need LHS to be
+      equal to the RHS above for all tuples in $B$. Let RHS be the target value $y_i$
+    </p>
+
+    <div class="ovf">
+      $$y_i = r_i + \gamma\operatorname{max}_a Q_\theta(s_i', a)$$
+    </div>
+
+    <p>
+      and LHS be the prediction. We now have a dataset of predictions and target values. So like supervised learning, we train
+      the model using SGD. The slight difference between supervised learning and RL is that we are <i>generating</i> the
+      dataset by letting the agent follow and $\epsilon$-greedy policy and return the transition tuples from episodes. The 
+      pseudocode is as follows
+    </p>
+
+    <div class="psd">
+      <div class="code ovf">
+<pre><code class="language-plaintext">initialize replay memory $D$
+
+<b>repeat</b>
+
+  $t \leftarrow 0$
+
+  $s \leftarrow s_t$  <span class="grey"># initial state</span>
+
+  <b>until episode done</b>
+
+    <span class="grey"># pre-processed sequence of prev $k$ frames</span>
+    $\psi_t \leftarrow \phi(s_{t - k + 1},\ldots,s_t)$
+
+    pick action $a_t$ acc. $e$-greedy
+    
+    take action $a_t$, get reward $r_t$ and next state $s_{t + 1}$
+
+    $\psi_t' \leftarrow \phi(s_{t - k},\ldots,s_{t + 1})$
+
+    append transition $(\psi_t, a_t, r_t, \psi_t')$ to $D$
+
+    $s \leftarrow s_{t + 1}$  # transition to next state
+
+    sample mini-batch $B \subset D$
+
+    <b>for</b> all $(\psi_i, a_i, r_i, \psi_i') \in B$
+
+      $
+        y_i \leftarrow 
+        \begin{cases}
+          r_i & \psi_i'\ \text{is terminal} \\
+          r_i + \gamma\operatorname{max}_a Q_\theta(\psi_i', a) & \text{o/w}
+        \end{cases}
+      $
+
+      gradient descent step on $(y_i - Q_\theta(\psi_i, a_i))^2$
+
+    $t \leftarrow t + 1$
+
+  <b>until convergence</b></code></pre>
+      </div>
+    </div>
+
+    <p>
+      The frame sequence pre-processing is done by storing the last $k$ frames in a <code>collections.deque</code> instance called
+      <code>seq</code> (see implementation below). Initially, we store $k - 1$ numpy array of zeroes of the same dimension as the 
+      first state. <code>collections.deque.append</code> deletes first element (i.e., state $s_{t - k + 1}$) and the new element 
+      (i.e., state $s_{t + 1}$) is added.
+    </p>
+
+    <br>
+
+    <h3>Implementation</h3>
+
+    <p>
+      Import necessary libraries, define hyperparameters, and initialize Q network and environment.
+    </p>
+
+    <div class="psd">
+      <div class="code ovf">
+<pre><code class="language-python">import gym
+import time
+import torch
+import random
+import collections
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+# define the Q network
+class network(torch.nn.Module):
+  def __init__(self):
+    super(network, self).__init__()
+    # define layers
+    self.fc = torch.nn.Linear(4, 256)
+    self.out = torch.nn.Linear(256, 2)
+
+  # forward pass
+  def forward(self, x):
+    x = torch.nn.functional.relu(self.fc(x))
+    x = torch.nn.functional.relu(self.out(x))
+    return x
+
+
+# initialize the network
+Q = network()
+
+# initialize the environment
+e = gym.make("CartPole-v0")
+
+# hyperparameters
+N = 100  # episodes
+eps = 0.9  # epsilon
+# decay epsilon as agent gets better
+decay = 0.99
+gamma = 0.99999
+lr = 1e-3  # learing rate eta
+capacity = 2000  # replay memory capacity
+# size of sample to take from replay memory
+batch_size = 256
+
+# define optimizer
+opt = torch.optim.Adam(Q.parameters(), lr=lr)</code></pre>
+      </div>
+    </div>
+
+    <p>
+      We define the frame sequence pre-processing function $\phi$. 
+    </p>
+
+    <div class="psd">
+      <div class="code ovf">
+<pre><code class="language-python">def phi(s):
+    return torch.tensor(s, dtype=torch.float32)</code></pre>
+      </div>
+    </div>
+
+    <p>
+      We want to test out our $Q$ network. We define a simple loop to calculate episode return.
+    </p>
+
+    <div class="psd">
+      <div class="code ovf">
+<pre><code class="language-python">def play():
+  d = False
+  s = e.reset()
+  G = 0
+  with torch.no_grad():
+    while not d:
+      s = phi(s)
+      a = np.argmax(Q(s)).item()
+      s, r, d, _ = e.step(a)
+      G += r
+  return G</code></pre>
+      </div>
+    </div>
+
+    <p>
+      Now we define the training loop as per the pseudocode.
+    </p>
+
+    <div class="psd">
+      <div class="code ovf">
+<pre><code class="language-python">def train():
+  global Q, eps, opt
+  # intiailize empty replay memory
+  D = collections.deque(maxlen=capacity)
+  G = []  # store returns
+  # main loop
+  for i in range(1, N + 1):
+    d = False
+    s = phi(e.reset())
+    # run episode
+    while not d:
+      # choose action acc. eps-greedy
+      if random.random() < eps:
+        a = e.action_space.sample()
+      else:
+        with torch.no_grad():
+          a = torch.argmax(Q(s)).item()
+      # take action
+      ns, r, d, _ = e.step(a)
+      ns = phi(ns)
+      # store transition in replay memory
+      D.append((s, a, r, ns, d))
+      s = ns
+      # sample batch of transitions from D
+      if len(D) <= batch_size:
+        B = D
+      else:
+        B = random.sample(D, batch_size)
+      # for each transition in B
+      for (s_, a_, r_, ns_, d_) in B:
+        opt.zero_grad()
+        # compute target
+        with torch.no_grad():
+          if d_:
+            # target val
+            y = torch.tensor(r_, dtype=torch.float32) 
+          else:
+            y = r_ + gamma * torch.max(Q(ns_))
+        Qs = Q(s_)  # predicted Q vals
+        loss = (y - Qs[a_]) ** 2  # compute loss
+        loss.backward()  # backprop
+        opt.step()  # update params
+    # play a game w/ new Q and store return
+    G.append(play())
+    eps *= decay  # decay eps
+    # log once every 10 episodes
+    if i % 10 == 0:
+      print(f"episode: {i}\treturn: {G[-1]}")
+  # return returns
+  return G</code></pre>
+      </div>
+    </div>
+
+    <p>
+      Train and save the model and returns plot.
+    </p>
+
+    <div class="psd">
+      <div class="code ovf">
+<pre><code class="language-python">G = train()
+
+# save the trained model
+torch.save(Q.state_dict(), "Q.pt")
+
+# plot returns
+fig = plt.figure(figsize=(8, 8))
+plt.xlabel("episode")
+plt.ylabel("return")
+plt.plot(np.arange(N), G)
+# save plot
+plt.savefig("returns.png")</code></pre>
+      </div>
+    </div>
+
+    <p>
+      Output should look like so.
+    </p>
+
+    <div class="psd">
+      <div class="code ovf">
+<pre><code class="language-plaintext" style="font-family: 'Mono' !important; font-size: 0.8em !important;">episode: 10   return: 9.0
+episode: 20   return: 30.0
+episode: 30   return: 200.0
+episode: 40   return: 200.0
+episode: 50   return: 200.0
+episode: 60   return: 200.0
+episode: 70   return: 200.0
+episode: 80   return: 200.0
+episode: 90   return: 141.0
+episode: 100  return: 105.0</code></pre>
+      </div>
+    </div>
+
+    <p>
+      The agent quickly improves.
+    </p>
+
+    <div class="img">
+      <img src="../imgs/dql_returns.png" alt="dqlr" style="width: 500px;">
+      <br>
+    </div>
+
+    <p>
+      We get the maximum possible return by episode 30. Further training leads to 
+      overfitting which results in a performance decline.
+    </p>
+
+    <div class="img">
+      <img src="../imgs/qnet_after.gif" alt="trained">
+      <br>
+      <span class="grey">Agent balancing pole after training.</span>
+    </div>
   </div>
 </body>
 
