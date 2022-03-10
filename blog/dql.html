@@ -190,7 +190,7 @@
     take action $a_t$, get reward $r_t$ and next state $s_{t + 1}$
     $\psi_t' \leftarrow \phi(s_{t - k},\ldots,s_{t + 1})$
     append transition $(\psi_t, a_t, r_t, \psi_t')$ to $D$
-    $s \leftarrow s_{t + 1}$  # transition to next state
+    $s \leftarrow s_{t + 1}$  <span class="grey"># transition to next state</span>
     sample mini-batch $B \subset D$
     <b>for</b> all $(\psi_i, a_i, r_i, \psi_i') \in B$
       $
