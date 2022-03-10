@@ -180,32 +180,19 @@
     <div class="psd">
       <div class="code ovf">
 <pre><code class="language-plaintext">initialize replay memory $D$
-
 <b>repeat</b>
-
   $t \leftarrow 0$
-
   $s \leftarrow s_t$  <span class="grey"># initial state</span>
-
   <b>until episode done</b>
-
     <span class="grey"># pre-processed sequence of prev $k$ frames</span>
     $\psi_t \leftarrow \phi(s_{t - k + 1},\ldots,s_t)$
-
     pick action $a_t$ acc. $e$-greedy
-    
     take action $a_t$, get reward $r_t$ and next state $s_{t + 1}$
-
     $\psi_t' \leftarrow \phi(s_{t - k},\ldots,s_{t + 1})$
-
     append transition $(\psi_t, a_t, r_t, \psi_t')$ to $D$
-
     $s \leftarrow s_{t + 1}$  # transition to next state
-
     sample mini-batch $B \subset D$
-
     <b>for</b> all $(\psi_i, a_i, r_i, \psi_i') \in B$
-
       $
         y_i \leftarrow 
         \begin{cases}
@@ -213,11 +200,8 @@
           r_i + \gamma\operatorname{max}_a Q_\theta(\psi_i', a) & \text{o/w}
         \end{cases}
       $
-
       gradient descent step on $(y_i - Q_\theta(\psi_i, a_i))^2$
-
     $t \leftarrow t + 1$
-
   <b>until convergence</b></code></pre>
       </div>
     </div>
