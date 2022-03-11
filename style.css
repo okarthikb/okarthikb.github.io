@@ -14,6 +14,7 @@
 
 body {
   margin: 0;
+  background: whitesmoke;
 }
 
 html {
@@ -30,17 +31,13 @@ html {
   border: 1px white solid;
   font-size: 18px;
   font-family: "CM", sans-serif;
+  border: 1px black solid;
+  background: white;
 }
 
 @media screen and (max-width: 512px) {
-  body {
-    background: whitesmoke;
-  }
-
   .page {
     font-size: 15px;
-    border: 1px black solid;
-    background: white;
   }
 
   p, h1, h2, h3 {
