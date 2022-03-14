@@ -4,8 +4,8 @@
 }
 
 @font-face {
-  font-family: "CM";
-  src: url("NewCMSans10-Regular.otf");
+  font-family: "CM Serif";
+  src: url("NewCMMath-Regular.otf");
 }
 
 * {
@@ -29,8 +29,8 @@ html {
   margin: 1em auto;
   padding: 0 1em;
   border: 1px white solid;
-  font-size: 18px;
-  font-family: "CM", sans-serif;
+  font-size: 16px;
+  font-family: "CM Serif", serif;
   border: 1px black solid;
   background: white;
 }
@@ -45,31 +45,21 @@ html {
   }
 }
 
-.code {
-  margin: 1em auto;
-  border: 1px grey solid;
+p, h1, h2, h3 {
+  margin: 16px 0;
+  line-height: 1.75;
+  text-align: justify;
 }
 
 code {
-  font-size: 0.8em;
+  font-size: 0.9em;
   font-family: "Mono", monospace, sans-serif;
-}
-
-.ovf {
-  overflow-x: auto;
-  overflow-y: hidden;
 }
 
 img {
   height: auto;
   max-width: 90%;
   border: 1px grey solid;
-}
-
-p, h1, h2, h3 {
-  margin: 18px 0;
-  line-height: 1.75;
-  text-align: justify;
 }
 
 a {
@@ -92,6 +82,16 @@ pre > * {
   background-color: rgb(250, 250, 250) !important;
 }
 
+.code {
+  margin: 1em auto;
+  border: 1px grey solid;
+}
+
+.ovf {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 .img {
   padding: 1em 0;
   text-align: center;
@@ -107,7 +107,7 @@ pre > * {
 }
 
 .language-plaintext {
-  font-family: "CM" !important;
+  font-family: "CM Serif" !important;
   font-size: 1em !important;
   color: black !important;
 }
