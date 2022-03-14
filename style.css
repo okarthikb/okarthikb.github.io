@@ -5,7 +5,12 @@
 
 @font-face {
   font-family: "CM Serif";
-  src: url("NewCMMath-Regular.otf");
+  src: url("NewCM10-Regular.otf");
+}
+
+@font-face {
+  font-family: "CM Sans";
+  src: url("NewCMSans10-Regular.otf");
 }
 
 * {
@@ -29,8 +34,8 @@ html {
   margin: 1em auto;
   padding: 0 1em;
   border: 1px white solid;
-  font-size: 16px;
-  font-family: "CM Serif", serif;
+  font-size: 18px;
+  font-family: "CM Sans", sans-serif;
   border: 1px black solid;
   background: white;
 }
@@ -46,13 +51,13 @@ html {
 }
 
 p, h1, h2, h3 {
-  margin: 16px 0;
+  margin: 18px 0;
   line-height: 1.75;
   text-align: justify;
 }
 
 code {
-  font-size: 0.9em;
+  font-size: 0.8em;
   font-family: "Mono", monospace, sans-serif;
 }
 
