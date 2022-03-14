@@ -42,18 +42,17 @@ html {
 
 @media screen and (max-width: 512px) {
   .page {
-    font-size: 15px;
+    font-size: 16px;
   }
 
   p, h1, h2, h3 {
-    margin: 15px 0;
+    margin: 16px 0;
   }
 }
 
 p, h1, h2, h3 {
   margin: 18px 0;
   line-height: 1.75;
-  text-align: justify;
 }
 
 code {
