@@ -184,7 +184,7 @@
 <b>repeat</b>
   $t \leftarrow 0$
   $s \leftarrow s_t$  <span class="grey"># initial state</span>
-  <b>until episode done</b>
+  <b>repeat</b>
     <span class="grey"># pre-processed sequence of prev $k$ frames</span>
     $\psi_t \leftarrow \phi(s_{t - k + 1},\ldots,s_t)$
     pick action $a_t$ acc. $e$-greedy
@@ -202,7 +202,8 @@
         \end{cases}
       $
       gradient descent step on $(y_i - Q_\theta(\psi_i, a_i))^2$
-    $t \leftarrow t + 1$
+  <b>until episode done</b>
+  $t \leftarrow t + 1$
 <b>until convergence</b></code></pre>
       </div>
     </div>
