@@ -1,14 +1,4 @@
 @font-face {
-  font-family: "Mono";
-  src: url("DroidSansMono.ttf");
-}
-
-@font-face {
-  font-family: "CM Serif";
-  src: url("NewCM10-Regular.otf");
-}
-
-@font-face {
   font-family: "CM Sans";
   src: url("NewCMSans10-Regular.otf");
 }
