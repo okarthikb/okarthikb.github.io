@@ -183,15 +183,15 @@
 <pre><code class="language-plaintext">initialize replay memory $D$
 <b>repeat</b>
   $t \leftarrow 0$
-  $s \leftarrow s_t$  <span class="grey"># initial state</span>
+  $S = \{\text{NULL}, \ldots, s_0\}$  <span class="grey"># initial queue with null frames</span>
+  $\psi \leftarrow \phi(S)$  <span class="grey"># initial pre-processed sequence</span>
   <b>repeat</b>
-    <span class="grey"># pre-processed sequence of prev $k$ frames</span>
-    $\psi_t \leftarrow \phi(s_{t - k + 1},\ldots,s_t)$
-    pick action $a_t$ acc. $e$-greedy
-    take action $a_t$, get reward $r_t$ and next state $s_{t + 1}$
-    $\psi_t' \leftarrow \phi(s_{t - k},\ldots,s_{t + 1})$
+    pick action $a_t$ acc. $e$-greedy and $\psi$
+    take action $a_t$, get reward $r_t$, and next state $s_{t + 1}$
+    remove $S[0]$ and append $s_{t+1}$ to $S$
+    $\psi' \leftarrow \phi(S)$
     append transition $(\psi_t, a_t, r_t, \psi_t')$ to $D$
-    $s \leftarrow s_{t + 1}$  <span class="grey"># transition to next state</span>
+    $\psi \leftarrow \psi'$
     sample mini-batch $B \subset D$
     <b>for</b> all $(\psi_i, a_i, r_i, \psi_i') \in B$
       $
