@@ -182,7 +182,7 @@
       <div class="code ovf">
 <pre><code class="language-plaintext">initialize replay memory $D$
 <b>repeat</b>
-  $S = \{\text{NULL}, \ldots, s\}$  <span class="grey"># Python deque</span>
+  <span class="grey"># Python deque with {k - 1} NULL frames and start frame</span>  $S = \{\text{NULL}, \ldots, s\}$  
   $\psi \leftarrow \phi(S)$  <span class="grey"># initial pre-processed sequence</span>
   <b>repeat</b>
     pick action $a$ acc. $e$-greedy and $\psi$
