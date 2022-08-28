@@ -182,27 +182,25 @@
       <div class="code ovf">
 <pre><code class="language-plaintext">initialize replay memory $D$
 <b>repeat</b>
-  $t \leftarrow 0$
-  $S = \{\text{NULL}, \ldots, s_0\}$  <span class="grey"># Python deque</span>
+  $S = \{\text{NULL}, \ldots, s\}$  <span class="grey"># Python deque</span>
   $\psi \leftarrow \phi(S)$  <span class="grey"># initial pre-processed sequence</span>
   <b>repeat</b>
-    pick action $a_t$ acc. $e$-greedy and $\psi$
-    take action $a_t$, get reward $r_t$, and next state $s_{t + 1}$
-    append $s_{t+1}$ to $S$
+    pick action $a$ acc. $e$-greedy and $\psi$
+    take action $a$, get reward $r$, and next state $s'$
+    append $s'$ to $S$
     $\psi' \leftarrow \phi(S)$
-    append transition $(\psi_t, a_t, r_t, \psi_t')$ to $D$
+    append $(\psi, a, r, \psi')$ to $D$
     $\psi \leftarrow \psi'$
     sample mini-batch $B \subset D$
-    <b>for</b> all $(\psi_i, a_i, r_i, \psi_i') \in B$
+    <b>for</b> all $(\psi, a, r, \psi') \in B$
       $
-        y_i \leftarrow 
+        y\leftarrow 
         \begin{cases}
-          r_i & \psi_i'\ \text{is terminal} \\
-          r_i + \gamma\operatorname{max}_a Q_\theta(\psi_i', a) & \text{o/w}
+          r & \psi'\ \text{is terminal} \\
+          r + \gamma\operatorname{max}_a Q_\theta(\psi', a) & \text{o/w}
         \end{cases}
       $
-      gradient descent step on $(y_i - Q_\theta(\psi_i, a_i))^2$
-    $t \leftarrow t + 1$
+      gradient descent step on $(y - Q_\theta(\psi, a))^2$
   <b>until episode done</b>
 <b>until convergence</b></code></pre>
       </div>
