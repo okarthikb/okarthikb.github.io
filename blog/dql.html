@@ -183,12 +183,12 @@
 <pre><code class="language-plaintext">initialize replay memory $D$
 <b>repeat</b>
   $t \leftarrow 0$
-  $S = \{\text{NULL}, \ldots, s_0\}$  <span class="grey"># initial queue with null frames</span>
+  $S = \{\text{NULL}, \ldots, s_0\}$  <span class="grey"># Python deque</span>
   $\psi \leftarrow \phi(S)$  <span class="grey"># initial pre-processed sequence</span>
   <b>repeat</b>
     pick action $a_t$ acc. $e$-greedy and $\psi$
     take action $a_t$, get reward $r_t$, and next state $s_{t + 1}$
-    remove $S[0]$ and append $s_{t+1}$ to $S$
+    append $s_{t+1}$ to $S$
     $\psi' \leftarrow \phi(S)$
     append transition $(\psi_t, a_t, r_t, \psi_t')$ to $D$
     $\psi \leftarrow \psi'$
