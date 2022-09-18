@@ -209,7 +209,7 @@ print(df_over_da)</code></pre>
     </div>
 
     <p>
-      where $\tau \subset T$ is the set of all $t \in T$ dependent on $x_i$. $(4)$ and $(5)$ are equivalent.
+      where $\tau \subset T$ is the set of all $t \in T$ dependent on $x_i$. This is simply the multivariable chain rule.
       The equations above are important because it's how we "backpropagate" the derivative from the final term (i.e., $f(\ldots)$) to it's
       parameters $x_1,\ldots,x_n$. Let's implement this in Python.
     </p>
