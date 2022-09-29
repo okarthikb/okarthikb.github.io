@@ -45,7 +45,7 @@
 
 <body>
   <div class="page">
-    <h2>Deep $Q$-learning</h2>
+    <h2>Deep Q-learning</h2>
 
     <p><u><a href="../index.html">more posts</a></u></p>
 
@@ -54,8 +54,8 @@
     <h3>Intro</h3>
 
     <p>
-      Deep $Q$-learning is an algorithm introduced by DeepMind in 2015 that kickstarted deep RL. 
-      The idea was to combine a traditional RL algorithm ($Q$-learning) with function approximators, i.e.,
+      Deep Q-learning is an algorithm introduced by DeepMind in 2015 that kickstarted deep RL. 
+      The idea was to combine a traditional RL algorithm (Q-learning) with function approximators, i.e.,
       deep neural nets. In this post, I'll explain the algorithm and how to implement 
       it in PyTorch using OpenAI's gym.
     </p>
@@ -109,15 +109,15 @@
     </div>
 
     <p>
-      The idea behind deep $Q$-learning is to approximate the $Q$ function using some model with parameters $\theta$, usually a 
-      neural net. The state of the environment is the input and the final layer of the neural net consists of the $Q$-values for
+      The idea behind deep Q-learning is to approximate the $Q$ function using some model with parameters $\theta$, usually a 
+      neural net. The state of the environment is the input and the final layer of the neural net consists of the Q-values for
       different actions.
     </p>
 
     <div class="img">
       <img src="../images/dqn.png" alt="dqn">
       <br>
-      <span class="grey">Deep $Q$-network for playing Atari Breakout</span>
+      <span class="grey">Deep Q-network for playing Atari Breakout</span>
     </div>
 
     <p>
