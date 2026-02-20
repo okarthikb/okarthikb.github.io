@@ -20,8 +20,8 @@ body {
 }
 
 :root {
-    --inline-code-size: 0.8em;
-    --block-code-size: 0.8em;
+    --code-size: 0.8em;
+    --katex-tag-gutter: 2.4em;
 }
 
 /* Container */
@@ -39,8 +39,13 @@ header {
 }
 
 header .site-title {
-    font-size: 1.1em;
-    font-weight: normal;
+    margin: 0;
+    font-size: 1.45em;
+    line-height: 1.15;
+    font-weight: 700;
+}
+
+header .site-title a {
     text-decoration: none;
     color: #1a1a1a;
 }
@@ -62,14 +67,9 @@ nav a:hover {
 
 /* Typography */
 h1, h2, h3, h4 {
-    font-weight: normal;
     margin: 1.5em 0 0.5em;
     line-height: 1.3;
 }
-
-h1 { font-size: 1.6em; }
-h2 { font-size: 1.3em; }
-h3 { font-size: 1.1em; }
 
 p {
     margin-bottom: 1em;
@@ -105,7 +105,7 @@ a:hover {
 
 /* Post */
 article h1.post-title {
-    font-size: 1.4em;
+    font-size: 1.45em;
     margin-bottom: 0.2em;
     border-bottom: 2px solid #d0d0d0;
     padding-bottom: 0.15em;
@@ -135,7 +135,7 @@ article h2:hover, article h3:hover {
 pre {
     padding: 0.8em;
     overflow-x: auto;
-    font-size: var(--block-code-size);
+    font-size: var(--code-size);
     line-height: 1.5;
     margin: 1.2em 0;
     border: 1px solid #d0d0d0;
@@ -143,7 +143,7 @@ pre {
 
 code {
     font-family: 'Fira Code', monospace;
-    font-size: var(--inline-code-size);
+    font-size: var(--code-size);
 }
 
 pre code {
@@ -177,7 +177,7 @@ p code, li code {
 .katex-display > .katex > .katex-html {
     box-sizing: border-box;
     min-width: max-content;
-    padding-right: 2.1em;
+    padding-inline-end: var(--katex-tag-gutter);
 }
 
 /* Blockquotes */
@@ -294,10 +294,7 @@ pre code.hljs {
         padding: 0.7em;
     }
 
-    :root {
-        --inline-code-size: 0.8em;
-        --block-code-size: 0.8em;
+    header .site-title {
+        font-size: 1.28em;
     }
-
-    h1 { font-size: 1.4em; }
 }
