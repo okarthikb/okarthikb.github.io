@@ -86,6 +86,10 @@ a:hover {
 .post-item-date {
     color: #666;
     margin-right: 0.25em;
+    display: inline-block;
+    min-width: 12ch;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
 }
 
 /* About section on index */
