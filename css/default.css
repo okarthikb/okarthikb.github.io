@@ -142,7 +142,7 @@ pre {
 }
 
 code {
-    font-family: 'Source Code Pro', 'Menlo', monospace;
+    font-family: 'SFMono-Regular', 'Menlo', 'Consolas', 'Liberation Mono', monospace;
     font-size: var(--inline-code-size);
 }
 
