@@ -32,25 +32,6 @@ body {
     padding: 2em 0 2.2em;
 }
 
-/* Header */
-header {
-    border-bottom: 2px solid #d0d0d0;
-    padding-bottom: 0.8em;
-    margin-bottom: 2em;
-}
-
-header .site-title {
-    margin: 0;
-    font-size: 1.45em;
-    line-height: 1.15;
-    font-weight: 700;
-}
-
-header .site-title a {
-    text-decoration: none;
-    color: #1a1a1a;
-}
-
 /* Typography */
 h1, h2, h3, h4 {
     margin: 1.5em 0 0.5em;
@@ -104,18 +85,6 @@ a:hover {
     margin-bottom: 1.5em;
 }
 
-.home-title {
-    margin-top: 0;
-    margin-bottom: 1.2em;
-    padding-bottom: var(--rule-text-gap);
-    border-bottom: 2px solid #d0d0d0;
-}
-
-.site-title-home {
-    color: #1a1a1a;
-    text-decoration: none;
-}
-
 /* Post */
 .post-title {
     font-size: 1.45em;
@@ -128,6 +97,13 @@ a:hover {
 
 .post-title:hover {
     border-bottom: 2px solid #454545;
+}
+
+.post-title a,
+.post-title a:visited,
+.post-title a:hover {
+    color: #1a1a1a;
+    text-decoration: none;
 }
 
 .post-date {
@@ -311,7 +287,7 @@ pre code.hljs {
         padding: 0.7em;
     }
 
-    header .site-title {
+    .post-title {
         font-size: 1.28em;
     }
 }
