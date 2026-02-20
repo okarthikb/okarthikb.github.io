@@ -20,8 +20,8 @@ body {
 }
 
 :root {
-    --inline-code-size: 0.9em;
-    --block-code-size: 0.9em;
+    --inline-code-size: 0.8em;
+    --block-code-size: 0.8em;
 }
 
 /* Container */
@@ -295,8 +295,8 @@ pre code.hljs {
     }
 
     :root {
-        --inline-code-size: 0.9em;
-        --block-code-size: 0.9em;
+        --inline-code-size: 0.8em;
+        --block-code-size: 0.8em;
     }
 
     h1 { font-size: 1.4em; }
