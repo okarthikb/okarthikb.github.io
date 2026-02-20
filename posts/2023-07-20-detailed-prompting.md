@@ -15,7 +15,7 @@ After seeing this tweet, I wondered how hard it would be to make GPT-4 (or any L
 
 <div class="user">
 
-```
+```text
 example 1
 
 3 7 8 + 6 4
@@ -134,7 +134,7 @@ I'll provide a new set operands and you \_must\_ use the template to compute the
 
 <div class="gpt">
 
-```
+```text
 index the digits
 
 3 4 7 5 6 9 1 8 2 4 7 6 3 2
@@ -293,13 +293,13 @@ The second reason why GPT-4 fails at zero-shot addition is that you give it no r
 
 Well, how do first graders do addition? They go from right to left one digit at a time. Ask for the $n$th digit and they'll be able to count one by one and tell what it is. We need a way for our language model to retrieve a digit in any position like the first grader. So we first tell it to *index* all the digits. This lets it 1) get any digit given position and operand and 2) see how many digits are in each operand. Based on this, it can then figure out how many 0s it needs to pad the smaller number with
 
-```
+```text
 3 > 2 => pad operand w/ fewer digits with abs(3 - 2) = 1 zero(s)
 ```
 
 We make it explicitly calculate the number of 0s to pad with. Then we do the padding *step by step* (or signal it to do it) like this
 
-```
+```text
 operand w/ fewer zeros: 6 4
 
 padding step by step:
@@ -309,7 +309,7 @@ padding step by step:
 
 This is one step in the prompt. And look at how GPT-4 groks it
 
-```
+```text
 14 < 19 => pad operand w/ fewer digits with abs(14 - 19) = 5 zero(s)
 
 operand w/ fewer zeros: 3 4 7 5 6 9 1 8 2 4 7 6 3 2
@@ -325,7 +325,7 @@ padding step by step:
 
 By first making it compute how many 0s it needs to pad with and then making it do the padding step by step with whitespaces, GPT-4 will know when to stop padding and move on to the next procedure. We make it re-index the digits like so
 
-```
+```text
 index the digits again
 
 0 0 0 0 0 3 4 7 5 6 9 1 8 2 4 7 6 3 2
@@ -375,13 +375,13 @@ index the digits again
 
 We then "define" some variables, let it know what they are, and set their initial values
 
-```
+```text
 let | = concatenate, c = carry bit = 0, x = _, f = false, t = true
 ```
 
 and then we let it do the addition step by step, starting from the last digit pair going all the way to the first. We'll just look at the last few operations
 
-```
+```text
 4: 0 + 4 + c = 4 + 0 = 4 -> c = 0 , d = 4 -> x = d | x = 4 | 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 = 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 -> end? f
 3: 0 + 3 + c = 3 + 0 = 3 -> c = 0 , d = 3 -> x = d | x = 3 | 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 = 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 -> end? f
 2: 0 + 9 + c = 9 + 0 = 9 -> c = 0 , d = 9 -> x = d | x = 9 | 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 = 9 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 -> end? f
