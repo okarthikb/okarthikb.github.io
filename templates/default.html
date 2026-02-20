@@ -8,35 +8,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
-    <script>
-        function refreshDisplayMathOverflow() {
-            document.querySelectorAll('.katex-display').forEach(function (el) {
-                var overflowing = el.scrollWidth > el.clientWidth + 1;
-                el.classList.toggle('math-overflowing', overflowing);
-            });
-        }
-
-        function renderMathContent() {
-            if (typeof renderMathInElement !== 'function') return;
-            renderMathInElement(document.body, {
-                delimiters: [
-                    {left: '$$$$', right: '$$$$', display: true},
-                    {left: '\\[', right: '\\]', display: true},
-                    {left: '$$', right: '$$', display: false},
-                    {left: '\\(', right: '\\)', display: false}
-                ],
-                throwOnError: false
-            });
-            requestAnimationFrame(refreshDisplayMathOverflow);
-        }
-
-        window.addEventListener('resize', refreshDisplayMathOverflow);
-    </script>
     <!-- KaTeX -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
-        onload="renderMathContent()"></script>
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$$$', right: '$$$$', display: true},
+                {left: '\\[', right: '\\]', display: true},
+                {left: '$$', right: '$$', display: false},
+                {left: '\\(', right: '\\)', display: false}
+            ],
+            throwOnError: false
+        });"></script>
     <!-- highlight.js -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
     <!-- Site overrides -->
@@ -64,7 +48,6 @@
             document.querySelectorAll('pre code[class*="language-"]').forEach(function (el) {
                 hljs.highlightElement(el);
             });
-            refreshDisplayMathOverflow();
         });
     </script>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>

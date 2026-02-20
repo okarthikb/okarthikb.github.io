@@ -168,15 +168,16 @@ p code, li code {
     padding: 0.5em 0;
 }
 
-.katex-display.math-overflowing > .katex,
-.katex-display.math-overflowing > .katex > .katex-html {
-    min-width: max-content;
+.katex-display > .katex {
+    width: max-content;
+    min-width: 100%;
+    text-align: center;
 }
 
-.katex-display.math-overflowing > .katex > .katex-html > .tag {
-    position: static !important;
-    display: inline-block;
-    margin-left: 0.35em;
+.katex-display > .katex > .katex-html {
+    box-sizing: border-box;
+    min-width: max-content;
+    padding-right: 2.1em;
 }
 
 /* Blockquotes */
