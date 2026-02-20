@@ -30,8 +30,8 @@ main = hakyll $ do
     match "posts/*" $ do
         route $ setExtension "html"
         compile $ mathPandocCompiler
-            >>= loadAndApplyTemplate "templates/post.html" postCtx
-            >>= loadAndApplyTemplate "templates/default.html" postCtx
+            >>= loadAndApplyTemplate "templates/post.html" postCtxWithBack
+            >>= loadAndApplyTemplate "templates/default.html" postCtxWithBack
             >>= relativizeUrls
 
     -- Index page
@@ -52,12 +52,23 @@ main = hakyll $ do
     match "old.html" $ do
         route idRoute
         compile $ getResourceBody
-            >>= loadAndApplyTemplate "templates/default.html" (constField "title" "Old" <> defaultContext)
+            >>= loadAndApplyTemplate "templates/default.html" oldCtx
             >>= relativizeUrls
 
 postCtx :: Context String
 postCtx =
     dateField "date" "%Y-%m-%d" <>
+    defaultContext
+
+postCtxWithBack :: Context String
+postCtxWithBack =
+    constField "showBack" "true" <>
+    postCtx
+
+oldCtx :: Context String
+oldCtx =
+    constField "showBack" "true" <>
+    constField "title" "Old" <>
     defaultContext
 
 mathPandocCompiler :: Compiler (Item String)

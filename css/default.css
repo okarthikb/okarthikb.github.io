@@ -32,6 +32,28 @@ body {
     padding: 2em 0 2.2em;
 }
 
+.page-back {
+    position: fixed;
+    top: 0.95rem;
+    left: 0.95rem;
+    z-index: 20;
+    border: 1px solid #d0d0d0;
+    background: rgba(255, 255, 255, 0.94);
+    color: #444;
+    font-size: 0.78em;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    padding: 0.44em 0.62em;
+    border-radius: 999px;
+    text-decoration: none;
+}
+
+.page-back:hover {
+    border-color: #454545;
+    color: #111;
+    text-decoration: none;
+}
+
 /* Typography */
 h1, h2, h3, h4 {
     margin: 1.5em 0 0.5em;
@@ -289,5 +311,10 @@ pre code.hljs {
 
     .post-title {
         font-size: 1.28em;
+    }
+
+    .page-back {
+        top: 0.72rem;
+        left: 0.72rem;
     }
 }
