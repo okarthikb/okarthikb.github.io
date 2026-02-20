@@ -20,8 +20,8 @@ body {
 }
 
 :root {
-    --inline-code-size: 0.95em;
-    --block-code-size: 0.95em;
+    --inline-code-size: 0.9em;
+    --block-code-size: 0.9em;
 }
 
 /* Container */
@@ -142,7 +142,7 @@ pre {
 }
 
 code {
-    font-family: 'Source Code Pro', monospace;
+    font-family: 'Fira Code', monospace;
     font-size: var(--inline-code-size);
 }
 
@@ -295,8 +295,8 @@ pre code.hljs {
     }
 
     :root {
-        --inline-code-size: 0.95em;
-        --block-code-size: 0.95em;
+        --inline-code-size: 0.9em;
+        --block-code-size: 0.9em;
     }
 
     h1 { font-size: 1.4em; }
