@@ -35,14 +35,19 @@ body {
 .page-back {
     display: inline-block;
     margin: 0 0 1.05em;
+    border: 1px solid #d0d0d0;
+    border-radius: 3px;
+    background: #fafafa;
     color: #666;
     font-size: 0.95em;
     line-height: 1;
-    padding: 0;
+    padding: 0.08em 0.36em 0.12em;
     text-decoration: none;
 }
 
 .page-back:hover {
+    border-color: #454545;
+    background: #f3f3f3;
     color: #111;
     text-decoration: none;
 }

@@ -63,6 +63,7 @@ postCtx =
 
 oldCtx :: Context String
 oldCtx =
+    constField "title" "Old" <>
     constField "date" "[0000-00-00]" <>
     defaultContext
 
