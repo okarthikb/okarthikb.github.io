@@ -83,7 +83,7 @@ tokens = torch.randint(0, vocab_size, (batch_size, seq_len))  # Random token IDs
 token_embeddings = token_embedding(tokens)
 
 token_embeddings.shape  # Expected shape: (batch_size, seq_len, d_model)</code></pre>
-<pre class="result"><code>torch.Size([2, 8, 32])</code></pre>
+<pre class="execution-output"><code>torch.Size([2, 8, 32])</code></pre>
 
 <p>
 Great! The output of the token embedding layer has the correct shape: <code>(batch_size, seq_len, d_model).</code>
@@ -107,7 +107,7 @@ pos_embedding = PositionalEmbedding(seq_len, d_model)
 pos_embeddings = pos_embedding(token_embeddings)
 
 pos_embeddings.shape  # Expected shape: (batch_size, seq_len, d_model)</code></pre>
-<pre class="result"><code>torch.Size([2, 8, 32])</code></pre>
+<pre class="execution-output"><code>torch.Size([2, 8, 32])</code></pre>
 
 <p>
 The positional embedding layer also returns the expected shape of <code>(batch_size, seq_len, d_model).</code>
@@ -138,7 +138,7 @@ token_and_pos_embedding = TokenAndPositionalEmbedding(vocab_size, seq_len, d_mod
 combined_embeddings = token_and_pos_embedding(tokens)
 
 combined_embeddings.shape  # Expected shape: (batch_size, seq_len, d_model)</code></pre>
-<pre class="result"><code>torch.Size([2, 8, 32])</code></pre>
+<pre class="execution-output"><code>torch.Size([2, 8, 32])</code></pre>
 
 <p>
 The combined token and positional embeddings layer also gives us the expected shape <code>(batch_size, seq_len, d_model).</code>
@@ -199,7 +199,7 @@ multi_head_attention = MultiHeadAttention(d_model, num_heads)
 attention_output = multi_head_attention(combined_embeddings)
 
 attention_output.shape  # Expected shape: (batch_size, seq_len, d_model)</code></pre>
-<pre class="result"><code>torch.Size([2, 8, 32])</code></pre>
+<pre class="execution-output"><code>torch.Size([2, 8, 32])</code></pre>
 
 <p>
 Great! The multi-head attention layer also returns the expected shape <code>(batch_size, seq_len, d_model).</code>
@@ -227,7 +227,7 @@ feed_forward = FeedForward(d_model, ff_dim)
 ff_output = feed_forward(attention_output)
 
 ff_output.shape  # Expected shape: (batch_size, seq_len, d_model)</code></pre>
-<pre class="result"><code>torch.Size([2, 8, 32])</code></pre>
+<pre class="execution-output"><code>torch.Size([2, 8, 32])</code></pre>
 
 <p>
 The feed-forward neural network (FFN) layer also gives us the expected output shape <code>(batch_size, seq_len, d_model).</code>
@@ -259,7 +259,7 @@ transformer_block = TransformerBlock(d_model, num_heads, ff_dim)
 transformer_output = transformer_block(combined_embeddings)
 
 transformer_output.shape  # Expected shape: (batch_size, seq_len, d_model)</code></pre>
-<pre class="result"><code>torch.Size([2, 8, 32])</code></pre>
+<pre class="execution-output"><code>torch.Size([2, 8, 32])</code></pre>
 
 <p>
 The feed-forward neural network (FFN) layer also gives us the expected output shape <code>(batch_size, seq_len, d_model).</code>
@@ -291,7 +291,7 @@ transformer_block = TransformerBlock(d_model, num_heads, ff_dim)
 transformer_output = transformer_block(combined_embeddings)
 
 transformer_output.shape  # Expected shape: (batch_size, seq_len, d_model)</code></pre>
-<pre class="result"><code>torch.Size([2, 8, 32])</code></pre>
+<pre class="execution-output"><code>torch.Size([2, 8, 32])</code></pre>
 
 <p>The Transformer block also returns the expected shape <code>(batch_size, seq_len, d_model).</code></p>
 <p>
@@ -332,7 +332,7 @@ gpt = GPT(vocab_size, seq_len, d_model, num_heads, ff_dim, num_layers)
 gpt_output = gpt(tokens)
 
 gpt_output.shape  # Expected shape: (batch_size, seq_len, vocab_size)</code></pre>
-<pre class="result"><code>torch.Size([2, 8, 32])</code></pre>
+<pre class="execution-output"><code>torch.Size([2, 8, 32])</code></pre>
 
 <p>The Transformer block also returns the expected shape <code>(batch_size, seq_len, d_model).</code></p>
 <p>
@@ -373,7 +373,7 @@ gpt = GPT(vocab_size, seq_len, d_model, num_heads, ff_dim, num_layers)
 gpt_output = gpt(tokens)
 
 gpt_output.shape  # Expected shape: (batch_size, seq_len, vocab_size)</code></pre>
-<pre class="result"><code>torch.Size([2, 8, 100])</code></pre>
+<pre class="execution-output"><code>torch.Size([2, 8, 100])</code></pre>
 
 <p>
 The final output of the GPT model is of the expected shape <code>(batch_size, seq_len, vocab_size).</code> This means that for each token in the input sequence, the model gives a distribution over the vocabulary size, indicating the likelihood of each possible next token.
@@ -400,7 +400,7 @@ with open('/mnt/data/extremely_mid_post.txt', 'r') as f:
 
 # Print the first 100 characters
 text[:100]</code></pre>
-<pre class="result"><code>'With the advent of ChatGPT, large language models (LLMs) went from a relatively niche topic to somet'</code></pre>
+<pre class="execution-output"><code>'With the advent of ChatGPT, large language models (LLMs) went from a relatively niche topic to somet'</code></pre>
 
 <p>
 The first 100 characters of the text file are:
@@ -452,7 +452,7 @@ inputs = token_ids[:, :-1]
 targets = token_ids[:, 1:]
 
 inputs.shape, targets.shape  # Expected shapes: (batch_size, seq_len), (batch_size, seq_len)</code></pre>
-<pre class="result"><code>(torch.Size([29, 256]), torch.Size([29, 256]))</code></pre>
+<pre class="execution-output"><code>(torch.Size([29, 256]), torch.Size([29, 256]))</code></pre>
 
 <p>
 The input and target tensors have been correctly shaped to <code>(batch_size, seq_len).</code> The input tensor includes the first 256 tokens in each sequence, while the target tensor includes the last 256 tokens.
@@ -512,7 +512,7 @@ loss_fn = nn.CrossEntropyLoss()
 loss = loss_fn(output.view(-1, vocab_size), target_batch.view(-1))
 
 output.shape, loss.item()  # Expected output shape: (batch_size, seq_len, vocab_size)</code></pre>
-<pre class="result"><code>Cell In[4], line 39, in MultiHeadAttention.forward(self, x)
+<pre class="execution-output"><code>Cell In[4], line 39, in MultiHeadAttention.forward(self, x)
      36 v = rearrange(v, 'b l (h d) -> b h l d', h=self.num_heads)
      38 # Apply scaled dot product attention
 ---> 39 attn = scaled_dot_product_attention(q, k, v)
@@ -566,7 +566,7 @@ output = gpt(input_batch)
 loss = loss_fn(output.view(-1, vocab_size), target_batch.view(-1))
 
 output.shape, loss.item()  # Expected output shape: (batch_size, seq_len, vocab_size)</code></pre>
-<pre class="result"><code>Cell In[4], line 5, in scaled_dot_product_attention(q, k, v)
+<pre class="execution-output"><code>Cell In[4], line 5, in scaled_dot_product_attention(q, k, v)
       3 attn_logits = torch.matmul(q, k.transpose(-2, -1))  # Calculate attention scores
       4 attn_logits = attn_logits / torch.sqrt(torch.tensor(k.size(-1)).float())  # Scale scores
 ----> 5 attn_weights = F.softmax(attn_logits, dim=-1)  # Apply softmax to get attention weights
@@ -636,8 +636,8 @@ for _ in range(seq_len):
 generated_text = ''.join([id_to_char[id.item()] for id in output_sequence[0]])
 
 generated_text</code></pre>
-<pre class="result"><code>Stopped generation at sequence length 112 due to memory limitations.</code></pre>
-<pre class="result"><code>'[AM" Y"BqCCypIFq,eqAarFqAM)qAPB-2/PIF:FbyOqvK"BMw[A-.s"aSHrUF–a-("Hx-:yOFldKaq-(–aAAM" AuqA—FliT"HT:yOcc-IBq&amp;W&amp;W'</code></pre>
+<pre class="execution-output"><code>Stopped generation at sequence length 112 due to memory limitations.</code></pre>
+<pre class="execution-output"><code>'[AM" Y"BqCCypIFq,eqAarFqAM)qAPB-2/PIF:FbyOqvK"BMw[A-.s"aSHrUF–a-("Hx-:yOFldKaq-(–aAAM" AuqA—FliT"HT:yOcc-IBq&amp;W&amp;W'</code></pre>
 
 <p>
 The autoregressive decoding process was able to generate a sequence of 112 characters before hitting the memory limit. Here's the generated sequence:
