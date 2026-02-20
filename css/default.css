@@ -20,8 +20,8 @@ body {
 }
 
 :root {
-    --inline-code-size: 0.9em;
-    --block-code-size: 0.9em;
+    --inline-code-size: 0.88em;
+    --block-code-size: 0.88em;
 }
 
 /* Container */
@@ -168,12 +168,12 @@ p code, li code {
     padding: 0.5em 0;
 }
 
-.katex-display > .katex,
-.katex-display > .katex > .katex-html {
+.katex-display.math-overflowing > .katex,
+.katex-display.math-overflowing > .katex > .katex-html {
     min-width: max-content;
 }
 
-.katex-display > .katex > .katex-html > .tag {
+.katex-display.math-overflowing > .katex > .katex-html > .tag {
     position: static !important;
     display: inline-block;
     margin-left: 0.35em;
@@ -294,8 +294,8 @@ pre code.hljs {
     }
 
     :root {
-        --inline-code-size: 0.88em;
-        --block-code-size: 0.88em;
+        --inline-code-size: 0.84em;
+        --block-code-size: 0.84em;
     }
 
     h1 { font-size: 1.4em; }
