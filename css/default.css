@@ -14,14 +14,21 @@ body {
     font-family: "Times New Roman", Times, serif;
     font-size: 18px;
     line-height: 1.75;
-    color: #1a1a1a;
-    background: #fff;
+    color: var(--text);
+    background: #fcfcfc;
     padding: 0 1.2em;
 }
 
 :root {
     --inline-code-size: 0.8em;
     --block-code-size: 0.8em;
+    --text: #1a1a1a;
+    --muted: #6f6f6f;
+    --border: #d0d0d0;
+    --border-strong: #454545;
+    --link: #27408b;
+    --link-visited: #00688b;
+    --code-bg: #fbfbfb;
 }
 
 /* Container */
@@ -33,16 +40,18 @@ body {
 
 /* Header */
 header {
-    border-bottom: 2px solid #d0d0d0;
+    border-bottom: 2px solid var(--border);
     padding-bottom: 0.8em;
     margin-bottom: 2em;
 }
 
 header .site-title {
-    font-size: 1.1em;
-    font-weight: normal;
+    font-size: 1.62em;
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: 0.01em;
     text-decoration: none;
-    color: #1a1a1a;
+    color: var(--text);
 }
 
 nav {
@@ -52,22 +61,26 @@ nav {
 nav a {
     margin-right: 1.2em;
     text-decoration: none;
-    color: #1a1a1a;
+    color: var(--text);
     font-size: 0.9em;
+    padding-bottom: 0.08em;
+    border-bottom: 1px solid transparent;
+    transition: border-color 120ms ease;
 }
 
 nav a:hover {
-    text-decoration: underline;
+    text-decoration: none;
+    border-bottom-color: var(--border-strong);
 }
 
 /* Typography */
 h1, h2, h3, h4 {
-    font-weight: normal;
+    font-weight: 600;
     margin: 1.5em 0 0.5em;
     line-height: 1.3;
 }
 
-h1 { font-size: 1.6em; }
+h1 { font-size: 1.55em; }
 h2 { font-size: 1.3em; }
 h3 { font-size: 1.1em; }
 
@@ -76,12 +89,13 @@ p {
 }
 
 a {
-    color: #27408b;
+    color: var(--link);
     text-decoration: none;
+    text-underline-offset: 0.12em;
 }
 
 a:visited {
-    color: #00688b;
+    color: var(--link-visited);
 }
 
 a:hover {
@@ -105,30 +119,33 @@ a:hover {
 
 /* Post */
 article h1.post-title {
-    font-size: 1.4em;
+    font-size: 1.42em;
+    font-weight: 700;
     margin-bottom: 0.2em;
-    border-bottom: 2px solid #d0d0d0;
+    border-bottom: 2px solid var(--border);
     padding-bottom: 0.15em;
 }
 
 article h1.post-title:hover {
-    border-bottom: 2px solid #454545;
+    border-bottom: 2px solid var(--border-strong);
 }
 
 .post-date {
-    color: #777;
-    font-size: 0.9em;
+    color: var(--muted);
+    font-size: 0.82em;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
     margin-bottom: 2em;
     display: block;
 }
 
 article h2, article h3 {
-    border-bottom: 1px solid #d0d0d0;
+    border-bottom: 1px solid var(--border);
     padding-bottom: 0.1em;
 }
 
 article h2:hover, article h3:hover {
-    border-bottom: 1px solid #454545;
+    border-bottom: 1px solid var(--border-strong);
 }
 
 /* Code blocks */
@@ -138,7 +155,8 @@ pre {
     font-size: var(--block-code-size);
     line-height: 1.5;
     margin: 1.2em 0;
-    border: 1px solid #d0d0d0;
+    border: 1px solid var(--border);
+    background: var(--code-bg);
 }
 
 code {
@@ -182,7 +200,7 @@ p code, li code {
 
 /* Blockquotes */
 blockquote {
-    border-left: 2px solid #d0d0d0;
+    border-left: 3px solid var(--border);
     padding-left: 1em;
     margin: 1.2em 0;
     color: #555;
@@ -205,10 +223,10 @@ li {
 
 /* Footer */
 footer {
-    border-top: 2px solid #d0d0d0;
+    border-top: 2px solid var(--border);
     padding-top: 1em;
     margin-top: 3em;
-    color: #777;
+    color: var(--muted);
     font-size: 0.85em;
 }
 
@@ -237,7 +255,7 @@ footer {
 }
 
 .result {
-    border: 1px solid #d0d0d0;
+    border: 1px solid var(--border);
 }
 
 /* Center media and rich embeds authored in Markdown */
@@ -299,5 +317,6 @@ pre code.hljs {
         --block-code-size: 0.8em;
     }
 
-    h1 { font-size: 1.4em; }
+    header .site-title { font-size: 1.38em; }
+    h1 { font-size: 1.35em; }
 }
