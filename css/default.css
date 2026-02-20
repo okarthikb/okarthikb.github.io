@@ -34,21 +34,15 @@ body {
 
 .page-back {
     display: inline-block;
-    margin: 0 0 1.35em;
-    border: 1px solid #d0d0d0;
-    border-radius: 4px;
-    background: #f7f7f7;
+    margin: 0 0 1.05em;
     color: #666;
-    font-size: 0.82em;
-    letter-spacing: 0.01em;
+    font-size: 0.95em;
     line-height: 1;
-    padding: 0.35em 0.55em;
+    padding: 0;
     text-decoration: none;
 }
 
 .page-back:hover {
-    border-color: #454545;
-    background: #f0f0f0;
     color: #111;
     text-decoration: none;
 }
@@ -131,7 +125,7 @@ a:hover {
     color: #777;
     font-size: 0.9em;
     margin-top: var(--rule-text-gap);
-    margin-bottom: 2em;
+    margin-bottom: 0.08em;
     display: block;
 }
 
