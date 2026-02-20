@@ -50,21 +50,6 @@ header .site-title a {
     color: #1a1a1a;
 }
 
-nav {
-    margin-top: 0.4em;
-}
-
-nav a {
-    margin-right: 1.2em;
-    text-decoration: none;
-    color: #1a1a1a;
-    font-size: 0.9em;
-}
-
-nav a:hover {
-    text-decoration: underline;
-}
-
 /* Typography */
 h1, h2, h3, h4 {
     margin: 1.5em 0 0.5em;
@@ -98,6 +83,11 @@ a:hover {
     padding: 0.3em 0;
 }
 
+.post-item-date {
+    color: #666;
+    margin-right: 0.25em;
+}
+
 /* About section on index */
 .about {
     margin-bottom: 1.5em;
@@ -120,6 +110,10 @@ article h1.post-title:hover {
     font-size: 0.9em;
     margin-bottom: 2em;
     display: block;
+}
+
+.back-link {
+    margin-bottom: 0.4em;
 }
 
 article h2, article h3 {

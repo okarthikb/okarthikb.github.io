@@ -13,7 +13,12 @@ title: Karthik's site
 <ul class="post-list">
 $for(posts)$
     <li>
+        <span class="post-item-date">[$date$]</span>
         <a href="$url$">$title$</a>
     </li>
 $endfor$
+    <li>
+        <span class="post-item-date">[old]</span>
+        <a href="/old.html">Old posts (archive)</a>
+    </li>
 </ul>
