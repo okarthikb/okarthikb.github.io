@@ -30,26 +30,22 @@ body {
     max-width: 680px;
     margin: 0 auto;
     padding: 2em 0 2.2em;
+    position: relative;
 }
 
 .page-back {
-    position: fixed;
-    top: 0.95rem;
-    left: 0.95rem;
-    z-index: 20;
-    border: 1px solid #d0d0d0;
-    background: rgba(255, 255, 255, 0.94);
-    color: #444;
-    font-size: 0.78em;
-    letter-spacing: 0.02em;
+    position: absolute;
+    top: 0.25em;
+    right: 0;
+    z-index: 2;
+    color: #666;
+    font-size: 1.05em;
     line-height: 1;
-    padding: 0.44em 0.62em;
-    border-radius: 999px;
+    padding: 0.15em 0.1em;
     text-decoration: none;
 }
 
 .page-back:hover {
-    border-color: #454545;
     color: #111;
     text-decoration: none;
 }
@@ -314,7 +310,7 @@ pre code.hljs {
     }
 
     .page-back {
-        top: 0.72rem;
-        left: 0.72rem;
+        top: 0.2em;
+        right: 0;
     }
 }
