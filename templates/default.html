@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$title$</title>
+    <link rel="stylesheet" href="/css/default.css">
+    <!-- Source Code Pro for code blocks -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$$$', right: '$$$$', display: true},
+                {left: '\\[', right: '\\]', display: true},
+                {left: '$$', right: '$$', display: false},
+                {left: '\\(', right: '\\)', display: false}
+            ],
+            throwOnError: false
+        });"></script>
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a class="site-title" href="/">Karthik's site</a>
+            <nav>
+                <a href="/">Posts</a>
+                <a href="/old.html">Old</a>
+            </nav>
+        </header>
+        <main>
+            $body$
+        </main>
+        <footer>
+            Built with <a href="https://jaspervdj.be/hakyll/">Hakyll</a>
+        </footer>
+    </div>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+</html>
