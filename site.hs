@@ -52,12 +52,18 @@ main = hakyll $ do
     match "old.html" $ do
         route idRoute
         compile $ getResourceBody
-            >>= loadAndApplyTemplate "templates/default.html" (constField "title" "Old" <> defaultContext)
+            >>= loadAndApplyTemplate "templates/post.html" oldCtx
+            >>= loadAndApplyTemplate "templates/default.html" oldCtx
             >>= relativizeUrls
 
 postCtx :: Context String
 postCtx =
     dateField "date" "%Y-%m-%d" <>
+    defaultContext
+
+oldCtx :: Context String
+oldCtx =
+    constField "date" "[0000-00-00]" <>
     defaultContext
 
 mathPandocCompiler :: Compiler (Item String)
