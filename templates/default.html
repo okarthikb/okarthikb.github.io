@@ -45,8 +45,22 @@
     </div>
     <script>
         window.addEventListener('load', function () {
-            document.querySelectorAll('pre code[class*="language-"]').forEach(function (el) {
+            function highlightTypedBlock(el) {
+                if (el.dataset.hljsDone === '1') return;
+                var lang = Array.from(el.classList).find(function (cls) {
+                    return cls !== 'sourceCode' && cls !== 'hljs' && !cls.startsWith('language-');
+                });
+                if (lang) el.classList.add('language-' + lang);
                 hljs.highlightElement(el);
+                el.dataset.hljsDone = '1';
+            }
+
+            document.querySelectorAll('pre code[class*="language-"]').forEach(function (el) {
+                highlightTypedBlock(el);
+            });
+
+            document.querySelectorAll('pre.sourceCode > code.sourceCode, pre code.sourceCode').forEach(function (el) {
+                highlightTypedBlock(el);
             });
         });
     </script>
