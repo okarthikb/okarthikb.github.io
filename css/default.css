@@ -105,7 +105,9 @@ a:hover {
 }
 
 .post-list li > a {
+    display: block;
     min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 /* About section on index */
@@ -317,6 +319,10 @@ pre code.hljs {
 
     .post-title {
         font-size: 1.28em;
+    }
+
+    .post-list li {
+        column-gap: 0.3em;
     }
 
 }
