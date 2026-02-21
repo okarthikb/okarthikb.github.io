@@ -14,9 +14,9 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
         onload="renderMathInElement(document.body, {
             delimiters: [
-                {left: '$$$$', right: '$$$$', display: true},
+                {left: '$$', right: '$$', display: true},
                 {left: '\\[', right: '\\]', display: true},
-                {left: '$$', right: '$$', display: false},
+                {left: '$', right: '$', display: false},
                 {left: '\\(', right: '\\)', display: false}
             ],
             throwOnError: false
@@ -26,7 +26,13 @@
     <!-- Site overrides -->
     <link rel="stylesheet" href="/css/default.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <script>hljs.highlightAll();</script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.hljs && document.querySelector('pre code')) {
+                hljs.highlightAll();
+            }
+        });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -37,6 +43,14 @@
             Built with <a href="https://jaspervdj.be/hakyll/">Hakyll</a>
         </footer>
     </div>
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <script>
+        if (document.querySelector('blockquote.twitter-tweet')) {
+            const twitterScript = document.createElement('script');
+            twitterScript.async = true;
+            twitterScript.src = 'https://platform.twitter.com/widgets.js';
+            twitterScript.charset = 'utf-8';
+            document.body.appendChild(twitterScript);
+        }
+    </script>
 </body>
 </html>

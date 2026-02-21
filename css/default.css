@@ -183,17 +183,24 @@ p code, li code {
     font-size: 1.05em !important;
 }
 
-/* Math - responsive scrolling */
-.math.display, .katex-display {
+/* Math - centered by default, scroll when needed */
+.math.display {
+    display: block;
+    text-align: center;
+}
+
+.katex-display {
+    display: block;
     overflow-x: auto;
     overflow-y: hidden;
     padding: 0.5em 0;
+    text-align: center;
 }
 
 .katex-display > .katex {
-    width: max-content;
-    min-width: 100%;
-    text-align: center;
+    display: inline-block;
+    min-width: max-content;
+    text-align: initial;
 }
 
 .katex-display > .katex > .katex-html {
