@@ -21,7 +21,6 @@ body {
 
 :root {
     --code-size: 0.8em;
-    --katex-tag-gutter: 2.4em;
     --rule-text-gap: 0.45em;
 }
 
@@ -178,35 +177,19 @@ p code, li code {
     padding: 0.1em 0.3em;
 }
 
-/* KaTeX - match body text size */
+/* KaTeX */
 .katex {
     font-size: 1.05em !important;
 }
 
-/* Math - centered by default, scroll when needed */
-.math.display {
-    display: block;
-    text-align: center;
-}
-
 .katex-display {
-    display: block;
     overflow-x: auto;
     overflow-y: hidden;
-    padding: 0.5em 0;
-    text-align: center;
+    margin: 0.5em 0 !important;
 }
 
-.katex-display > .katex {
-    display: inline-block;
-    min-width: max-content;
-    text-align: initial;
-}
-
-.katex-display > .katex > .katex-html {
-    box-sizing: border-box;
-    min-width: max-content;
-    padding-inline-end: var(--katex-tag-gutter);
+.katex-display > .katex > .katex-html > .tag {
+    bottom: 0;
 }
 
 /* Blockquotes */
