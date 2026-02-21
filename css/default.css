@@ -34,20 +34,22 @@ body {
 
 .page-back {
     display: inline-block;
-    margin: 0 0 0.85em;
-    color: #666;
-    font-size: 0.84em;
-    line-height: 1.1;
-    padding: 0;
+    border: 1px solid #d0d0d0;
+    border-radius: 3px;
+    background: #fff;
+    color: #555;
+    line-height: 1;
+    padding: 0.14em 0.38em 0.16em;
     text-decoration: none;
 }
 
 .page-back:visited {
-    color: #666;
+    color: #555;
 }
 
 .page-back:hover,
 .page-back:visited:hover {
+    border-color: #454545;
     color: #111;
     text-decoration: none;
 }
@@ -130,7 +132,7 @@ a:hover {
     color: #777;
     font-size: 0.9em;
     margin-top: var(--rule-text-gap);
-    margin-bottom: 0.08em;
+    margin-bottom: 0;
     display: block;
 }
 
