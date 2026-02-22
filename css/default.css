@@ -196,6 +196,10 @@ p code, li code {
     min-width: max-content;
 }
 
+.katex-display > .katex > .katex-html {
+    padding-right: 4ch;
+}
+
 .katex-display > .katex > .katex-html > .tag {
     right: 0;
     bottom: 0;
