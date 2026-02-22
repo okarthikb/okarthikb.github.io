@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Stress Test: KaTeX Torture Suite</title>
+    <title>Math Stress Test: Tagged vs Untagged Display</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
@@ -33,36 +33,31 @@
     <div class="container">
         <main>
 <article>
-    <h1 class="post-title">Math Stress Test: KaTeX Torture Suite</h1>
+    <h1 class="post-title">Math Stress Test: Tagged vs Untagged Display</h1>
     <span class="post-date">2026-02-21</span>
     <p><a class="page-back" href="/" aria-label="Back to home">&#9756;</a></p>
-<p>This post is an intentionally excessive KaTeX stress test for
-centering, equation tagging, multiline environments, overflow, boxed
-displays, and plain-text escaping.</p>
-<h3 id="centering-baseline-same-equation-untagged-then-tagged">Centering
-baseline (same equation, untagged then tagged)</h3>
+<p>This post is a rendering stress test for display math, short and long
+equations, tags, multiline alignment, and literal escape behavior.</p>
+<h3 id="baseline-repeated-equation-untagged-then-tagged">Baseline
+repeated equation (untagged then tagged)</h3>
 <p><span class="math display">
 \boxed{\int_{-\infty}^{\infty} e^{-x^2/2}\,dx = \sqrt{2\pi}}
 </span></p>
 <p><span class="math display">
 \boxed{\int_{-\infty}^{\infty} e^{-x^2/2}\,dx = \sqrt{2\pi}} \tag{1}
 </span></p>
-<p>Expected behavior: both equations stay centered; the tag only adds a
-right-side label.</p>
-<h3 id="dense-short-tagged-equations">Dense short tagged equations</h3>
-<p><span class="math display"> a+b=c \tag{2} </span> <span
-class="math display"> x^2+y^2=z^2 \tag{3} </span> <span
-class="math display"> \det(AB)=\det(A)\det(B) \tag{4} </span> <span
-class="math display"> \nabla \cdot \mathbf{E} =
-\frac{\rho}{\varepsilon_0} \tag{5} </span> <span class="math display">
-\nabla \times \mathbf{E} = -\frac{\partial \mathbf{B}}{\partial t}
-\tag{6} </span> <span class="math display"> \sum_{k=1}^{n} k =
-\frac{n(n+1)}{2} \tag{7} </span> <span class="math display">
-\sum_{k=1}^{n} k^2 = \frac{n(n+1)(2n+1)}{6} \tag{8} </span> <span
-class="math display"> \prod_{k=1}^{n} (1+a_k) = 1 + \sum_{m=1}^{n}
-\sum_{1\le i_1&lt;\cdots&lt;i_m\le n} a_{i_1}\cdots a_{i_m} \tag{9}
+<p>Expected behavior: both lines should stay centered; tagging should
+only add the right-side number.</p>
+<h3 id="short-tagged-equations-dense-numbering">Short tagged equations
+(dense numbering)</h3>
+<p><span class="math display"> a+b=c \tag{3} </span></p>
+<p><span class="math display"> e^{i\pi}+1=0 \tag{4} </span></p>
+<p><span class="math display"> \nabla \cdot \mathbf{E} =
+\frac{\rho}{\varepsilon_0} \tag{5} </span></p>
+<p><span class="math display"> \det(AB)=\det(A)\det(B) \tag{6}
 </span></p>
-<h3 id="overflow-monster-i">Overflow monster I</h3>
+<h3 id="wide-equation-forced-overflow">Wide equation (forced
+overflow)</h3>
 <p><span class="math display">
 \log p_\theta(x_{1:T}) =
 \sum_{t=1}^{T}
@@ -73,10 +68,10 @@ class="math display"> \prod_{k=1}^{n} (1+a_k) = 1 + \sum_{m=1}^{n}
 p_\theta(x_t \mid z_t)\,p_\theta(z_t \mid z_{t-1})\,p_\theta(z_{t-1}
 \mid x_{1:t-1})
 \right)
-\tag{10}
+\tag{2}
 </span></p>
-<h3 id="overflow-monster-ii-nested-fraction-powers-sums">Overflow
-monster II (nested fraction + powers + sums)</h3>
+<h3 id="very-wide-rational-expression-forced-overflow">Very wide
+rational expression (forced overflow)</h3>
 <p><span class="math display">
 \frac{
 \sum_{k=1}^{K}
@@ -93,114 +88,63 @@ monster II (nested fraction + powers + sums)</h3>
 \sum_{n=1}^{N}\delta_{m,n}x_n
 \right)^2
 }
-\tag{11}
+\tag{7}
 </span></p>
-<h3 id="overflow-monster-iii-single-line-width-torture">Overflow monster
-III (single-line width torture)</h3>
-<p><span class="math display">
-\boxed{
-\mathbb{P}\!\left(
-\bigcap_{t=1}^{T}
-\left\{
-\left|
-\sum_{i=1}^{n}
-\left[
-\left(
-\prod_{j=1}^{m}
-\left(1+\alpha_{t,i,j}u_j+\beta_{t,i,j}u_j^2\right)
-\right)
-\left(
-\sum_{r=1}^{R}\gamma_{t,i,r}v_r
-\right)
-\right]
-\right| \le \varepsilon_t
-\right\}
-\right)
-}
-\tag{12}
-</span></p>
-<h3 id="align-with-per-line-tags"><code>align</code> with per-line
-tags</h3>
+<h3 id="multiline-derivation-with-per-line-tags-align">Multiline
+derivation with per-line tags (<code>align</code>)</h3>
 <p><span class="math display">
 \begin{align}
 \mathcal{L}(\theta)
 &amp;= \mathbb{E}_{q(z\mid x)}
 \left[\log p_\theta(x,z) - \log q(z\mid x)\right]
-\tag{13}
+\tag{8}
 \\
 &amp;= \mathbb{E}_{q(z\mid x)}
 \left[\log p_\theta(x\mid z)\right]
 - D_{\mathrm{KL}}(q(z\mid x)\,\|\,p(z))
-\tag{14}
+\tag{9}
 \\
 &amp;\le \log p_\theta(x)
-\tag{15}
+\tag{10}
 \end{align}
 </span></p>
-<h3 id="align-system-with-many-tags"><code>align</code> system with many
-tags</h3>
+<h3 id="longer-per-line-tagged-system-align">Longer per-line tagged
+system (<code>align</code>)</h3>
 <p><span class="math display">
 \begin{align}
 \mathbf{h}_t &amp;= \sigma(W_h \mathbf{h}_{t-1} + U_h \mathbf{x}_t +
-\mathbf{b}_h) \tag{16} \\
-\mathbf{o}_t &amp;= W_o \mathbf{h}_t + \mathbf{b}_o \tag{17} \\
+\mathbf{b}_h) \tag{11} \\
+\mathbf{o}_t &amp;= W_o \mathbf{h}_t + \mathbf{b}_o \tag{12} \\
 p(\mathbf{y}_t \mid \mathbf{x}_{\le t}) &amp;=
-\operatorname{softmax}(\mathbf{o}_t) \tag{18} \\
-\ell_t(\theta) &amp;= -\log p(y_t^\star \mid \mathbf{x}_{\le t})
-\tag{19} \\
-\mathcal{J}(\theta) &amp;= \sum_{t=1}^{T}\ell_t(\theta) \tag{20} \\
-\nabla_\theta \mathcal{J}(\theta) &amp;= \sum_{t=1}^{T}\nabla_\theta
-\ell_t(\theta) \tag{21}
+\operatorname{softmax}(\mathbf{o}_t) \tag{13} \\
+\mathcal{J}(\theta) &amp;= -\sum_{t=1}^{T}\log p(y_t^\star \mid
+\mathbf{x}_{\le t}) \tag{14}
 \end{align}
 </span></p>
-<h3 id="alignat-with-tags"><code>alignat</code> with tags</h3>
+<h3 id="same-multiline-block-without-tags-alignment-comparison">Same
+multiline block without tags (alignment comparison)</h3>
 <p><span class="math display">
-\begin{alignat}{2}
-f(x)   &amp;= x^4 + 2x^3 - x + 7, \qquad &amp; f&#39;(x)   &amp;= 4x^3 +
-6x^2 - 1 \tag{22} \\
-g(x)   &amp;= e^{x}\sin x,                &amp; g&#39;(x)   &amp;=
-e^{x}(\sin x + \cos x) \tag{23} \\
-h(x)   &amp;= \ln(1+x^2),                 &amp; h&#39;(x)   &amp;=
-\frac{2x}{1+x^2} \tag{24}
-\end{alignat}
-</span></p>
-<h3 id="gather-and-gathered"><code>gather</code> and
-<code>gathered</code></h3>
-<p><span class="math display">
-\begin{gather}
-\int_{-\infty}^{\infty} e^{-x^2}\,dx = \sqrt{\pi} \tag{25} \\
-\int_{0}^{\infty} x^{s-1}e^{-x}\,dx = \Gamma(s) \tag{26} \\
-\zeta(s)=\frac{1}{\Gamma(s)}\int_0^\infty \frac{x^{s-1}}{e^x-1}\,dx
-\tag{27}
-\end{gather}
-</span></p>
-<p><span class="math display">
-\begin{gathered}
-\left(
-\sum_{k=1}^{n} a_k
-\right)^2
-=
-\sum_{k=1}^{n} a_k^2
-+ 2\sum_{1\le i&lt;j\le n} a_i a_j
+\begin{aligned}
+\mathcal{L}(\theta)
+&amp;= \mathbb{E}_{q(z\mid x)}
+\left[\log p_\theta(x,z) - \log q(z\mid x)\right]
 \\
-\left(
-\sum_{k=1}^{n} a_k
-\right)^3
-=
-\sum_{k=1}^{n} a_k^3
-+ 3\sum_{i\ne j} a_i^2 a_j
-+ 6\sum_{1\le i&lt;j&lt;\ell\le n} a_i a_j a_\ell
-\end{gathered}
+&amp;= \mathbb{E}_{q(z\mid x)}
+\left[\log p_\theta(x\mid z)\right]
+- D_{\mathrm{KL}}(q(z\mid x)\,\|\,p(z))
+\\
+&amp;\le \log p_\theta(x)
+\end{aligned}
 </span></p>
-<h3 id="same-derivation-without-tags-alignment-comparison">Same
-derivation without tags (alignment comparison)</h3>
+<h3 id="category-theory-flavored-equalities">Category-theory flavored
+equalities</h3>
 <p><span class="math display">
 \mathrm{Hom}_{\mathcal{C}}(A \otimes B, C)
 \cong
 \mathrm{Hom}_{\mathcal{C}}(A, [B,C])
 \cong
 \mathrm{Nat}\!\left(h_A \times h_B, h_C\right)
-\tag{28}
+\tag{15}
 </span></p>
 <p><span class="math display">
 \begin{aligned}
@@ -211,7 +155,7 @@ G(\operatorname{lim}_{j \in J} Y_j)
 &amp;\cong \operatorname{lim}_{j \in J} G(Y_j)
 \end{aligned}
 </span></p>
-<h3 id="matrix-heavy-block-with-tag">Matrix-heavy block with tag</h3>
+<h3 id="matrix-heavy-block">Matrix-heavy block</h3>
 <p><span class="math display">
 \Sigma =
 \begin{bmatrix}
@@ -224,81 +168,24 @@ G(\operatorname{lim}_{j \in J} Y_j)
 \Sigma^{-1}
 =
 \frac{1}{\det(\Sigma)}\,\operatorname{adj}(\Sigma)
-\tag{29}
+\tag{16}
 </span></p>
-<h3 id="block-matrix-piecewise">Block matrix + piecewise</h3>
-<p><span class="math display">
-M =
-\begin{bmatrix}
-A &amp; B \\
-C &amp; D
-\end{bmatrix},
-\qquad
-M^{-1} =
-\begin{bmatrix}
-(A-BD^{-1}C)^{-1} &amp; -A^{-1}B(D-CA^{-1}B)^{-1} \\
--D^{-1}C(A-BD^{-1}C)^{-1} &amp; (D-CA^{-1}B)^{-1}
-\end{bmatrix}
-\tag{30}
-</span></p>
-<p><span class="math display">
-f(x)=
-\begin{cases}
-\sin(x)/x, &amp; x \ne 0 \\
-1, &amp; x = 0
-\end{cases}
-\tag{31}
-</span></p>
-<h3 id="pseudo-diagram-flavored-formulas">Pseudo-diagram flavored
-formulas</h3>
-<p><span class="math display">
-A \xrightarrow{f} B \xrightarrow{g} C,\qquad g\circ f = h
-\tag{32}
-</span></p>
-<p><span class="math display">
-\begin{array}{ccc}
-X &amp; \xrightarrow{\ \alpha\ } &amp; Y \\
-\downarrow {\scriptstyle u} &amp;  &amp; \downarrow {\scriptstyle v} \\
-X&#39; &amp; \xrightarrow{\ \beta\ } &amp; Y&#39;
-\end{array}
-\qquad \text{with } v\circ\alpha = \beta\circ u
-\tag{33}
-</span></p>
-<h3 id="box-parade">Box parade</h3>
-<p><span class="math display">
-\boxed{\boxed{\sum_{k=1}^{n} k = \frac{n(n+1)}{2}}}
-\tag{34}
-</span></p>
-<p><span class="math display">
-\boxed{
-\begin{aligned}
-\forall \varepsilon &gt; 0\ \exists N\ \forall n\ge N:\
-\left|a_n - L\right| &lt; \varepsilon
-\end{aligned}
-}
-\tag{35}
-</span></p>
-<h3 id="escape-matrix-plain-text-no-code-spans">Escape matrix (plain
-text, no code spans)</h3>
-<p>Everything below should remain plain text and not become math:</p>
+<h3 id="escape-matrix-literal-characters-and-delimiters">Escape matrix
+(literal characters and delimiters)</h3>
+<p>The lines below should render as plain text, not math:</p>
 <ul>
-<li>Dollar literal: $19.99</li>
+<li>Price literal: $19.99</li>
 <li>Shell var literal: $PATH</li>
-<li>Literal double-dollar: $$NOT_MATH$$</li>
-<li>Literal inline delimiters: $x+y$ and $$</li>
-<li>Literal display delimiters: $$x<sup>2+y</sup>2$$</li>
-<li>Literal backslash-paren delimiters: \(x+y\)</li>
-<li>Literal backslash-bracket delimiters: \[x+y\]</li>
+<li>Double-dollar literal text: $$TOKEN$$</li>
+<li>Literal backslash delimiters in prose: \(not-math\),
+\[not-math\]</li>
 <li>Literal braces: {a,b,c}</li>
-<li>Literal percent: 100% complete</li>
-<li>Literal underscore: file_name_v2</li>
 <li>Literal hash: # heading-marker</li>
+<li>Literal underscore in prose: foo_bar</li>
+<li>Literal percent: 100% certainty</li>
 <li>Literal ampersand: R&amp;D</li>
-<li>Literal pipe: a | b</li>
-<li>Literal backtick: `inline`</li>
 </ul>
-<p>Inline prose escape checks:</p>
-<p>I can write $100, $x$, $$y$$, \(z\), and \[w\] in normal text.</p>
+<p>Inline check in plain text (without code): $this is literal$.</p>
 
 </article>
         </main>
