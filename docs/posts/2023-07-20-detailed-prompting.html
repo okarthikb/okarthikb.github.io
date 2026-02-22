@@ -14,9 +14,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Run code highlighting only when code blocks are present.
             if (window.hljs && document.querySelector('pre code')) {
                 hljs.highlightAll();
             }
+            // Pandoc emits .math spans; KaTeX renders those at runtime.
             if (window.katex) {
                 document.querySelectorAll('.math').forEach(function (el) {
                     const tex = el.textContent;
@@ -26,6 +28,11 @@
                     });
                 });
             }
+            // Per-request color variation for headings/footer.
+            const palette = ['#9b2c2c', '#1f5d75', '#6b3e8a', '#84600b', '#0f6a4a', '#3356a1', '#8a2f63'];
+            document.querySelectorAll('h1, h2, h3, h4, footer').forEach(function (el) {
+                el.style.color = palette[Math.floor(Math.random() * palette.length)];
+            });
         });
     </script>
 </head>
@@ -568,6 +575,7 @@ Models as Agent Models</a></li>
         </footer>
     </div>
     <script>
+        // Load Twitter widgets only on pages that actually embed tweets.
         if (document.querySelector('blockquote.twitter-tweet')) {
             const twitterScript = document.createElement('script');
             twitterScript.async = true;

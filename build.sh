@@ -2,6 +2,7 @@
 
 set -euo pipefail
 
+# Build configuration
 repo_dir="$(cd "$(dirname "$0")" && pwd)"
 out_dir="${repo_dir}/docs"
 tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/site-build.XXXXXX")"
@@ -16,6 +17,17 @@ if ! command -v pandoc >/dev/null 2>&1; then
   exit 1
 fi
 
+# Footer year range is generated at build-time.
+# This avoids hardcoding a stale end year in templates.
+start_year="2023"
+current_year="$(date +%Y)"
+if [ "$current_year" -le "$start_year" ]; then
+  footer_years="$start_year"
+else
+  footer_years="${start_year}-${current_year}"
+fi
+
+# Escape user-authored metadata before injecting into HTML.
 html_escape() {
   local value="$1"
   value="${value//&/&amp;}"
@@ -25,6 +37,7 @@ html_escape() {
   printf '%s' "$value"
 }
 
+# Read one frontmatter field from a markdown source file.
 read_meta() {
   local key="$1"
   local file="$2"
@@ -41,6 +54,7 @@ read_meta() {
   ' "$file"
 }
 
+# Remove frontmatter so only body/template content remains.
 strip_frontmatter() {
   local file="$1"
   awk '
@@ -50,6 +64,7 @@ strip_frontmatter() {
   ' "$file"
 }
 
+# Replace the post list marker in index template with generated <li> rows.
 inject_post_items() {
   local template_file="$1"
   local items_file="$2"
@@ -72,6 +87,7 @@ inject_post_items() {
   ' "$template_file" > "$output_file"
 }
 
+# Wrap a body fragment with the common page shell (head, scripts, footer).
 wrap_page() {
   local title="$1"
   local body_file="$2"
@@ -97,9 +113,11 @@ wrap_page() {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Run code highlighting only when code blocks are present.
             if (window.hljs && document.querySelector('pre code')) {
                 hljs.highlightAll();
             }
+            // Pandoc emits .math spans; KaTeX renders those at runtime.
             if (window.katex) {
                 document.querySelectorAll('.math').forEach(function (el) {
                     const tex = el.textContent;
@@ -109,6 +127,11 @@ wrap_page() {
                     });
                 });
             }
+            // Per-request color variation for headings/footer.
+            const palette = ['#9b2c2c', '#1f5d75', '#6b3e8a', '#84600b', '#0f6a4a', '#3356a1', '#8a2f63'];
+            document.querySelectorAll('h1, h2, h3, h4, footer').forEach(function (el) {
+                el.style.color = palette[Math.floor(Math.random() * palette.length)];
+            });
         });
     </script>
 </head>
@@ -117,13 +140,14 @@ wrap_page() {
         <main>
 EOF
     cat "$body_file"
-    cat <<'EOF'
+    cat <<EOF
         </main>
         <footer>
-            © Karthik 2023-2026
+            © Karthik ${footer_years}
         </footer>
     </div>
     <script>
+        // Load Twitter widgets only on pages that actually embed tweets.
         if (document.querySelector('blockquote.twitter-tweet')) {
             const twitterScript = document.createElement('script');
             twitterScript.async = true;
@@ -138,20 +162,24 @@ EOF
   } > "$output_file"
 }
 
+# Rebuild docs from scratch to avoid stale output files.
 rm -rf "$out_dir"
 mkdir -p "$out_dir/posts"
 
+# Copy static assets used by generated pages.
 for dir_name in css images pdf _archive; do
   if [ -d "${repo_dir}/${dir_name}" ]; then
     cp -a "${repo_dir}/${dir_name}" "$out_dir/"
   fi
 done
 
+# Disable Jekyll processing on GitHub Pages.
 touch "$out_dir/.nojekyll"
 
 post_manifest="${tmp_dir}/posts.txt"
 find "${repo_dir}/posts" -maxdepth 1 -type f -name '*.md' | sort -r > "$post_manifest"
 
+# Build index list items from current posts.
 post_items_file="${tmp_dir}/index-post-items.html"
 {
   while IFS= read -r post_file; do
@@ -170,6 +198,7 @@ strip_frontmatter "${repo_dir}/index.html" > "$index_template_body_file"
 index_body_file="${tmp_dir}/index-body.html"
 inject_post_items "$index_template_body_file" "$post_items_file" "$index_body_file"
 
+# Render top-level pages.
 wrap_page "Home" "$index_body_file" "${out_dir}/index.html"
 
 old_title="$(read_meta title "${repo_dir}/old.html")"
@@ -177,6 +206,7 @@ old_body_file="${tmp_dir}/old-body.html"
 strip_frontmatter "${repo_dir}/old.html" > "$old_body_file"
 wrap_page "$old_title" "$old_body_file" "${out_dir}/old.html"
 
+# Render each markdown post through pandoc and wrap in the site shell.
 while IFS= read -r post_file; do
   slug="$(basename "$post_file" .md)"
   title="$(read_meta title "$post_file")"
