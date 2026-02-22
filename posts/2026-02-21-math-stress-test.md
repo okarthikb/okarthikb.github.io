@@ -3,7 +3,7 @@ title: "Math Stress Test: Tagged vs Untagged Display"
 date: 2026-02-21
 ---
 
-This post is a rendering stress test for display math, long lines, tags, alignment, and overflow behavior on mobile.
+This post is a rendering stress test for display math, short and long equations, tags, multiline alignment, and literal escape behavior.
 
 ### Baseline repeated equation (untagged then tagged)
 
@@ -16,6 +16,16 @@ $$
 $$
 
 Expected behavior: both lines should stay centered; tagging should only add the right-side number.
+
+### Short tagged equations (dense numbering)
+
+$$ a+b=c \tag{3} $$
+
+$$ e^{i\pi}+1=0 \tag{4} $$
+
+$$ \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \tag{5} $$
+
+$$ \det(AB)=\det(A)\det(B) \tag{6} $$
 
 ### Wide equation (forced overflow)
 
@@ -31,26 +41,58 @@ p_\theta(x_t \mid z_t)\,p_\theta(z_t \mid z_{t-1})\,p_\theta(z_{t-1} \mid x_{1:t
 \tag{2}
 $$
 
-### Multiline aligned derivation with per-line tags
+### Very wide rational expression (forced overflow)
+
+$$
+\frac{
+\sum_{k=1}^{K}
+\left(
+\prod_{j=1}^{J}
+\left(1+\alpha_{k,j}x_j+\beta_{k,j}x_j^2\right)
+\right)
+}
+{
+1+
+\sum_{m=1}^{M}
+\left(
+\gamma_m
+\sum_{n=1}^{N}\delta_{m,n}x_n
+\right)^2
+}
+\tag{7}
+$$
+
+### Multiline derivation with per-line tags (`align`)
 
 $$
 \begin{align}
 \mathcal{L}(\theta)
 &= \mathbb{E}_{q(z\mid x)}
 \left[\log p_\theta(x,z) - \log q(z\mid x)\right]
-\tag{3}
+\tag{8}
 \\
 &= \mathbb{E}_{q(z\mid x)}
 \left[\log p_\theta(x\mid z)\right]
 - D_{\mathrm{KL}}(q(z\mid x)\,\|\,p(z))
-\tag{4}
+\tag{9}
 \\
 &\le \log p_\theta(x)
-\tag{5}
+\tag{10}
 \end{align}
 $$
 
-### Same multiline block without tags (for alignment comparison)
+### Longer per-line tagged system (`align`)
+
+$$
+\begin{align}
+\mathbf{h}_t &= \sigma(W_h \mathbf{h}_{t-1} + U_h \mathbf{x}_t + \mathbf{b}_h) \tag{11} \\
+\mathbf{o}_t &= W_o \mathbf{h}_t + \mathbf{b}_o \tag{12} \\
+p(\mathbf{y}_t \mid \mathbf{x}_{\le t}) &= \operatorname{softmax}(\mathbf{o}_t) \tag{13} \\
+\mathcal{J}(\theta) &= -\sum_{t=1}^{T}\log p(y_t^\star \mid \mathbf{x}_{\le t}) \tag{14}
+\end{align}
+$$
+
+### Same multiline block without tags (alignment comparison)
 
 $$
 \begin{aligned}
@@ -74,7 +116,7 @@ $$
 \mathrm{Hom}_{\mathcal{C}}(A, [B,C])
 \cong
 \mathrm{Nat}\!\left(h_A \times h_B, h_C\right)
-\tag{6}
+\tag{15}
 $$
 
 $$
@@ -101,14 +143,21 @@ $$
 \Sigma^{-1}
 =
 \frac{1}{\det(\Sigma)}\,\operatorname{adj}(\Sigma)
-\tag{7}
+\tag{16}
 $$
 
-### Literal delimiter checks (should not become math)
+### Escape matrix (literal characters and delimiters)
 
-- `\$not math\$`
-- `\(not math\)`
+The lines below should render as plain text, not math:
 
-Inline check in code spans: `\$this is literal\$` and `\(this is also literal\)`.
+- Price literal: \$19.99
+- Shell var literal: \$PATH
+- Double-dollar literal text: \$\$TOKEN\$\$
+- Literal backslash delimiters in prose: \\(not-math\\), \\[not-math\\]
+- Literal braces: \{a,b,c\}
+- Literal hash: \# heading-marker
+- Literal underscore in prose: foo\_bar
+- Literal percent: 100\% certainty
+- Literal ampersand: R\&D
 
-Inline check in plain text (without code): <span class="no-math">\\(this is also literal\\)</span> and <span class="no-math">\$this is literal\$</span>.
+Inline check in plain text (without code): \$this is literal\$.
