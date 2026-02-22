@@ -9,15 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
-        onload="renderMathInElement(document.body, {
-            delimiters: [
-                {left: '\\[', right: '\\]', display: true},
-                {left: '\\(', right: '\\)', display: false}
-            ],
-            ignoredClasses: ['no-math'],
-            throwOnError: false
-        });"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
     <link rel="stylesheet" href="/css/default.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
@@ -25,6 +16,15 @@
         document.addEventListener('DOMContentLoaded', function () {
             if (window.hljs && document.querySelector('pre code')) {
                 hljs.highlightAll();
+            }
+            if (window.katex) {
+                document.querySelectorAll('.math').forEach(function (el) {
+                    const tex = el.textContent;
+                    katex.render(tex, el, {
+                        displayMode: el.classList.contains('display'),
+                        throwOnError: false
+                    });
+                });
             }
         });
     </script>
@@ -371,25 +371,23 @@ example).</p>
 give it no room to do computation. GPT-4 is an <em>autoregressive</em>
 language model, which means that the output at a timestep is conditioned
 on all previous outputs. A language model is simply a probability
-distribution <span class="math inline">\(p_{\theta}\)</span> over a
-finite set of symbols <span class="math inline">\(V\)</span> (the
-vocabulary) where a symbol <span class="math inline">\(s_t\)</span> at
-timestep <span class="math inline">\(t\)</span> is sampled from the
-distribution <span
-class="math inline">\(p_{\theta}(\cdot\,|\,s_1,\ldots, s_{t -
-1}).\)</span> This leads to the most important (IMO) emergent phenomena
-in large language models - in-context learning. It is the ability to
-utilise information in the previous context in non-trivial ways to
-predict the next token better. How does it happen here?</p>
+distribution <span class="math inline">p_{\theta}</span> over a finite
+set of symbols <span class="math inline">V</span> (the vocabulary) where
+a symbol <span class="math inline">s_t</span> at timestep <span
+class="math inline">t</span> is sampled from the distribution <span
+class="math inline">p_{\theta}(\cdot\,|\,s_1,\ldots, s_{t - 1}).</span>
+This leads to the most important (IMO) emergent phenomena in large
+language models - in-context learning. It is the ability to utilise
+information in the previous context in non-trivial ways to predict the
+next token better. How does it happen here?</p>
 <p>Well, how do first graders do addition? They go from right to left
-one digit at a time. Ask for the <span
-class="math inline">\(n\)</span>th digit and they’ll be able to count
-one by one and tell what it is. We need a way for our language model to
-retrieve a digit in any position like the first grader. So we first tell
-it to <em>index</em> all the digits. This lets it 1) get any digit given
-position and operand and 2) see how many digits are in each operand.
-Based on this, it can then figure out how many 0s it needs to pad the
-smaller number with</p>
+one digit at a time. Ask for the <span class="math inline">n</span>th
+digit and they’ll be able to count one by one and tell what it is. We
+need a way for our language model to retrieve a digit in any position
+like the first grader. So we first tell it to <em>index</em> all the
+digits. This lets it 1) get any digit given position and operand and 2)
+see how many digits are in each operand. Based on this, it can then
+figure out how many 0s it needs to pad the smaller number with</p>
 <pre class="text"><code>3 &gt; 2 =&gt; pad operand w/ fewer digits with abs(3 - 2) = 1 zero(s)</code></pre>
 <p>We make it explicitly calculate the number of 0s to pad with. Then we
 do the padding <em>step by step</em> (or signal it to do it) like

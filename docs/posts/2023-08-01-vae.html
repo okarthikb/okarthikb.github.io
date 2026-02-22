@@ -9,15 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
-        onload="renderMathInElement(document.body, {
-            delimiters: [
-                {left: '\\[', right: '\\]', display: true},
-                {left: '\\(', right: '\\)', display: false}
-            ],
-            ignoredClasses: ['no-math'],
-            throwOnError: false
-        });"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
     <link rel="stylesheet" href="/css/default.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
@@ -25,6 +16,15 @@
         document.addEventListener('DOMContentLoaded', function () {
             if (window.hljs && document.querySelector('pre code')) {
                 hljs.highlightAll();
+            }
+            if (window.katex) {
+                document.querySelectorAll('.math').forEach(function (el) {
+                    const tex = el.textContent;
+                    katex.render(tex, el, {
+                        displayMode: el.classList.contains('display'),
+                        throwOnError: false
+                    });
+                });
             }
         });
     </script>
@@ -40,77 +40,75 @@
 <p>The goal of a VAE is to learn a latent representation of the data. We
 do this by mapping the data to a compressed representation, and then
 reconstructing the data from the compressed representation. An encoder
-(usually a neural net) <span class="math inline">\(q\)</span> takes a
-datapoint <span class="math inline">\(x\)</span> as input and outputs
-the mean <span class="math inline">\(\mu\)</span> and variance <span
-class="math inline">\(\sigma\)</span> of a Gaussian distribution from
-which the latent <span class="math inline">\(z\)</span> is sampled. The
-decoder then reconstructs the data from the latent <span
-class="math inline">\(z\)</span>.</p>
+(usually a neural net) <span class="math inline">q</span> takes a
+datapoint <span class="math inline">x</span> as input and outputs the
+mean <span class="math inline">\mu</span> and variance <span
+class="math inline">\sigma</span> of a Gaussian distribution from which
+the latent <span class="math inline">z</span> is sampled. The decoder
+then reconstructs the data from the latent <span
+class="math inline">z</span>.</p>
 <p>VAEs were introduced in [1] by Kingma et al. Their input distribution
 consists of binary values instead of real values, and the goal is to
 maximize the likelihood of the data for generation. Suppose we sampled
-<span class="math inline">\(z\)</span> from a distribution and then the
-data <span class="math inline">\(x\)</span> from a distribution
-conditioned on <span class="math inline">\(z\)</span>. The likelihood of
-the data is then</p>
-<p><span class="math display">\[p(x) = \int p(x|z)p(z) \,
-dz\]</span></p>
+<span class="math inline">z</span> from a distribution and then the data
+<span class="math inline">x</span> from a distribution conditioned on
+<span class="math inline">z</span>. The likelihood of the data is
+then</p>
+<p><span class="math display">p(x) = \int p(x|z)p(z) \, dz</span></p>
 <p>Maximizing this likelihood using gradient descent is however
 intractable, so we instead find a lower bound for the likelihood and
 maximize that. Specifically, we find a lower bound for the log
 likelihood, which is equivalent. Recall from Bayes’ theorem that</p>
-<p><span class="math display">\[p(x|z) =
-\frac{p(z|x)p(x)}{p(z)}\]</span></p>
+<p><span class="math display">p(x|z) =
+\frac{p(z|x)p(x)}{p(z)}</span></p>
 <p>Now we write the log prob as an expectation over <span
-class="math inline">\(z\)</span>, which lets us do some
-simplification</p>
-<p><span class="math display">\[\begin{aligned}
+class="math inline">z</span>, which lets us do some simplification</p>
+<p><span class="math display">\begin{aligned}
 \log p(x) &amp;= \mathbb{E}_{z \sim q(z|x)} [\log p(x)] \\
 &amp;= \mathbb{E}_{z \sim q(z|x)} \left[ \log \frac{p(x|z)p(z)}{p(z|x)}
 \frac{q(z|x)}{q(z|x)} \right] \\
 &amp;= \mathbb{E}_{z \sim q(z|x)} [\log p(x|z)] - D_{KL}(q(z|x) \| p(z))
 + D_{KL}(q(z|x) \| p(z|x))
-\end{aligned}\]</span></p>
+\end{aligned}</span></p>
 <p>Note that the last KL divergence term is intractable because it
-contains <span class="math inline">\(p(z|x)\)</span>, which is not easy
-to compute. But since KL divergence is always greater than or equal to
+contains <span class="math inline">p(z|x)</span>, which is not easy to
+compute. But since KL divergence is always greater than or equal to
 zero, we can remove the term and arrive at the lower bound for the log
 likelihood</p>
-<p><span class="math display">\[\log p(x) \geq \mathbb{E}_{z \sim
-q(z|x)} [\log p(x|z)] - D_{KL}(q(z|x) \| p(z))\]</span></p>
+<p><span class="math display">\log p(x) \geq \mathbb{E}_{z \sim q(z|x)}
+[\log p(x|z)] - D_{KL}(q(z|x) \| p(z))</span></p>
 <p>which is called the Evidence Lower Bound (ELBO) or the variational
 lower bound.</p>
 <h3 id="closed-form-loss-for-gaussian-prior">Closed-form loss for
 Gaussian prior</h3>
-<p>In this case, <span class="math inline">\(p(z) = \mathcal{N}(0,
-I)\)</span>, <span class="math inline">\(q\)</span> (the encoder) will
-be parametrized by <span class="math inline">\(\phi\)</span>, so it’ll
-be <span class="math inline">\(q_\phi(z|x)\)</span>, and the decoder
-will be parametrized by <span class="math inline">\(\theta\)</span>, so
-it’ll be <span class="math inline">\(p_\theta(x|z)\)</span>. Let’s
-consider the KL divergence term first</p>
-<p><span class="math display">\[D_{KL}(q_\phi(z|x) \| p(z)) = \int
-q_\phi(z|x) \log \frac{q_\phi(z|x)}{p(z)} \, dz\]</span></p>
+<p>In this case, <span class="math inline">p(z) = \mathcal{N}(0,
+I)</span>, <span class="math inline">q</span> (the encoder) will be
+parametrized by <span class="math inline">\phi</span>, so it’ll be <span
+class="math inline">q_\phi(z|x)</span>, and the decoder will be
+parametrized by <span class="math inline">\theta</span>, so it’ll be
+<span class="math inline">p_\theta(x|z)</span>. Let’s consider the KL
+divergence term first</p>
+<p><span class="math display">D_{KL}(q_\phi(z|x) \| p(z)) = \int
+q_\phi(z|x) \log \frac{q_\phi(z|x)}{p(z)} \, dz</span></p>
 <p>Our probability distributions are Gaussians. Given <span
-class="math inline">\(x\)</span>, the encoder will predict the mean
-<span class="math inline">\(\mu\)</span> and variance <span
-class="math inline">\(\sigma^2\)</span>, so</p>
-<p><span class="math display">\[q_\phi(z|x) = \mathcal{N}(z | \mu,
+class="math inline">x</span>, the encoder will predict the mean <span
+class="math inline">\mu</span> and variance <span
+class="math inline">\sigma^2</span>, so</p>
+<p><span class="math display">q_\phi(z|x) = \mathcal{N}(z | \mu,
 \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(z -
-\mu)^2}{2\sigma^2}\right)\]</span></p>
+\mu)^2}{2\sigma^2}\right)</span></p>
 <p>Skipping the long derivation [2] here, but the KL divergence
 simplifies to</p>
-<p><span class="math display">\[D_{KL}(q_\phi(z|x) \| p(z)) =
--\frac{1}{2} \sum_{j=1}^J \left(1 + \log \sigma_j^2 - \mu_j^2 -
-\sigma_j^2\right)\]</span></p>
-<p>where <span class="math inline">\(j\)</span> is the mean and variance
-vector index and <span class="math inline">\(J\)</span> is the dimension
-of the latent. The loss (negative ELBO) is</p>
-<p><span class="math display">\[\mathcal{L}(\theta, \phi) = \frac{1}{L}
+<p><span class="math display">D_{KL}(q_\phi(z|x) \| p(z)) = -\frac{1}{2}
+\sum_{j=1}^J \left(1 + \log \sigma_j^2 - \mu_j^2 -
+\sigma_j^2\right)</span></p>
+<p>where <span class="math inline">j</span> is the mean and variance
+vector index and <span class="math inline">J</span> is the dimension of
+the latent. The loss (negative ELBO) is</p>
+<p><span class="math display">\mathcal{L}(\theta, \phi) = \frac{1}{L}
 \sum_{l=1}^L \sum_{k=1}^K \left(\log \sigma_k + \frac{(x_{l,k} -
 \mu_k)^2}{2\sigma_k^2}\right) - \frac{1}{2} \sum_{j=1}^J \left(1 + \log
-\sigma_j^2 - \mu_j^2 - \sigma_j^2\right)\]</span></p>
+\sigma_j^2 - \mu_j^2 - \sigma_j^2\right)</span></p>
 <p>and this is the loss for a single data point. As we can see, the
 reconstruction loss looks like mean squared error for a Gaussian
 distribution. We can use other losses as well. If the data is say,
@@ -163,10 +161,9 @@ trick.</p>
 <p>Why do we use the reparametrization trick? So our network is
 differentiable. Remember that sampling is not a differentiable
 operation, so we make use of the fact that <span
-class="math inline">\(c\sigma(x) = \sigma(cx)\)</span> and <span
-class="math inline">\(c\mathbb{E}[x] = \mathbb{E}[cx]\)</span> to make
-the sampling operation differentiable. Now we define the loss
-function.</p>
+class="math inline">c\sigma(x) = \sigma(cx)</span> and <span
+class="math inline">c\mathbb{E}[x] = \mathbb{E}[cx]</span> to make the
+sampling operation differentiable. Now we define the loss function.</p>
 <pre class="python"><code>def loss(self, x):
   rx, mu, std, logvar = self(x)
   gll = F.binary_cross_entropy(rx, x, reduction=&#39;sum&#39;)
@@ -203,9 +200,9 @@ def train(model, batch_size, lr, epochs):
       bar.set_postfix({&#39;loss&#39;: f&#39;{loss.item():.6f}&#39;})</code></pre>
 <p>We chose a <code>zdim</code> of 2 so that we can visualize the latent
 space easily because every decoder output corresponds to a point in
-<span class="math inline">\(\mathbb{R}^2\)</span>. Visualizing decoder
-output for latent vectors in <span class="math inline">\([-2,
-2]^2\)</span> gives us this:</p>
+<span class="math inline">\mathbb{R}^2</span>. Visualizing decoder
+output for latent vectors in <span class="math inline">[-2, 2]^2</span>
+gives us this:</p>
 <figure>
 <img src="/images/mnist.png" alt="VAE latent space" />
 <figcaption aria-hidden="true">VAE latent space</figcaption>

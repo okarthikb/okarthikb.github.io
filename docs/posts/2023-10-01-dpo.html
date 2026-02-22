@@ -9,15 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
-        onload="renderMathInElement(document.body, {
-            delimiters: [
-                {left: '\\[', right: '\\]', display: true},
-                {left: '\\(', right: '\\)', display: false}
-            ],
-            ignoredClasses: ['no-math'],
-            throwOnError: false
-        });"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
     <link rel="stylesheet" href="/css/default.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
@@ -25,6 +16,15 @@
         document.addEventListener('DOMContentLoaded', function () {
             if (window.hljs && document.querySelector('pre code')) {
                 hljs.highlightAll();
+            }
+            if (window.katex) {
+                document.querySelectorAll('.math').forEach(function (el) {
+                    const tex = el.textContent;
+                    katex.render(tex, el, {
+                        displayMode: el.classList.contains('display'),
+                        throwOnError: false
+                    });
+                });
             }
         });
     </script>
@@ -43,65 +43,63 @@ suppose that we have a bunch of players in a game and each gained a
 particular score. What’s the probability that a particular will be rated
 higher than another by two people? Or what’s the probability that one
 player will win against another? We can model this is as follows</p>
-<p><span class="math display">\[p(y_1 \succ y_2) =
-\frac{e^{\beta_1}}{e^{\beta_1} + e^{\beta_2}}\]</span></p>
-<p>where <span class="math inline">\(\beta_1\)</span> and <span
-class="math inline">\(\beta_2\)</span> are the scores assigned to a
-<span class="math inline">\(y_1\)</span> and <span
-class="math inline">\(y_2\)</span> respectively by two score assigners.
-In the cookie case, we have <span class="math inline">\(p(A \succ
-B)\)</span>, i.e., the probability that the cookie will be preferred by
-A over B, and <span class="math inline">\(\beta_1\)</span> and <span
-class="math inline">\(\beta_2\)</span> are the scores assigned by A and
-B respectively. The denominator normalizes, i.e., ensures that the
+<p><span class="math display">p(y_1 \succ y_2) =
+\frac{e^{\beta_1}}{e^{\beta_1} + e^{\beta_2}}</span></p>
+<p>where <span class="math inline">\beta_1</span> and <span
+class="math inline">\beta_2</span> are the scores assigned to a <span
+class="math inline">y_1</span> and <span class="math inline">y_2</span>
+respectively by two score assigners. In the cookie case, we have <span
+class="math inline">p(A \succ B)</span>, i.e., the probability that the
+cookie will be preferred by A over B, and <span
+class="math inline">\beta_1</span> and <span
+class="math inline">\beta_2</span> are the scores assigned by A and B
+respectively. The denominator normalizes, i.e., ensures that the
 probabilities sum to 1.</p>
 <h3 id="rlhf-objective">RLHF objective</h3>
-<p>We let LLMs generate completions <span
-class="math inline">\(y_1\)</span> and <span
-class="math inline">\(y_2\)</span> for a prompt <span
-class="math inline">\(x\)</span> and human annotators rank the
-completions, i.e., they state their preferences for the completions.
-Let’s denote the ranking mechanism used by the annotators as <span
-class="math inline">\(r^*(x, y)\)</span> which is the score assigned by
-them to a completion <span class="math inline">\(y\)</span> for a prompt
-<span class="math inline">\(x\)</span>. Then as per the BT model, we
-have</p>
-<p><span class="math display">\[\begin{aligned}
+<p>We let LLMs generate completions <span class="math inline">y_1</span>
+and <span class="math inline">y_2</span> for a prompt <span
+class="math inline">x</span> and human annotators rank the completions,
+i.e., they state their preferences for the completions. Let’s denote the
+ranking mechanism used by the annotators as <span
+class="math inline">r^*(x, y)</span> which is the score assigned by them
+to a completion <span class="math inline">y</span> for a prompt <span
+class="math inline">x</span>. Then as per the BT model, we have</p>
+<p><span class="math display">\begin{aligned}
 p(y_i \succ y_j) &amp;= \frac{e^{r^*(x, y_i)}}{e^{r^*(x, y_i)} +
 e^{r^*(x, y_j)}} \\
 &amp;= \frac{1}{1 + e^{(r^*(x, y_j) - r^*(x, y_i))}} \tag{1}
-\end{aligned}\]</span></p>
+\end{aligned}</span></p>
 <p>where we have divided the numerator and denominator by <span
-class="math inline">\(e^{r^*(x, y_i)}\)</span>. <span
-class="math inline">\(r^*\)</span> is what we first aim to learn in
-classic RLHF [1], and we do this by training a reward model <span
-class="math inline">\(r_\phi\)</span> parametrized by <span
-class="math inline">\(\phi\)</span>. We then use this reward model to
+class="math inline">e^{r^*(x, y_i)}</span>. <span
+class="math inline">r^*</span> is what we first aim to learn in classic
+RLHF [1], and we do this by training a reward model <span
+class="math inline">r_\phi</span> parametrized by <span
+class="math inline">\phi</span>. We then use this reward model to
 optimize the LLM using an off the shelf online RL algorithm (like PPO).
 The objective for the RL phase is</p>
-<p><span class="math display">\[\max_{\pi_\theta} \mathbb{E}_{x \sim
+<p><span class="math display">\max_{\pi_\theta} \mathbb{E}_{x \sim
 \mathcal{D}, y \sim \pi_\theta(y|x)} \left[ r_\phi(x, y) \right] - \beta
-D_{KL}(\pi_\theta(y|x) \| \pi_{\text{ref}}(y|x)) \tag{2}\]</span></p>
+D_{KL}(\pi_\theta(y|x) \| \pi_{\text{ref}}(y|x)) \tag{2}</span></p>
 <p>where the second term is the KL divergence term that tries to prevent
-our model <span class="math inline">\(\pi_\theta\)</span> from deviating
-too much from the reference pre-trained model <span
-class="math inline">\(\pi_{\text{ref}}\)</span> and <span
-class="math inline">\(\beta\)</span> is the strength of the penalty.
-Now, RLHF is expensive because it’s a two-step process: first training a
+our model <span class="math inline">\pi_\theta</span> from deviating too
+much from the reference pre-trained model <span
+class="math inline">\pi_{\text{ref}}</span> and <span
+class="math inline">\beta</span> is the strength of the penalty. Now,
+RLHF is expensive because it’s a two-step process: first training a
 reward model, then generating trajectories using the model to be
 trained. Using a reward <em>model</em> instead of the true reward also
 feels janky. The reward model is not perfect, and the LM has to learn to
 adapt to the imperfect reward model - you’re compounding errors.</p>
 <p>Is there a way to frame the objective such that it only depends on
 the output of the policy model <span
-class="math inline">\(\pi_\theta\)</span> and the reference model <span
-class="math inline">\(\pi_{\text{ref}}\)</span> and not the learned
-reward model <span class="math inline">\(r_\phi\)</span>, effectively
-eliminating the reward model training step? Enter DPO [2].</p>
+class="math inline">\pi_\theta</span> and the reference model <span
+class="math inline">\pi_{\text{ref}}</span> and not the learned reward
+model <span class="math inline">r_\phi</span>, effectively eliminating
+the reward model training step? Enter DPO [2].</p>
 <h3 id="reframing-the-rlhf-objective">Reframing the RLHF objective</h3>
 <p>We can rewrite the reward objective in <span
-class="math inline">\((2)\)</span> like so</p>
-<p><span class="math display">\[\begin{aligned}
+class="math inline">(2)</span> like so</p>
+<p><span class="math display">\begin{aligned}
 &amp; \max_{\pi_\theta}
 \mathbb{E}_{x\,\sim\,\mathcal{D},\,y\,\sim\,\pi_\theta(y\,|\,x)} \left[
 r(x, y) \right] - \beta
@@ -126,24 +124,24 @@ y) \right] \\
 \mathbb{E}_{x\,\sim\,\mathcal{D},\,y\,\sim\,\pi_\theta(y\,|\,x)} \left[
 \log \frac{\pi_\theta(y\,|\,x)}{\frac{1}{Z(x)} \pi_{\text{ref}}(y\,|\,x)
 \exp\left(\frac{1}{\beta} r(x, y)\right)} - \log Z(x) \right] \tag{3}
-\end{aligned}\]</span></p>
+\end{aligned}</span></p>
 <p>where in the second step we have moved <span
-class="math inline">\(D_{KL}\)</span> inside the expectation because it
-is the expected log-likelihood and</p>
-<p><span class="math display">\[Z(x) = \sum_y \pi_{\text{ref}}(y|x)
-\exp\left(\frac{1}{\beta} r(x, y)\right)\]</span></p>
+class="math inline">D_{KL}</span> inside the expectation because it is
+the expected log-likelihood and</p>
+<p><span class="math display">Z(x) = \sum_y \pi_{\text{ref}}(y|x)
+\exp\left(\frac{1}{\beta} r(x, y)\right)</span></p>
 <p>is the partition function. We can show that the optimally trained
-model <span class="math inline">\(\pi_\theta^*\)</span> is given by</p>
-<p><span class="math display">\[\pi_\theta^*(y|x) = \frac{1}{Z(x)}
+model <span class="math inline">\pi_\theta^*</span> is given by</p>
+<p><span class="math display">\pi_\theta^*(y|x) = \frac{1}{Z(x)}
 \pi_{\text{ref}}(y|x) \exp\left(\frac{1}{\beta} r(x, y)\right)
-\tag{4}\]</span></p>
-<p>From the definition of <span class="math inline">\(Z(x)\)</span>, one
-can see that <span class="math inline">\(\sum_y \pi_\theta^*(y\,|\,x) =
-1\)</span>, and since <span class="math inline">\(\pi_\theta^*(y\,|\,x)
-\geq 0\)</span>, it is a valid probability distribution. We can bring
-the expectation over <span class="math inline">\(y\)</span> inside in
-<span class="math inline">\((3)\)</span> and get the objective</p>
-<p><span class="math display">\[\begin{aligned}
+\tag{4}</span></p>
+<p>From the definition of <span class="math inline">Z(x)</span>, one can
+see that <span class="math inline">\sum_y \pi_\theta^*(y\,|\,x) =
+1</span>, and since <span class="math inline">\pi_\theta^*(y\,|\,x) \geq
+0</span>, it is a valid probability distribution. We can bring the
+expectation over <span class="math inline">y</span> inside in <span
+class="math inline">(3)</span> and get the objective</p>
+<p><span class="math display">\begin{aligned}
 &amp;\min_{\pi_\theta} \mathbb{E}_{x\,\sim\,\mathcal{D}} \left[
 \mathbb{E}_{y\,\sim\,\pi_\theta(y\,|\,x)} \left[ \log
 \frac{\pi_\theta(y\,|\,x)}{\pi_\theta^*(y\,|\,x)} \right] - \log Z(x)
@@ -151,86 +149,81 @@ the expectation over <span class="math inline">\(y\)</span> inside in
 &amp;= \min_{\pi_\theta} \mathbb{E}_{x\,\sim\,\mathcal{D}} \left[
 D_{KL}(\pi_\theta(y\,|\,x)\,\|\,\pi_\theta^*(y\,|\,x)) - \log Z(x)
 \right]
-\end{aligned}\]</span></p>
+\end{aligned}</span></p>
 <p>The KL divergence is minimized when <span
-class="math inline">\(\pi_\theta(y|x) = \pi_\theta^*(y|x)\)</span>,
-which shows that <span class="math inline">\(\pi_\theta^*\)</span> is
-the optimal policy model. Now, we need to get rid of <span
-class="math inline">\(r\)</span>. If <span
-class="math inline">\(\pi_\theta^*\)</span> is the optimal policy model,
-then the ground truth reward <span class="math inline">\(r^*\)</span> is
+class="math inline">\pi_\theta(y|x) = \pi_\theta^*(y|x)</span>, which
+shows that <span class="math inline">\pi_\theta^*</span> is the optimal
+policy model. Now, we need to get rid of <span
+class="math inline">r</span>. If <span
+class="math inline">\pi_\theta^*</span> is the optimal policy model,
+then the ground truth reward <span class="math inline">r^*</span> is
 given by</p>
-<p><span class="math display">\[r^*(x, y) = \beta \log
+<p><span class="math display">r^*(x, y) = \beta \log
 \frac{\pi_\theta^*(y|x)}{\pi_{\text{ref}}(y|x)} + \beta \log Z(x)
-\tag{5}\]</span></p>
-<p>which you can get by solving for <span
-class="math inline">\(r^*\)</span> in <span
-class="math inline">\((4)\)</span>. What this is saying is this: suppose
-that we have an RL tuned model <span
-class="math inline">\(\pi_\theta^*\)</span> that perfectly satisfies the
+\tag{5}</span></p>
+<p>which you can get by solving for <span class="math inline">r^*</span>
+in <span class="math inline">(4)</span>. What this is saying is this:
+suppose that we have an RL tuned model <span
+class="math inline">\pi_\theta^*</span> that perfectly satisfies the
 human annotators’ preference function <span
-class="math inline">\(r^*\)</span> (<span
-class="math inline">\(r^*\)</span> is basically the heuristic or
-underlying reward model that represents the human annotators and this is
-what we learn in classic RLHF with a reward model <span
-class="math inline">\(r_\phi\)</span>). Then <span
-class="math inline">\(r^*\)</span> is given by <span
-class="math inline">\((5)\)</span>. This is the score given for a
-completion <span class="math inline">\(y\)</span> given a prompt <span
-class="math inline">\(x\)</span>. We can substitute this score in the
-Bradley-Terry preference model in <span
-class="math inline">\((1)\)</span> to get the probability that
-completion <span class="math inline">\(y_1\)</span> is preferred over
-completion <span class="math inline">\(y_2\)</span> given prompt <span
-class="math inline">\(x\)</span></p>
-<p><span class="math display">\[\begin{aligned}
+class="math inline">r^*</span> (<span class="math inline">r^*</span> is
+basically the heuristic or underlying reward model that represents the
+human annotators and this is what we learn in classic RLHF with a reward
+model <span class="math inline">r_\phi</span>). Then <span
+class="math inline">r^*</span> is given by <span
+class="math inline">(5)</span>. This is the score given for a completion
+<span class="math inline">y</span> given a prompt <span
+class="math inline">x</span>. We can substitute this score in the
+Bradley-Terry preference model in <span class="math inline">(1)</span>
+to get the probability that completion <span
+class="math inline">y_1</span> is preferred over completion <span
+class="math inline">y_2</span> given prompt <span
+class="math inline">x</span></p>
+<p><span class="math display">\begin{aligned}
 p^*(y_1 \succ y_2 | x) &amp;= \frac{1}{1 + \exp\left(\beta \log
 \frac{\pi_\theta^*(y_2|x)}{\pi_{\text{ref}}(y_2|x)} - \beta \log
 \frac{\pi_\theta^*(y_1|x)}{\pi_{\text{ref}}(y_1|x)}\right)} \\
 &amp;= \sigma\left(\beta \log
 \frac{\pi_\theta^*(y_1|x)}{\pi_{\text{ref}}(y_1|x)} - \beta \log
 \frac{\pi_\theta^*(y_2|x)}{\pi_{\text{ref}}(y_2|x)}\right) \tag{6}
-\end{aligned}\]</span></p>
-<p>where <span class="math inline">\(\sigma\)</span> is the sigmoid
+\end{aligned}</span></p>
+<p>where <span class="math inline">\sigma</span> is the sigmoid
 function. It’s convenient that the <span
-class="math inline">\(Z(x)\)</span>s cancel out, because it depends on
-<span class="math inline">\(r(x, y)\)</span> and we’re trying to get rid
-of it from the objective. If <span class="math inline">\(y_w\)</span>
-denotes the favorable completion and <span
-class="math inline">\(y_l\)</span> denotes the completion that sucks (as
-rated by the human annotator), substituting <span
-class="math inline">\(y_w\)</span> and <span
-class="math inline">\(y_l\)</span> for <span
-class="math inline">\(y_1\)</span> and <span
-class="math inline">\(y_2\)</span> in <span
-class="math inline">\((6)\)</span> gives</p>
-<p><span class="math display">\[p^*(y_w \succ y_l | x) =
-\sigma\left(\beta \log
-\frac{\pi_\theta^*(y_w|x)}{\pi_{\text{ref}}(y_w|x)} - \beta \log
+class="math inline">Z(x)</span>s cancel out, because it depends on <span
+class="math inline">r(x, y)</span> and we’re trying to get rid of it
+from the objective. If <span class="math inline">y_w</span> denotes the
+favorable completion and <span class="math inline">y_l</span> denotes
+the completion that sucks (as rated by the human annotator),
+substituting <span class="math inline">y_w</span> and <span
+class="math inline">y_l</span> for <span class="math inline">y_1</span>
+and <span class="math inline">y_2</span> in <span
+class="math inline">(6)</span> gives</p>
+<p><span class="math display">p^*(y_w \succ y_l | x) = \sigma\left(\beta
+\log \frac{\pi_\theta^*(y_w|x)}{\pi_{\text{ref}}(y_w|x)} - \beta \log
 \frac{\pi_\theta^*(y_l|x)}{\pi_{\text{ref}}(y_l|x)}\right)
-\tag{7}\]</span></p>
+\tag{7}</span></p>
 <p>and the above probability is maximum for the optimal policy <span
-class="math inline">\(\pi_\theta^*\)</span>, i.e., we have</p>
-<p><span class="math display">\[p^*(y_w \succ y_l\,|\,x) \geq p^*(y_l
-\succ y_w\,|\,x)\]</span></p>
-<p>Equation <span class="math inline">\((7)\)</span> is for the optimal
+class="math inline">\pi_\theta^*</span>, i.e., we have</p>
+<p><span class="math display">p^*(y_w \succ y_l\,|\,x) \geq p^*(y_l
+\succ y_w\,|\,x)</span></p>
+<p>Equation <span class="math inline">(7)</span> is for the optimal
 model, and our goal then is to maximize</p>
-<p><span class="math display">\[p(y_w \succ y_l | x) = \sigma\left(\beta
+<p><span class="math display">p(y_w \succ y_l | x) = \sigma\left(\beta
 \log \frac{\pi_\theta(y_w|x)}{\pi_{\text{ref}}(y_w|x)} - \beta \log
-\frac{\pi_\theta(y_l|x)}{\pi_{\text{ref}}(y_l|x)}\right)\]</span></p>
+\frac{\pi_\theta(y_l|x)}{\pi_{\text{ref}}(y_l|x)}\right)</span></p>
 <p>i.e., we maximize the log-likelihood of the preference <span
-class="math inline">\(y_w \succ y_l\)</span> for a dataset <span
-class="math inline">\(\mathcal{D}\)</span> with prompts <span
-class="math inline">\(x\)</span>, preferred completions <span
-class="math inline">\(y_w\)</span>, and bad completions <span
-class="math inline">\(y_l\)</span>. Our objective becomes minimizing the
+class="math inline">y_w \succ y_l</span> for a dataset <span
+class="math inline">\mathcal{D}</span> with prompts <span
+class="math inline">x</span>, preferred completions <span
+class="math inline">y_w</span>, and bad completions <span
+class="math inline">y_l</span>. Our objective becomes minimizing the
 <em>negative</em> log-likelihood</p>
-<p><span class="math display">\[\mathcal{L}_{\text{DPO}}(\pi_\theta ;
+<p><span class="math display">\mathcal{L}_{\text{DPO}}(\pi_\theta ;
 \pi_{\text{ref}}) = -\mathbb{E}_{(x, y_w, y_l) \sim \mathcal{D}} \left[
 \log \sigma\left(\beta \log
 \frac{\pi_\theta(y_w|x)}{\pi_{\text{ref}}(y_w|x)} - \beta \log
 \frac{\pi_\theta(y_l|x)}{\pi_{\text{ref}}(y_l|x)}\right)
-\right]\]</span></p>
+\right]</span></p>
 <p>and as desired, we have removed the reward model out of the picture.
 The important thing to note is that this is not a surrogate objective
 but is equivalent to the vanilla RLHF objective. We’re converting online
