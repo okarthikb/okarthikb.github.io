@@ -7,17 +7,13 @@ This post is a rendering stress test for display math, long lines, tags, alignme
 
 ### Baseline repeated equation (untagged then tagged)
 
-<div class="eq-center-check">
-
 $$
-\int_{-\infty}^{\infty} e^{-x^2/2}\,dx = \sqrt{2\pi}
+\boxed{\int_{-\infty}^{\infty} e^{-x^2/2}\,dx = \sqrt{2\pi}}
 $$
 
 $$
-\int_{-\infty}^{\infty} e^{-x^2/2}\,dx = \sqrt{2\pi} \tag{1}
+\boxed{\int_{-\infty}^{\infty} e^{-x^2/2}\,dx = \sqrt{2\pi}} \tag{1}
 $$
-
-</div>
 
 Expected behavior: both lines should stay centered; tagging should only add the right-side number.
 

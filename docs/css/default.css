@@ -17,15 +17,7 @@ body {
     color: #1a1a1a;
     background: #fff;
     padding: 0 1.2em;
-}
-
-body::before {
-    content: "";
-    position: fixed;
-    inset: 10px;
-    border: 1px solid #d0d0d0;
-    pointer-events: none;
-    z-index: 999;
+    border-left: 1px solid #d0d0d0;
 }
 
 :root {
@@ -214,12 +206,6 @@ p code, li code {
     bottom: 0;
 }
 
-.eq-center-check {
-    border: 1px solid #d0d0d0;
-    padding: 0.6em 0.7em 0.4em;
-    margin: 0.8em 0 1em;
-}
-
 /* Blockquotes */
 blockquote {
     border-left: 2px solid #d0d0d0;
@@ -341,10 +327,6 @@ pre code.hljs {
 
     .post-list li {
         column-gap: 0.3em;
-    }
-
-    body::before {
-        inset: 6px;
     }
 
 }
