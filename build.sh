@@ -97,7 +97,7 @@ EOF
     cat <<'EOF'
         </main>
         <footer>
-            (c) Karthik 2023-2026
+            © Karthik 2023-2026
         </footer>
     </div>
     <script>

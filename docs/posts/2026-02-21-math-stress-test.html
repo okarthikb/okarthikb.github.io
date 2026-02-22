@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Stress Test: Tagged vs Untagged Display</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '\\[', right: '\\]', display: true},
+                {left: '\\(', right: '\\)', display: false}
+            ],
+            throwOnError: false
+        });"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <link rel="stylesheet" href="/css/default.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.hljs && document.querySelector('pre code')) {
+                hljs.highlightAll();
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <main>
+<article>
+    <h1 class="post-title">Math Stress Test: Tagged vs Untagged Display</h1>
+    <span class="post-date">2026-02-21</span>
+    <p><a class="page-back" href="/" aria-label="Back to home">&#9756;</a></p>
+<p>This post is a rendering stress test for display math, long lines,
+tags, alignment, and overflow behavior on mobile.</p>
+<h3 id="baseline-repeated-equation-untagged-then-tagged">Baseline
+repeated equation (untagged then tagged)</h3>
+<p><span class="math display">\[
+\int_{-\infty}^{\infty} e^{-x^2/2}\,dx = \sqrt{2\pi}
+\]</span></p>
+<p><span class="math display">\[
+\int_{-\infty}^{\infty} e^{-x^2/2}\,dx = \sqrt{2\pi} \tag{A}
+\]</span></p>
+<p>Expected behavior: both lines should stay centered; tagging should
+only add the right-side number.</p>
+<h3 id="wide-equation-forced-overflow">Wide equation (forced
+overflow)</h3>
+<p><span class="math display">\[
+\log p_\theta(x_{1:T}) =
+\sum_{t=1}^{T}
+\log
+\left(
+\sum_{z_t=1}^{K}
+\sum_{z_{t-1}=1}^{K}
+p_\theta(x_t \mid z_t)\,p_\theta(z_t \mid z_{t-1})\,p_\theta(z_{t-1}
+\mid x_{1:t-1})
+\right)
+\tag{B}
+\]</span></p>
+<h3 id="multiline-aligned-derivation-with-per-line-tags">Multiline
+aligned derivation with per-line tags</h3>
+<p><span class="math display">\[
+\begin{aligned}
+\mathcal{L}(\theta)
+&amp;= \mathbb{E}_{q(z\mid x)}
+\left[\log p_\theta(x,z) - \log q(z\mid x)\right]
+\tag{1}
+\\
+&amp;= \mathbb{E}_{q(z\mid x)}
+\left[\log p_\theta(x\mid z)\right]
+- D_{\mathrm{KL}}(q(z\mid x)\,\|\,p(z))
+\tag{2}
+\\
+&amp;\le \log p_\theta(x)
+\tag{3}
+\end{aligned}
+\]</span></p>
+<h3 id="same-multiline-block-without-tags-for-alignment-comparison">Same
+multiline block without tags (for alignment comparison)</h3>
+<p><span class="math display">\[
+\begin{aligned}
+\mathcal{L}(\theta)
+&amp;= \mathbb{E}_{q(z\mid x)}
+\left[\log p_\theta(x,z) - \log q(z\mid x)\right]
+\\
+&amp;= \mathbb{E}_{q(z\mid x)}
+\left[\log p_\theta(x\mid z)\right]
+- D_{\mathrm{KL}}(q(z\mid x)\,\|\,p(z))
+\\
+&amp;\le \log p_\theta(x)
+\end{aligned}
+\]</span></p>
+<h3 id="category-theory-flavored-equalities">Category-theory flavored
+equalities</h3>
+<p><span class="math display">\[
+\mathrm{Hom}_{\mathcal{C}}(A \otimes B, C)
+\cong
+\mathrm{Hom}_{\mathcal{C}}(A, [B,C])
+\cong
+\mathrm{Nat}\!\left(h_A \times h_B, h_C\right)
+\tag{C}
+\]</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+F(\operatorname{colim}_{i \in I} X_i)
+&amp;\cong \operatorname{colim}_{i \in I} F(X_i)
+\\
+G(\operatorname{lim}_{j \in J} Y_j)
+&amp;\cong \operatorname{lim}_{j \in J} G(Y_j)
+\end{aligned}
+\]</span></p>
+<h3 id="matrix-heavy-block">Matrix-heavy block</h3>
+<p><span class="math display">\[
+\Sigma =
+\begin{bmatrix}
+\sigma_{11} &amp; \sigma_{12} &amp; \cdots &amp; \sigma_{1n} \\
+\sigma_{21} &amp; \sigma_{22} &amp; \cdots &amp; \sigma_{2n} \\
+\vdots      &amp; \vdots      &amp; \ddots &amp; \vdots      \\
+\sigma_{n1} &amp; \sigma_{n2} &amp; \cdots &amp; \sigma_{nn}
+\end{bmatrix},
+\qquad
+\Sigma^{-1}
+=
+\frac{1}{\det(\Sigma)}\,\operatorname{adj}(\Sigma)
+\tag{D}
+\]</span></p>
+<h3 id="literal-delimiter-checks-should-not-become-math">Literal
+delimiter checks (should not become math)</h3>
+<ul>
+<li><code>\$not math\$</code></li>
+<li><code>\\(not math\\)</code></li>
+</ul>
+<p>Inline check: $this is literal$ and <span class="math inline">\(this
+is also literal\)</span>.</p>
+
+</article>
+        </main>
+        <footer>
+            © Karthik 2023-2026
+        </footer>
+    </div>
+    <script>
+        if (document.querySelector('blockquote.twitter-tweet')) {
+            const twitterScript = document.createElement('script');
+            twitterScript.async = true;
+            twitterScript.src = 'https://platform.twitter.com/widgets.js';
+            twitterScript.charset = 'utf-8';
+            document.body.appendChild(twitterScript);
+        }
+    </script>
+</body>
+</html>
