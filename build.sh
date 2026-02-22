@@ -76,6 +76,7 @@ wrap_page() {
                 {left: '\\\\[', right: '\\\\]', display: true},
                 {left: '\\\\(', right: '\\\\)', display: false}
             ],
+            ignoredClasses: ['no-math'],
             throwOnError: false
         });"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
