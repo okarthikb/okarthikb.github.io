@@ -70,15 +70,6 @@ wrap_page() {
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
-        onload="renderMathInElement(document.body, {
-            delimiters: [
-                {left: '\\\\[', right: '\\\\]', display: true},
-                {left: '\\\\(', right: '\\\\)', display: false}
-            ],
-            ignoredClasses: ['no-math'],
-            throwOnError: false
-        });"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
     <link rel="stylesheet" href="/css/default.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
@@ -86,6 +77,15 @@ wrap_page() {
         document.addEventListener('DOMContentLoaded', function () {
             if (window.hljs && document.querySelector('pre code')) {
                 hljs.highlightAll();
+            }
+            if (window.katex) {
+                document.querySelectorAll('.math').forEach(function (el) {
+                    const tex = el.textContent;
+                    katex.render(tex, el, {
+                        displayMode: el.classList.contains('display'),
+                        throwOnError: false
+                    });
+                });
             }
         });
     </script>
@@ -180,9 +180,9 @@ while IFS= read -r post_file; do
   post_body_file="${tmp_dir}/${slug}-body.html"
 
   pandoc \
-    --from=markdown+tex_math_dollars+tex_math_double_backslash+latex_macros+raw_html \
+    --from=markdown+tex_math_dollars+latex_macros+raw_html \
     --to=html5 \
-    --mathjax \
+    --katex \
     --syntax-highlighting=none \
     "$post_file" \
     > "$post_content_file"

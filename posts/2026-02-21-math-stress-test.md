@@ -111,4 +111,4 @@ $$
 
 Inline check in code spans: `\$this is literal\$` and `\(this is also literal\)`.
 
-Inline check in plain text (without code): <span class="no-math">\(this is also literal\)</span> and <span class="no-math">\$this is literal\$</span>.
+Inline check in plain text (without code): <span class="no-math">\\(this is also literal\\)</span> and <span class="no-math">\$this is literal\$</span>.
