@@ -36,8 +36,8 @@
     <h1 class="post-title">Math Stress Test: Tagged vs Untagged Display</h1>
     <span class="post-date">2026-02-21</span>
     <p><a class="page-back" href="/" aria-label="Back to home">&#9756;</a></p>
-<p>This post is a rendering stress test for display math, long lines,
-tags, alignment, and overflow behavior on mobile.</p>
+<p>This post is a rendering stress test for display math, short and long
+equations, tags, multiline alignment, and literal escape behavior.</p>
 <h3 id="baseline-repeated-equation-untagged-then-tagged">Baseline
 repeated equation (untagged then tagged)</h3>
 <p><span class="math display">
@@ -48,6 +48,14 @@ repeated equation (untagged then tagged)</h3>
 </span></p>
 <p>Expected behavior: both lines should stay centered; tagging should
 only add the right-side number.</p>
+<h3 id="short-tagged-equations-dense-numbering">Short tagged equations
+(dense numbering)</h3>
+<p><span class="math display"> a+b=c \tag{3} </span></p>
+<p><span class="math display"> e^{i\pi}+1=0 \tag{4} </span></p>
+<p><span class="math display"> \nabla \cdot \mathbf{E} =
+\frac{\rho}{\varepsilon_0} \tag{5} </span></p>
+<p><span class="math display"> \det(AB)=\det(A)\det(B) \tag{6}
+</span></p>
 <h3 id="wide-equation-forced-overflow">Wide equation (forced
 overflow)</h3>
 <p><span class="math display">
@@ -62,26 +70,59 @@ p_\theta(x_t \mid z_t)\,p_\theta(z_t \mid z_{t-1})\,p_\theta(z_{t-1}
 \right)
 \tag{2}
 </span></p>
-<h3 id="multiline-aligned-derivation-with-per-line-tags">Multiline
-aligned derivation with per-line tags</h3>
+<h3 id="very-wide-rational-expression-forced-overflow">Very wide
+rational expression (forced overflow)</h3>
+<p><span class="math display">
+\frac{
+\sum_{k=1}^{K}
+\left(
+\prod_{j=1}^{J}
+\left(1+\alpha_{k,j}x_j+\beta_{k,j}x_j^2\right)
+\right)
+}
+{
+1+
+\sum_{m=1}^{M}
+\left(
+\gamma_m
+\sum_{n=1}^{N}\delta_{m,n}x_n
+\right)^2
+}
+\tag{7}
+</span></p>
+<h3 id="multiline-derivation-with-per-line-tags-align">Multiline
+derivation with per-line tags (<code>align</code>)</h3>
 <p><span class="math display">
 \begin{align}
 \mathcal{L}(\theta)
 &amp;= \mathbb{E}_{q(z\mid x)}
 \left[\log p_\theta(x,z) - \log q(z\mid x)\right]
-\tag{3}
+\tag{8}
 \\
 &amp;= \mathbb{E}_{q(z\mid x)}
 \left[\log p_\theta(x\mid z)\right]
 - D_{\mathrm{KL}}(q(z\mid x)\,\|\,p(z))
-\tag{4}
+\tag{9}
 \\
 &amp;\le \log p_\theta(x)
-\tag{5}
+\tag{10}
 \end{align}
 </span></p>
-<h3 id="same-multiline-block-without-tags-for-alignment-comparison">Same
-multiline block without tags (for alignment comparison)</h3>
+<h3 id="longer-per-line-tagged-system-align">Longer per-line tagged
+system (<code>align</code>)</h3>
+<p><span class="math display">
+\begin{align}
+\mathbf{h}_t &amp;= \sigma(W_h \mathbf{h}_{t-1} + U_h \mathbf{x}_t +
+\mathbf{b}_h) \tag{11} \\
+\mathbf{o}_t &amp;= W_o \mathbf{h}_t + \mathbf{b}_o \tag{12} \\
+p(\mathbf{y}_t \mid \mathbf{x}_{\le t}) &amp;=
+\operatorname{softmax}(\mathbf{o}_t) \tag{13} \\
+\mathcal{J}(\theta) &amp;= -\sum_{t=1}^{T}\log p(y_t^\star \mid
+\mathbf{x}_{\le t}) \tag{14}
+\end{align}
+</span></p>
+<h3 id="same-multiline-block-without-tags-alignment-comparison">Same
+multiline block without tags (alignment comparison)</h3>
 <p><span class="math display">
 \begin{aligned}
 \mathcal{L}(\theta)
@@ -103,7 +144,7 @@ equalities</h3>
 \mathrm{Hom}_{\mathcal{C}}(A, [B,C])
 \cong
 \mathrm{Nat}\!\left(h_A \times h_B, h_C\right)
-\tag{6}
+\tag{15}
 </span></p>
 <p><span class="math display">
 \begin{aligned}
@@ -127,19 +168,24 @@ G(\operatorname{lim}_{j \in J} Y_j)
 \Sigma^{-1}
 =
 \frac{1}{\det(\Sigma)}\,\operatorname{adj}(\Sigma)
-\tag{7}
+\tag{16}
 </span></p>
-<h3 id="literal-delimiter-checks-should-not-become-math">Literal
-delimiter checks (should not become math)</h3>
+<h3 id="escape-matrix-literal-characters-and-delimiters">Escape matrix
+(literal characters and delimiters)</h3>
+<p>The lines below should render as plain text, not math:</p>
 <ul>
-<li><code>\$not math\$</code></li>
-<li><code>\(not math\)</code></li>
+<li>Price literal: $19.99</li>
+<li>Shell var literal: $PATH</li>
+<li>Double-dollar literal text: $$TOKEN$$</li>
+<li>Literal backslash delimiters in prose: \(not-math\),
+\[not-math\]</li>
+<li>Literal braces: {a,b,c}</li>
+<li>Literal hash: # heading-marker</li>
+<li>Literal underscore in prose: foo_bar</li>
+<li>Literal percent: 100% certainty</li>
+<li>Literal ampersand: R&amp;D</li>
 </ul>
-<p>Inline check in code spans: <code>\$this is literal\$</code> and
-<code>\(this is also literal\)</code>.</p>
-<p>Inline check in plain text (without code): <span
-class="no-math">\(this is also literal\)</span> and <span
-class="no-math">$this is literal$</span>.</p>
+<p>Inline check in plain text (without code): $this is literal$.</p>
 
 </article>
         </main>
