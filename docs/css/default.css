@@ -17,7 +17,6 @@ body {
     color: #1a1a1a;
     background: #fff;
     padding: 0 1.2em;
-    border-left: 1px solid #d0d0d0;
 }
 
 :root {
@@ -197,13 +196,13 @@ p code, li code {
     min-width: max-content;
 }
 
-.katex-display > .katex > .katex-html {
-    padding-right: 4ch;
-}
-
 .katex-display > .katex > .katex-html > .tag {
     right: 0;
     bottom: 0;
+}
+
+.katex-display > .katex > .katex-html:has(> .tag) {
+    padding-inline: 2ch;
 }
 
 /* Blockquotes */
