@@ -50,6 +50,28 @@ strip_frontmatter() {
   ' "$file"
 }
 
+inject_post_items() {
+  local template_file="$1"
+  local items_file="$2"
+  local output_file="$3"
+  local marker="{{POST_LIST_ITEMS}}"
+
+  awk -v marker="$marker" -v items_file="$items_file" '
+    BEGIN {
+      while ((getline line < items_file) > 0) {
+        items = items line "\n"
+      }
+      close(items_file)
+    }
+    {
+      if (index($0, marker)) {
+        gsub(marker, items)
+      }
+      print
+    }
+  ' "$template_file" > "$output_file"
+}
+
 wrap_page() {
   local title="$1"
   local body_file="$2"
@@ -130,22 +152,8 @@ touch "$out_dir/.nojekyll"
 post_manifest="${tmp_dir}/posts.txt"
 find "${repo_dir}/posts" -maxdepth 1 -type f -name '*.md' | sort -r > "$post_manifest"
 
-index_body_file="${tmp_dir}/index-body.html"
+post_items_file="${tmp_dir}/index-post-items.html"
 {
-  cat <<'EOF'
-<h1 class="post-title"><a href="/">Karthik's site</a></h1>
-
-<h3>About</h3>
-
-<p class="about">
-    Hey. I'm Karthik, undergrad <a href="https://twitter.com/UWaterloo">@UWaterloo</a>, interested in all things AGI. Follow me <a href="https://twitter.com/akbirthko">@akbirthko</a> on Twitter and do not hesitate to reach out! <a href="https://github.com/okarthikb">GH</a>.
-</p>
-
-<h3>Posts</h3>
-
-<ul class="post-list">
-EOF
-
   while IFS= read -r post_file; do
     slug="$(basename "$post_file" .md)"
     title="$(read_meta title "$post_file")"
@@ -155,15 +163,12 @@ EOF
     printf '        <a href="/posts/%s.html">%s</a>\n' "$slug" "$(html_escape "$title")"
     printf '    </li>\n\n'
   done < "$post_manifest"
+} > "$post_items_file"
 
-  cat <<'EOF'
-    <li>
-        <span class="post-item-date">[0000-00-00]</span>
-        <a href="/old.html">Old</a>
-    </li>
-</ul>
-EOF
-} > "$index_body_file"
+index_template_body_file="${tmp_dir}/index-template-body.html"
+strip_frontmatter "${repo_dir}/index.html" > "$index_template_body_file"
+index_body_file="${tmp_dir}/index-body.html"
+inject_post_items "$index_template_body_file" "$post_items_file" "$index_body_file"
 
 wrap_page "Home" "$index_body_file" "${out_dir}/index.html"
 

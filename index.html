@@ -13,12 +13,7 @@ title: Karthik's site
 <h3>Posts</h3>
 
 <ul class="post-list">
-$for(posts)$
-    <li>
-        <span class="post-item-date">[$date$]</span>
-        <a href="$url$">$title$</a>
-    </li>
-$endfor$
+{{POST_LIST_ITEMS}}
     <li>
         <span class="post-item-date">[0000-00-00]</span>
         <a href="/old.html">Old</a>
