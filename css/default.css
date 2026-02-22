@@ -324,15 +324,11 @@ pre code.hljs {
         column-gap: 0.3em;
     }
 
-    .katex-display > .katex > .katex-html {
-        display: inline-flex;
-        align-items: flex-end;
-        gap: 0.8em;
-    }
-
     .katex-display > .katex > .katex-html > .tag {
         position: static;
-        margin: 0;
+        display: inline-block;
+        margin-left: 0.8em;
+        vertical-align: baseline;
     }
 
 }
