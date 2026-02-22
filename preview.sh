@@ -8,4 +8,4 @@ port="${1:-8000}"
 "${repo_dir}/build.sh"
 
 cd "${repo_dir}/docs"
-python3 -m http.server "$port" --bind 0.0.0.0
+python -m http.server "$port" --bind 127.0.0.1
