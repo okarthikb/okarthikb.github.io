@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detailed Scratchpad Prompting: LLMs As Interpreters</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '\\[', right: '\\]', display: true},
+                {left: '\\(', right: '\\)', display: false}
+            ],
+            throwOnError: false
+        });"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <link rel="stylesheet" href="/css/default.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.hljs && document.querySelector('pre code')) {
+                hljs.highlightAll();
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <main>
+<article>
+    <h1 class="post-title">Detailed Scratchpad Prompting: LLMs As Interpreters</h1>
+    <span class="post-date">2023-07-20</span>
+    <p><a class="page-back" href="/" aria-label="Back to home">&#9756;</a></p>
+<h3 id="method">Method</h3>
+<p>I have often seen claims along the lines of “GPT-4 - despite being
+trained on trillions of tokens - is incapable of arithmetic, and is
+hence a lot dumber at this task than a calculator.” This is a very weak
+critique.</p>
+<blockquote class="twitter-tweet">
+<p lang="en" dir="ltr">
+When it comes to adding numbers, a pocket calculator is smarter than
+GPT-4.
+</p>
+— Pedro Domingos (<span class="citation"
+data-cites="pmddomingos">@pmddomingos</span>)
+<a href="https://twitter.com/pmddomingos/status/1651019397606285312?ref_src=twsrc%5Etfw">April
+26, 2023</a>
+</blockquote>
+<p>After seeing this tweet, I wondered how hard it would be to make
+GPT-4 (or any LLM) do arithmetic on large numbers. Turns out it’s not
+that hard at all! You just have to teach them how to do it like they’re
+first graders and keep in mind that they’re autoregressive models that
+benefit <a href="#1">[1]</a> from <a
+href="https://openai.com/blog/chatgpt-plugins">more information</a> or
+<a
+href="https://twitter.com/repligate/status/1675233559089672192?s=20">space</a>
+in the context. Here’s a prompt I came up with and the <a
+href="https://chat.openai.com/share/e4366ccc-8358-4723-8d75-463340d37906">interaction</a>
+where GPT-4 does addition on large numbers (purple text = GPT-4
+responses) very accurately:</p>
+<div class="convo">
+<div class="user">
+<pre class="text"><code>example 1
+
+3 7 8 + 6 4
+
+index the digits
+
+3 7 8
+
+1: 3
+2: 7
+3: 8
+
+6 4
+
+1: 6
+2: 4
+
+number of digits in first operand = 3
+
+number of digits in second operand = 2
+
+3 &gt; 2 =&gt; pad operand w/ fewer digits with abs(3 - 2) = 1 zero(s)
+
+operand w/ fewer zeros: 6 4
+
+padding step by step:
+
+1 zero - 0 6 4
+
+index the digits again
+
+0 6 4
+
+1: 0
+2: 6
+3: 4
+
+3 7 8
+
+1: 3
+2: 7
+3: 8
+
+let | = concatenate, c = carry bit = 0, x = _, f = false, t = true
+
+from last to first digit pair:
+
+3: 8 + 4 + c = 12 + 0 = 12 -&gt; c = 1 , d = 2 -&gt; x = d | x = 2 | = 2 -&gt; end? f
+2: 7 + 6 + c = 14 + 1 = 15 -&gt; c = 1 , d = 5 -&gt; x = d | x = 5 | 2 = 5 2 -&gt; end? f
+1: 3 + 0 + c = 3 + 1 = 4 -&gt; c = 0 , d = 4 -&gt; x = d | x = 4 | 5 2 = 4 5 2 -&gt; end? t
+
+x = c | x = 0 | 4 5 2 = 0 4 5 2
+
+0 4 5 2 is the answer
+
+---
+
+example 2
+
+2 2 2 + 7 7 7
+
+index the digits
+
+2 2 2
+
+1: 2
+2: 2
+3: 2
+
+7 7 7
+
+1: 7
+2: 7
+3: 7
+
+number of digits in first operand = 3
+
+number of digits in second operand = 3
+
+3 = 3 =&gt; no need to pad w/ zeros
+
+let | = concatenate, c = carry bit = 0, x = _, f = false, t = true
+
+from last to first digit pair:
+
+3: 2 + 7 + c = 9 + 0 = 9 -&gt; c = 0 , d = 9 -&gt; x = d | x = 9 | = 9 -&gt; end? f
+2: 2 + 7 + c = 9 + 0 = 9 -&gt; c = 0 , d = 9 -&gt; x = d | x = 9 | 9 = 9 9 -&gt; end? f
+1: 2 + 7 + c = 9 + 0 = 9 -&gt; c = 0 , d = 9 -&gt; x = d | x = 9 | 9 9 = 9 9 9 -&gt; end? t
+
+x = c | x = 0 | 9 9 9 = 0 9 9 9
+
+0 9 9 9 is the answer</code></pre>
+<p>This is a template you _must_ use to do addition. You must use the
+_same_ keywords. You must use whitespace wherever it is used above.</p>
+<p>Do not use uppercase letters, since they’re not present in the
+template. Do _not_ add any explanations or filler words before and after
+doing the computation. Your sole task is to follow the template
+above.</p>
+<p>Format the answer as plaintext.</p>
+<p>I’ll provide a new set operands and you _must_ use the template to
+compute the answer. Got it?</p>
+</div>
+<div class="gpt">
+<p>
+Yes, I understand your instructions. You want me to strictly follow the
+provided template to perform addition of two numbers. You will provide a
+pair of operands, and I will compute their sum following the template
+without any deviations, explanations, or fillers. Please provide the
+operands.
+</p>
+</div>
+<div class="user">
+<p>3 4 7 5 6 9 1 8 2 4 7 6 3 2 + 7 9 3 4 6 1 9 8 6 7 4 5 3 2 1 0 0 8
+2</p>
+</div>
+<div class="gpt">
+<pre class="text"><code>index the digits
+
+3 4 7 5 6 9 1 8 2 4 7 6 3 2
+
+1: 3
+2: 4
+3: 7
+4: 5
+5: 6
+6: 9
+7: 1
+8: 8
+9: 2
+10: 4
+11: 7
+12: 6
+13: 3
+14: 2
+
+7 9 3 4 6 1 9 8 6 7 4 5 3 2 1 0 0 8 2
+
+1: 7
+2: 9
+3: 3
+4: 4
+5: 6
+6: 1
+7: 9
+8: 8
+9: 6
+10: 7
+11: 4
+12: 5
+13: 3
+14: 2
+15: 1
+16: 0
+17: 0
+18: 8
+19: 2
+
+number of digits in first operand = 14
+
+number of digits in second operand = 19
+
+14 &lt; 19 =&gt; pad operand w/ fewer digits with abs(14 - 19) = 5 zero(s)
+
+operand w/ fewer zeros: 3 4 7 5 6 9 1 8 2 4 7 6 3 2
+
+padding step by step:
+
+1 zero - 0 3 4 7 5 6 9 1 8 2 4 7 6 3 2
+2 zeros - 0 0 3 4 7 5 6 9 1 8 2 4 7 6 3 2
+3 zeros - 0 0 0 3 4 7 5 6 9 1 8 2 4 7 6 3 2
+4 zeros - 0 0 0 0 3 4 7 5 6 9 1 8 2 4 7 6 3 2
+5 zeros - 0 0 0 0 0 3 4 7 5 6 9 1 8 2 4 7 6 3 2
+
+index the digits again
+
+0 0 0 0 0 3 4 7 5 6 9 1 8 2 4 7 6 3 2
+
+1: 0
+2: 0
+3: 0
+4: 0
+5: 0
+6: 3
+7: 4
+8: 7
+9: 5
+10: 6
+11: 9
+12: 1
+13: 8
+14: 2
+15: 4
+16: 7
+17: 6
+18: 3
+19: 2
+
+7 9 3 4 6 1 9 8 6 7 4 5 3 2 1 0 0 8 2
+
+1: 7
+2: 9
+3: 3
+4: 4
+5: 6
+6: 1
+7: 9
+8: 8
+9: 6
+10: 7
+11: 4
+12: 5
+13: 3
+14: 2
+15: 1
+16: 0
+17: 0
+18: 8
+19: 2
+
+let | = concatenate, c = carry bit = 0, x = _, f = false, t = true
+
+from last to first digit pair:
+
+19: 2 + 2 + c = 4 + 0 = 4 -&gt; c = 0 , d = 4 -&gt; x = d | x = 4 | = 4 -&gt; end? f
+18: 3 + 8 + c = 11 + 0 = 11 -&gt; c = 1 , d = 1 -&gt; x = d | x = 1 | 4 = 1 4 -&gt; end? f
+17: 6 + 0 + c = 6 + 1 = 7 -&gt; c = 0 , d = 7 -&gt; x = d | x = 7 | 1 4 = 7 1 4 -&gt; end? f
+16: 7 + 0 + c = 7 + 0 = 7 -&gt; c = 0 , d = 7 -&gt; x = d | x = 7 | 7 1 4 = 7 7 1 4 -&gt; end? f
+15: 4 + 1 + c = 5 + 0 = 5 -&gt; c = 0 , d = 5 -&gt; x = d | x = 5 | 7 7 1 4 = 5 7 7 1 4 -&gt; end? f
+14: 2 + 2 + c = 4 + 0 = 4 -&gt; c = 0 , d = 4 -&gt; x = d | x = 4 | 5 7 7 1 4 = 4 5 7 7 1 4 -&gt; end? f
+13: 8 + 3 + c = 11 + 0 = 11 -&gt; c = 1 , d = 1 -&gt; x = d | x = 1 | 4 5 7 7 1 4 = 1 4 5 7 7 1 4 -&gt; end? f
+12: 1 + 5 + c = 6 + 1 = 7 -&gt; c = 0 , d = 7 -&gt; x = d | x = 7 | 1 4 5 7 7 1 4 = 7 1 4 5 7 7 1 4 -&gt; end? f
+11: 9 + 4 + c = 13 + 0 = 13 -&gt; c = 1 , d = 3 -&gt; x = d | x = 3 | 7 1 4 5 7 7 1 4 = 3 7 1 4 5 7 7 1 4 -&gt; end? f
+10: 6 + 7 + c = 13 + 1 = 14 -&gt; c = 1 , d = 4 -&gt; x = d | x = 4 | 3 7 1 4 5 7 7 1 4 = 4 3 7 1 4 5 7 7 1 4 -&gt; end? f
+9: 5 + 6 + c = 11 + 1 = 12 -&gt; c = 1 , d = 2 -&gt; x = d | x = 2 | 4 3 7 1 4 5 7 7 1 4 = 2 4 3 7 1 4 5 7 7 1 4 -&gt; end? f
+8: 7 + 8 + c = 15 + 1 = 16 -&gt; c = 1 , d = 6 -&gt; x = d | x = 6 | 2 4 3 7 1 4 5 7 7 1 4 = 6 2 4 3 7 1 4 5 7 7 1 4 -&gt; end? f
+7: 4 + 9 + c = 13 + 1 = 14 -&gt; c = 1 , d = 4 -&gt; x = d | x = 4 | 6 2 4 3 7 1 4 5 7 7 1 4 = 4 6 2 4 3 7 1 4 5 7 7 1 4 -&gt; end? f
+6: 3 + 1 + c = 4 + 1 = 5 -&gt; c = 0 , d = 5 -&gt; x = d | x = 5 | 4 6 2 4 3 7 1 4 5 7 7 1 4 = 5 4 6 2 4 3 7 1 4 5 7 7 1 4 -&gt; end? f
+5: 0 + 6 + c = 6 + 0 = 6 -&gt; c = 0 , d = 6 -&gt; x = d | x = 6 | 5 4 6 2 4 3 7 1 4 5 7 7 1 4 = 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 -&gt; end? f
+4: 0 + 4 + c = 4 + 0 = 4 -&gt; c = 0 , d = 4 -&gt; x = d | x = 4 | 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 = 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 -&gt; end? f
+3: 0 + 3 + c = 3 + 0 = 3 -&gt; c = 0 , d = 3 -&gt; x = d | x = 3 | 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 = 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 -&gt; end? f
+2: 0 + 9 + c = 9 + 0 = 9 -&gt; c = 0 , d = 9 -&gt; x = d | x = 9 | 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 = 9 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 -&gt; end? f
+1: 0 + 7 + c = 7 + 0 = 7 -&gt; c = 0 , d = 7 -&gt; x = d | x = 7 | 9 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 = 7 9 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 -&gt; end? t
+
+x = c | x = 0 | 7 9 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 = 0 7 9 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4
+
+0 7 9 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 is the answer</code></pre>
+</div>
+</div>
+<p>The prompt contains one example of addition of a three digit and two
+digit number with instructions to pad the operand with fewer digits with
+zeros. The other example contained two three digit numbers, so no
+padding was required. But I then asked GPT-4 to add a 14 digit number
+with a 19 digit number and it did it correctly by following the
+template, padding the 14 digit number with 5 zeros. GPT-4 is clearly
+capable of addition. I’m surprised <span class="citation"
+data-cites="pmddomingos">@pmddomingos</span> didn’t try to get GPT-4 to
+do some addition first. What’s so wrong about expecting it do addition
+zero-shot without any chonky prompting like we see above?</p>
+<h3 id="tokenization">Tokenization</h3>
+<p>We first look at the main reason why GPT-4 fails at zero-shot
+addition: the text input is tokenized using byte-pair encoding (BPE) <a
+href="#2">[2]</a>, a compression algorithm introduced by Philip Gage in
+1994. The text is split into subwords and there’s a finite set - the
+vocabulary - of subwords that it is split into. Each subword - or token
+- has an id, and the text which is converted to a list of ids becomes
+the input to the GPT model. The way BPE works is by first doing a
+whitespace split on the BPE train corpus (some corpus with which you
+train the tokenizer). Then you set the vocab size you want and the
+tokenizer will then greedily merge the most frequent byte pairs until
+the vocab size is reached. This is now the vocabulary of the model.</p>
+<p>The problem with this of course is that different numbers and digits
+appear with different frequencies in the BPE train corpus. So some
+number like ‘380’ is a single token in the eye of GPT, whereas something
+like ‘381’ gets split into two tokens ‘38’ and ‘1’ because ‘381’ didn’t
+occur that frequently. Since the BPE tokenizer first does a whitespace
+split, if you don’t put a whitespace between each number in the prompt,
+GPT will not be able gauge what the digits of a number even are! So if
+you prompt GPT-4 ‘34756918247632 + 7934619867453210082’, this is what it
+sees</p>
+<figure>
+<img src="/images/tokenizer_messed.png" alt="Tokenizer whack" />
+<figcaption aria-hidden="true">Tokenizer whack</figcaption>
+</figure>
+<p>The different highlights are tokens from the vocabulary (around 100k
+tokens) and you can see how it is completely messed up. It’s like if
+somebody told you that you can only add two numbers by zero-shot adding
+random chunks in each. If you split the digits by spaces however</p>
+<figure>
+<img src="/images/tokenizer_fixed.png" alt="Tokenizer fixed" />
+<figcaption aria-hidden="true">Tokenizer fixed</figcaption>
+</figure>
+<p>Much better. Each digit is now a separate token. And we ensure that
+we use whitespaces liberally in the addition template prompt, not just
+for the operands. I highly recommend nostalgebraist’s <a
+href="https://nostalgebraist.tumblr.com/post/620663843893493761/bpe-blues">post</a>
+on BPE anomalies and Hugging Face’s <a
+href="https://huggingface.co/learn/nlp-course/chapter6/5?fw=pt">tutorial</a>
+on BPE. If you’re a Rust fanboi, you might also like this <a
+href="https://guillaume-be.github.io/2021-09-16/byte_pair_encoding">post</a>
+about making BPE a lot more efficient (OpenAI’s tiktoken uses Rust for
+example).</p>
+<h3 id="in-context-learning">In-context learning</h3>
+<p>The second reason why GPT-4 fails at zero-shot addition is that you
+give it no room to do computation. GPT-4 is an <em>autoregressive</em>
+language model, which means that the output at a timestep is conditioned
+on all previous outputs. A language model is simply a probability
+distribution <span class="math inline">\(p_{\theta}\)</span> over a
+finite set of symbols <span class="math inline">\(V\)</span> (the
+vocabulary) where a symbol <span class="math inline">\(s_t\)</span> at
+timestep <span class="math inline">\(t\)</span> is sampled from the
+distribution <span
+class="math inline">\(p_{\theta}(\cdot\,|\,s_1,\ldots, s_{t -
+1}).\)</span> This leads to the most important (IMO) emergent phenomena
+in large language models - in-context learning. It is the ability to
+utilise information in the previous context in non-trivial ways to
+predict the next token better. How does it happen here?</p>
+<p>Well, how do first graders do addition? They go from right to left
+one digit at a time. Ask for the <span
+class="math inline">\(n\)</span>th digit and they’ll be able to count
+one by one and tell what it is. We need a way for our language model to
+retrieve a digit in any position like the first grader. So we first tell
+it to <em>index</em> all the digits. This lets it 1) get any digit given
+position and operand and 2) see how many digits are in each operand.
+Based on this, it can then figure out how many 0s it needs to pad the
+smaller number with</p>
+<pre class="text"><code>3 &gt; 2 =&gt; pad operand w/ fewer digits with abs(3 - 2) = 1 zero(s)</code></pre>
+<p>We make it explicitly calculate the number of 0s to pad with. Then we
+do the padding <em>step by step</em> (or signal it to do it) like
+this</p>
+<pre class="text"><code>operand w/ fewer zeros: 6 4
+
+padding step by step:
+
+1 zero - 0 6 4</code></pre>
+<p>This is one step in the prompt. And look at how GPT-4 groks it</p>
+<pre class="text"><code>14 &lt; 19 =&gt; pad operand w/ fewer digits with abs(14 - 19) = 5 zero(s)
+
+operand w/ fewer zeros: 3 4 7 5 6 9 1 8 2 4 7 6 3 2
+
+padding step by step:
+
+1 zero - 0 3 4 7 5 6 9 1 8 2 4 7 6 3 2
+2 zeros - 0 0 3 4 7 5 6 9 1 8 2 4 7 6 3 2
+3 zeros - 0 0 0 3 4 7 5 6 9 1 8 2 4 7 6 3 2
+4 zeros - 0 0 0 0 3 4 7 5 6 9 1 8 2 4 7 6 3 2
+5 zeros - 0 0 0 0 0 3 4 7 5 6 9 1 8 2 4 7 6 3 2</code></pre>
+<p>By first making it compute how many 0s it needs to pad with and then
+making it do the padding step by step with whitespaces, GPT-4 will know
+when to stop padding and move on to the next procedure. We make it
+re-index the digits like so</p>
+<pre class="text"><code>index the digits again
+
+0 0 0 0 0 3 4 7 5 6 9 1 8 2 4 7 6 3 2
+
+1: 0
+2: 0
+3: 0
+4: 0
+5: 0
+6: 3
+7: 4
+8: 7
+9: 5
+10: 6
+11: 9
+12: 1
+13: 8
+14: 2
+15: 4
+16: 7
+17: 6
+18: 3
+19: 2
+
+7 9 3 4 6 1 9 8 6 7 4 5 3 2 1 0 0 8 2
+
+1: 7
+2: 9
+3: 3
+4: 4
+5: 6
+6: 1
+7: 9
+8: 8
+9: 6
+10: 7
+11: 4
+12: 5
+13: 3
+14: 2
+15: 1
+16: 0
+17: 0
+18: 8
+19: 2</code></pre>
+<p>We then “define” some variables, let it know what they are, and set
+their initial values</p>
+<pre class="text"><code>let | = concatenate, c = carry bit = 0, x = _, f = false, t = true</code></pre>
+<p>and then we let it do the addition step by step, starting from the
+last digit pair going all the way to the first. We’ll just look at the
+last few operations</p>
+<pre class="text"><code>4: 0 + 4 + c = 4 + 0 = 4 -&gt; c = 0 , d = 4 -&gt; x = d | x = 4 | 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 = 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 -&gt; end? f
+3: 0 + 3 + c = 3 + 0 = 3 -&gt; c = 0 , d = 3 -&gt; x = d | x = 3 | 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 = 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 -&gt; end? f
+2: 0 + 9 + c = 9 + 0 = 9 -&gt; c = 0 , d = 9 -&gt; x = d | x = 9 | 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 = 9 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 -&gt; end? f
+1: 0 + 7 + c = 7 + 0 = 7 -&gt; c = 0 , d = 7 -&gt; x = d | x = 7 | 9 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 = 7 9 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 -&gt; end? t
+
+x = c | x = 0 | 7 9 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 = 0 7 9 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4
+
+0 7 9 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 is the answer</code></pre>
+<p>Putting the index at the front like <code>4:</code>, <code>3:</code>,
+etc., helps it retrieve the correct digit pair. Based on the sum of the
+pair, it “sets” the carry bit <code>c</code> and result digit
+<code>d</code>, like it’s Python. The result digit <code>d</code> is
+then concatenated with the answer so far computed and we make the concat
+operation explicit as well. At the end of each line we have
+<code>end? f/t</code> to signify whether the procedure has ended and it
+needs to compute the final carry bit. It computes the final carry bit
+and concats it to the answer and we have our sum. Given two strings like
+‘420’ and ‘69’, the Python implementation of the procedure we make GPT-4
+use is as follows</p>
+<pre class="python"><code>def llm_add(a, b):
+  if len(a) &lt; len(b):
+    a = &#39;0&#39; * abs(len(a) - len(b)) + a
+  else:
+    b = &#39;0&#39; * abs(len(a) - len(b)) + b
+  x, result = &#39;&#39;, &#39;&#39;
+  template = &#39;{}: {} + {} + c = {} + {} = {} -&gt; c = {} , d = {} -&gt; x = d | x = {} | {} = {} -&gt; end?&#39;
+  c = 0
+  for i in range(len(a) - 1, -1, -1):
+    s = int(a[i]) + int(b[i]) + c
+    d, c_, s_ = s % 10, s // 10, s + c
+    x_ = f&#39;{d}&#39; if x == &#39;&#39; else f&#39;{d} &#39; + x
+    fin = (&#39; t&#39; if i == 0 else &#39; f&#39;) + &#39;\n&#39;
+    result += template.format(i + 1, a[i], b[i], s, c, s_, c_, d, d, x, x_) + fin
+    x, c = x_, c_
+  result += f&quot;\nx = c | x = {c} | {x} = {str(c) + &#39; &#39; + x}&quot;
+  return result
+
+
+print(llm_add(&#39;420&#39;, &#39;69&#39;))</code></pre>
+<p>and we can verify if GPT-4 used the correct procedure with a string
+match. One can view this through the lens of probabilistic programming
+<a href="#4">[4]</a>. Different sections of the context are traces of
+different subroutines, each spawned by the stochastic generation of
+specific tokens. The idea seems especially enticing considering ChatGPT
+Plugins and Code Interpreter, where the model literally calls APIs and
+uses an interpreter.</p>
+<figure>
+<img src="/images/cascades.png" alt="LM Cascades" />
+<figcaption aria-hidden="true">LM Cascades</figcaption>
+</figure>
+<p>I think it’s pretty clear that language models are unlike any kind of
+software we’ve previously built. GPT-4 does some weird combination of
+natural language processing and Python-like step by step interpretation
+here. It’s a bit like we’re <a
+href="https://www.engraved.blog/building-a-virtual-machine-inside/">emulating
+a virtual machine</a> inside ChatGPT (the post now seems rather quaint
+in retrospect). There’s a lot of debate on how best to view them - while
+some AI researchers claim language models are bogus, others turn them
+into Turing machines <a href="#3">[3]</a>. While some people <a
+href="https://yoshuabengio.org/2023/05/22/how-rogue-ais-may-arise/">decry</a>
+that language models will be so capable so as to be existentially
+dangerous, it’s pretty <a
+href="https://twitter.com/akbirthko/status/1680766177448980480?s=20">easy
+to show</a> how weakly self-aware and <a
+href="https://sohl-dickstein.github.io/2023/03/09/coherence.html">incoherent</a>
+their goals are.</p>
+<p>The most useful analogy I’ve seen so far is Janus’s simulators <a
+href="#5">[5]</a>: large language models are world simulators in
+<em>text space</em>. They are not calculators, they are not humans, but
+they can simulate both (to some extent). A clearer and more formal
+treatment of this viewpoint can be found in “Language Models as Agent
+Models” <a href="#6">[6]</a>, and it’s my preferred way of thinking
+about language models (especially RLHF-ed ones). You are
+behavior-cloning human activity on the internet; offline RL where the
+action space is the finite vocabulary of tokens.</p>
+<p>The perspective comes with a host of positive and negative
+implications for language models which I’ll go over in another post. For
+now, you’ll know what to do if your calculator fails (you use a 1.76
+trillion parameter mixture of experts model).</p>
+<h3 id="references">References</h3>
+<ol type="1">
+<li><a id="1"></a><a
+href="https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html">In-context
+Learning and Induction Heads</a></li>
+<li><a id="2"></a><a
+href="https://www.derczynski.com/papers/archive/BPE_Gage.pdf">A New
+Algorithm for Data Compression</a></li>
+<li><a id="3"></a><a href="https://arxiv.org/abs/2301.04589">Memory
+Augmented Large Language Models are Computationally Universal</a></li>
+<li><a id="4"></a><a href="https://model-cascades.github.io">Language
+Model Cascades</a></li>
+<li><a id="5"></a><a
+href="https://www.lesswrong.com/posts/vJFdjigzmcXMhNTsx/simulators">Simulators</a></li>
+<li><a id="6"></a><a href="https://arxiv.org/abs/2212.01681">Language
+Models as Agent Models</a></li>
+</ol>
+
+</article>
+        </main>
+        <footer>
+            (c) Karthik 2023-2026
+        </footer>
+    </div>
+    <script>
+        if (document.querySelector('blockquote.twitter-tweet')) {
+            const twitterScript = document.createElement('script');
+            twitterScript.async = true;
+            twitterScript.src = 'https://platform.twitter.com/widgets.js';
+            twitterScript.charset = 'utf-8';
+            document.body.appendChild(twitterScript);
+        }
+    </script>
+</body>
+</html>

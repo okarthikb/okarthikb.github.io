@@ -1,0 +1,338 @@
+/* Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+::selection {
+    background: #454545;
+    color: whitesmoke;
+}
+
+body {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 17px;
+    line-height: 1.7;
+    color: #1a1a1a;
+    background: #fff;
+    padding: 0 1.2em;
+}
+
+:root {
+    --code-size: 0.8em;
+    --rule-text-gap: 0.45em;
+}
+
+/* Container */
+.container {
+    max-width: 650px;
+    margin: 0 auto;
+    padding: 2em 0 2.2em;
+}
+
+.page-back {
+    display: inline-block;
+    border: 1px solid #d0d0d0;
+    border-radius: 3px;
+    background: #fff;
+    color: #555;
+    line-height: 1;
+    padding: 0.14em 0.38em 0.16em;
+    text-decoration: none;
+}
+
+.page-back:visited {
+    color: #555;
+}
+
+.page-back:hover,
+.page-back:visited:hover {
+    border-color: #454545;
+    color: #111;
+    text-decoration: none;
+}
+
+/* Typography */
+h1, h2, h3, h4 {
+    margin: 1.5em 0 0.5em;
+    line-height: 1.3;
+}
+
+p {
+    margin-bottom: 1em;
+    text-align: justify;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+}
+
+a {
+    color: #27408b;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #00688b;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Post list on index */
+.post-list {
+    list-style: none;
+    padding: 0;
+    margin: 1em 0 0;
+}
+
+.post-list li {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    column-gap: 0.35em;
+    align-items: start;
+    margin-bottom: 0;
+    padding: 0.35em 0;
+}
+
+.post-list li:last-child {
+    padding-bottom: 0;
+}
+
+.post-item-date {
+    color: #666;
+    display: block;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.post-list li > a {
+    display: block;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+/* About section on index */
+.about {
+    margin-bottom: 1.5em;
+}
+
+/* Post */
+.post-title {
+    font-size: 1.45em;
+    line-height: 1.15;
+    margin-top: 0;
+    margin-bottom: 0;
+    border-bottom: 2px solid #d0d0d0;
+    padding-bottom: var(--rule-text-gap);
+}
+
+.post-title:hover {
+    border-bottom: 2px solid #454545;
+}
+
+.post-title a,
+.post-title a:visited,
+.post-title a:hover {
+    color: #1a1a1a;
+    text-decoration: none;
+}
+
+.post-date {
+    color: #777;
+    font-size: 0.9em;
+    margin-top: var(--rule-text-gap);
+    margin-bottom: 0;
+    display: block;
+}
+
+article h2, article h3 {
+    border-bottom: 1px solid #d0d0d0;
+    padding-bottom: 0.1em;
+}
+
+article h2:hover, article h3:hover {
+    border-bottom: 1px solid #454545;
+}
+
+/* Code blocks */
+pre {
+    padding: 0.8em;
+    overflow-x: auto;
+    font-size: var(--code-size);
+    line-height: 1.5;
+    margin: 1.2em 0;
+    border: 1px solid #d0d0d0;
+}
+
+code {
+    font-family: 'Fira Code', monospace;
+    font-size: var(--code-size);
+}
+
+pre code {
+    background: none;
+    font-size: 1em;
+    padding: 0;
+}
+
+p code, li code {
+    padding: 0.1em 0.3em;
+}
+
+/* KaTeX */
+.katex {
+    font-size: 1.05em !important;
+}
+
+.katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin: 0.5em 0 !important;
+    padding-right: 0.2em;
+}
+
+.katex-display > .katex {
+    min-width: max-content;
+}
+
+.katex-display > .katex > .katex-html > .tag {
+    right: 0;
+    bottom: 0;
+}
+
+/* Blockquotes */
+blockquote {
+    border-left: 2px solid #d0d0d0;
+    padding-left: 1em;
+    margin: 1.2em 0;
+    color: #555;
+    font-style: italic;
+}
+
+/* Lists */
+ul, ol {
+    margin: 0.8em 0 0.8em 1.5em;
+}
+
+li {
+    margin-bottom: 0.3em;
+}
+
+/* References */
+.references ol {
+    font-size: 0.9em;
+}
+
+/* Footer */
+footer {
+    border-top: 2px solid #d0d0d0;
+    padding-top: var(--rule-text-gap);
+    margin-top: 1.25em;
+    color: #777;
+    font-size: 0.85em;
+    line-height: 1.3;
+}
+
+/* Conversation styling (for gptception/detailed-prompting) */
+.convo .user,
+.convo .gpt {
+    border: 1px solid #5d5d5d;
+    padding: 0.8em;
+    margin: 1em 0;
+}
+
+.convo .user > *:first-child,
+.convo .gpt > *:first-child {
+    margin-top: 0;
+}
+
+.convo .user > *:last-child,
+.convo .gpt > *:last-child {
+    margin-bottom: 0;
+}
+
+.convo .gpt > p,
+.convo .gpt > ul,
+.convo .gpt > ol {
+    color: #8d61c2;
+}
+
+.execution-output {
+    border: 1px solid #d0d0d0;
+}
+
+/* Center media and rich embeds authored in Markdown */
+article :where(img, iframe, video, object, embed) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1.2em auto;
+}
+
+article figure {
+    width: fit-content;
+    max-width: 100%;
+    margin: 1.2em auto;
+}
+
+article figure img {
+    display: block;
+    margin: 0 auto;
+}
+
+article figcaption {
+    margin-top: 0.45em;
+    text-align: center;
+    color: #666;
+    font-size: 0.82em;
+    line-height: 1.35;
+}
+
+article :where(blockquote[class], [class*="embed"], [class*="tweet"], [data-embed]) {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 100%;
+}
+
+article blockquote[class] {
+    width: fit-content;
+}
+
+/* Override highlight.js background */
+pre code.hljs {
+    background: none;
+    padding: 0;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    body {
+        font-size: 16px;
+        padding: 0 0.8em;
+    }
+
+    pre {
+        padding: 0.7em;
+    }
+
+    .post-title {
+        font-size: 1.28em;
+    }
+
+    .post-list li {
+        column-gap: 0.3em;
+    }
+
+    .katex-display > .katex > .katex-html {
+        display: inline-flex;
+        align-items: flex-end;
+        gap: 0.8em;
+    }
+
+    .katex-display > .katex > .katex-html > .tag {
+        position: static;
+        margin: 0;
+    }
+
+}

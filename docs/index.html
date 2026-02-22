@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '\\[', right: '\\]', display: true},
+                {left: '\\(', right: '\\)', display: false}
+            ],
+            throwOnError: false
+        });"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <link rel="stylesheet" href="/css/default.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.hljs && document.querySelector('pre code')) {
+                hljs.highlightAll();
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <main>
+<h1 class="post-title"><a href="/">Karthik's site</a></h1>
+
+<h3>About</h3>
+
+<p class="about">
+    Hey. I'm Karthik, undergrad <a href="https://twitter.com/UWaterloo">@UWaterloo</a>, interested in all things AGI. Follow me <a href="https://twitter.com/akbirthko">@akbirthko</a> on Twitter and do not hesitate to reach out! <a href="https://github.com/okarthikb">GH</a>.
+</p>
+
+<h3>Posts</h3>
+
+<ul class="post-list">
+    <li>
+        <span class="post-item-date">[2023-11-01]</span>
+        <a href="/posts/2023-11-01-diffusion-notes.html">Notes on Diffusion Models</a>
+    </li>
+
+    <li>
+        <span class="post-item-date">[2023-10-01]</span>
+        <a href="/posts/2023-10-01-dpo.html">Direct Preference Optimization</a>
+    </li>
+
+    <li>
+        <span class="post-item-date">[2023-08-01]</span>
+        <a href="/posts/2023-08-01-vae.html">Variational Auto-Encoders</a>
+    </li>
+
+    <li>
+        <span class="post-item-date">[2023-07-20]</span>
+        <a href="/posts/2023-07-20-detailed-prompting.html">Detailed Scratchpad Prompting: LLMs As Interpreters</a>
+    </li>
+
+    <li>
+        <span class="post-item-date">[2023-07-15]</span>
+        <a href="/posts/2023-07-15-gptception.html">GPT-ception: Making GPT-4 Code Interpreter Implement GPT</a>
+    </li>
+
+    <li>
+        <span class="post-item-date">[0000-00-00]</span>
+        <a href="/old.html">Old</a>
+    </li>
+</ul>
+        </main>
+        <footer>
+            (c) Karthik 2023-2026
+        </footer>
+    </div>
+    <script>
+        if (document.querySelector('blockquote.twitter-tweet')) {
+            const twitterScript = document.createElement('script');
+            twitterScript.async = true;
+            twitterScript.src = 'https://platform.twitter.com/widgets.js';
+            twitterScript.charset = 'utf-8';
+            document.body.appendChild(twitterScript);
+        }
+    </script>
+</body>
+</html>

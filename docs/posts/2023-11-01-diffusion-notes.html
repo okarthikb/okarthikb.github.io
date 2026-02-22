@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes on Diffusion Models</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '\\[', right: '\\]', display: true},
+                {left: '\\(', right: '\\)', display: false}
+            ],
+            throwOnError: false
+        });"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <link rel="stylesheet" href="/css/default.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.hljs && document.querySelector('pre code')) {
+                hljs.highlightAll();
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <main>
+<article>
+    <h1 class="post-title">Notes on Diffusion Models</h1>
+    <span class="post-date">2023-11-01</span>
+    <p><a class="page-back" href="/" aria-label="Back to home">&#9756;</a></p>
+<p>ELBO derivation, forward/reverse process, reparameterization trick,
+and simplified DDPM loss.</p>
+<p><a href="/pdf/diffusion.pdf">PDF</a></p>
+
+</article>
+        </main>
+        <footer>
+            (c) Karthik 2023-2026
+        </footer>
+    </div>
+    <script>
+        if (document.querySelector('blockquote.twitter-tweet')) {
+            const twitterScript = document.createElement('script');
+            twitterScript.async = true;
+            twitterScript.src = 'https://platform.twitter.com/widgets.js';
+            twitterScript.charset = 'utf-8';
+            document.body.appendChild(twitterScript);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPT-ception: Making GPT-4 Code Interpreter Implement GPT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '\\[', right: '\\]', display: true},
+                {left: '\\(', right: '\\)', display: false}
+            ],
+            throwOnError: false
+        });"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <link rel="stylesheet" href="/css/default.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.hljs && document.querySelector('pre code')) {
+                hljs.highlightAll();
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <main>
+<article>
+    <h1 class="post-title">GPT-ception: Making GPT-4 Code Interpreter Implement GPT</h1>
+    <span class="post-date">2023-07-15</span>
+    <p><a class="page-back" href="/" aria-label="Back to home">&#9756;</a></p>
+<h3 id="code-interpreter">Code interpreter</h3>
+<p>OpenAI released code interpreter (terrible name BTW) for ChatGPT on
+July 6 and it’s awesome.</p>
+<blockquote class="twitter-tweet">
+<p lang="en" dir="ltr">
+Code Interpreter will be available to all ChatGPT Plus users over the
+next week.<br><br>It lets ChatGPT run code, optionally with access to
+files you've uploaded. You can ask ChatGPT to analyze data, create
+charts, edit files, perform math, etc.<br><br>Plus users can opt in via
+settings.
+<a href="https://t.co/IjH5JBqe5B">pic.twitter.com/IjH5JBqe5B</a>
+</p>
+— OpenAI (<span class="citation" data-cites="OpenAI">@OpenAI</span>)
+<a href="https://twitter.com/OpenAI/status/1677015057316872192?ref_src=twsrc%5Etfw">July
+6, 2023</a>
+</blockquote>
+<p>The generated code snippets maintain state like Jupyter notebook
+cells, so if it defines a variable in one message, it can be accessed in
+the subsequent messages. This has the benefit of letting ChatGPT unit
+test when generating a large program. Before code interpreter, you had
+to let it generate a lot of code at once, run it elsewhere, paste the
+error (if any) into its context, and make it generate the corrected
+code. This wastes a lot of tokens, especially if you aren’t familiar
+with the language, framework, or library, and can’t debug the code
+yourself.</p>
+<h3 id="einops">einops</h3>
+<p>Here we make ChatGPT implement GPT using einops. The benefit of
+einops (and einsum) for language models is that it’s a <a
+href="http://einops.rocks/pytorch-examples.html">standardized and more
+concise</a> way to represent arbitrary tensor operations and it’s
+framework (NumPy, TF, PyTorch, JAX, etc.) independent. <a
+href="https://arxiv.org/abs/2306.11644">phi-1</a> achieves a high score
+on HumanEval despite being small because it was trained on code
+following specific pedagogical rules – LLM-friendly pedagogy. Like
+phi-1’s dataset, I expect einops to be helpful for training small LMs to
+write code for deep learning.</p>
+<h3 id="chat">Chat</h3>
+<p>The code interpreter runtime RAM is 60GB, but it causes an OOM error
+for some reason, so I just let it do autoregressive prediction for an
+untrained small model (i.e., the randomly initialized GPT generates a
+bunch of gibberish) until we get the OOM error. I don’t think einops was
+particularly helpful here (ChatGPT is very likely regurgitating
+memorized code), but it’s still cool as fuck to see. GPT-1 was released
+just five years before the writing of this post. Purple text = GPT-4’s
+response.</p>
+<div class="convo">
+<div class="user">
+<p>
+Use einops to implement a small GPT model. Unit test each module as you
+generate code for them (i.e., check that the module works and check that
+you get the expected output for the input).
+</p>
+<p>
+For example, the input and output of a GPT attention layer or FFN layer
+should be of shape <code>(batch_size, seq_len, d_model).</code> Don’t
+train anything! Just do one single forward pass successfully. The input
+to GPT for training is a batch of token IDs, i.e., a
+<code>torch.long</code> tensor of shape <code>(batch_size,
+seq_len).</code>
+</p>
+<p>
+Try to keep your code outputs short, i.e., write everything in chunks at
+a time with very short explanations interleaved between, so it
+encourages you to unit test.
+</p>
+</div>
+<div class="gpt">
+<p>
+First, let’s import the necessary libraries:
+</p>
+<ul>
+<li>
+<code>torch</code>: PyTorch, which is a popular deep learning library
+</li>
+<li>
+<code>torch.nn</code>: A sub-library of PyTorch for creating and
+managing layers in neural networks
+</li>
+<li>
+<code>einops</code>: A Python library for tensor operations. It allows
+to rewrite tensor expressions in a clearer and more concise way.
+</li>
+</ul>
+<p>
+We will also set some parameters for the model, such as batch size,
+sequence length, number of layers, and the size of the model. For this
+demonstration, we’ll use small values.
+</p>
+<p>
+Once we’ve done that, we’ll start by creating the first piece of our GPT
+model: the token embedding layer. This layer converts token IDs into
+dense vectors (embeddings). We’ll then check that the output of this
+layer has the correct shape.
+</p>
+<pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from einops import rearrange
+
+# Set parameters
+batch_size = 2
+seq_len = 8
+num_layers = 2
+d_model = 32
+num_heads = 2
+vocab_size = 100
+
+# Token Embedding Layer
+class TokenEmbedding(nn.Module):
+    def __init__(self, vocab_size, d_model):
+        super(TokenEmbedding, self).__init__()
+        self.embedding = nn.Embedding(vocab_size, d_model)
+
+    def forward(self, x):
+        return self.embedding(x)
+
+# Initialize and test TokenEmbedding
+token_embedding = TokenEmbedding(vocab_size, d_model)
+tokens = torch.randint(0, vocab_size, (batch_size, seq_len))  # Random token IDs
+token_embeddings = token_embedding(tokens)
+
+token_embeddings.shape  # Expected shape: (batch_size, seq_len, d_model)</code></pre>
+<pre class="execution-output"><code>torch.Size([2, 8, 32])</code></pre>
+<p>
+Great! The output of the token embedding layer has the correct shape:
+<code>(batch_size, seq_len, d_model).</code>
+</p>
+<p>
+Next, we’ll implement the positional encoding layer. GPT uses learned
+positional embeddings, where each position in the sequence has a
+corresponding embedding vector. The purpose of this is to give the model
+some information about the relative position of the tokens in the input
+sequence. We’ll then check that the output of this layer also has the
+correct shape.
+</p>
+<pre><code class="language-python"># Positional Embedding Layer
+class PositionalEmbedding(nn.Module):
+    def __init__(self, seq_len, d_model):
+        super(PositionalEmbedding, self).__init__()
+        self.embedding = nn.Embedding(seq_len, d_model)
+
+    def forward(self, x):
+        positions = torch.arange(0, x.size(1)).expand(x.size(0), x.size(1)).to(x.device)  # Get token positions
+        return self.embedding(positions)
+
+# Initialize and test PositionalEmbedding
+pos_embedding = PositionalEmbedding(seq_len, d_model)
+pos_embeddings = pos_embedding(token_embeddings)
+
+pos_embeddings.shape  # Expected shape: (batch_size, seq_len, d_model)</code></pre>
+<pre class="execution-output"><code>torch.Size([2, 8, 32])</code></pre>
+<p>
+The positional embedding layer also returns the expected shape of
+<code>(batch_size, seq_len, d_model).</code>
+</p>
+<p>
+Now, we’ll combine the token and positional embeddings by simply adding
+them together. This combined embedding is then passed through a Layer
+Normalization layer.
+</p>
+<p>
+The purpose of Layer Normalization is to normalize the inputs across the
+features instead of normalizing the features across a mini-batch. For
+each feature, it subtracts the mean and divides by the standard
+deviation, adding a small number for numerical stability. It’s
+particularly useful for Transformer-based models like GPT.
+</p>
+<p>
+We’ll then verify that the output of this combined layer also has the
+correct shape.
+</p>
+<pre><code class="language-python"># Combine Token and Positional Embeddings
+class TokenAndPositionalEmbedding(nn.Module):
+    def __init__(self, vocab_size, seq_len, d_model):
+        super(TokenAndPositionalEmbedding, self).__init__()
+        self.token_emb = TokenEmbedding(vocab_size, d_model)
+        self.pos_emb = PositionalEmbedding(seq_len, d_model)
+        self.layer_norm = nn.LayerNorm(d_model)
+
+    def forward(self, x):
+        return self.layer_norm(self.token_emb(x) + self.pos_emb(x))
+
+# Initialize and test TokenAndPositionalEmbedding
+token_and_pos_embedding = TokenAndPositionalEmbedding(vocab_size, seq_len, d_model)
+combined_embeddings = token_and_pos_embedding(tokens)
+
+combined_embeddings.shape  # Expected shape: (batch_size, seq_len, d_model)</code></pre>
+<pre class="execution-output"><code>torch.Size([2, 8, 32])</code></pre>
+<p>
+The combined token and positional embeddings layer also gives us the
+expected shape <code>(batch_size, seq_len, d_model).</code>
+</p>
+<p>
+Now, let’s implement the multi-head attention layer of the GPT model.
+We’ll first implement the scaled dot-product attention and then the
+multi-head attention layer using the dot-product attention. The
+multi-head attention layer consists of several attention heads, where
+each head applies attention to its received input. The attention
+mechanism allows the model to focus on different words for each head,
+capturing various aspects of the input.
+</p>
+<p>
+We’ll verify that the output of the multi-head attention layer also has
+the correct shape.
+</p>
+<pre><code class="language-python"># Scaled Dot-Product Attention
+def scaled_dot_product_attention(q, k, v):
+    attn_logits = torch.matmul(q, k.transpose(-2, -1))  # Calculate attention scores
+    attn_logits = attn_logits / torch.sqrt(torch.tensor(k.size(-1)).float())  # Scale scores
+    attn_weights = F.softmax(attn_logits, dim=-1)  # Apply softmax to get attention weights
+    output = torch.matmul(attn_weights, v)  # Compute output
+    return output
+
+# Multi-Head Attention Layer
+class MultiHeadAttention(nn.Module):
+    def __init__(self, d_model, num_heads):
+        super(MultiHeadAttention, self).__init__()
+        self.num_heads = num_heads
+        self.d_model = d_model
+        assert d_model % self.num_heads == 0
+
+        # Define linear layers for Q, K and V
+        self.q_linear = nn.Linear(d_model, d_model)
+        self.k_linear = nn.Linear(d_model, d_model)
+        self.v_linear = nn.Linear(d_model, d_model)
+
+        # Linear layer for after concatenating heads
+        self.out = nn.Linear(d_model, d_model)
+
+    def forward(self, x):
+        batch_size, seq_len, _ = x.size()
+
+        # Apply linear layers to get Q, K and V
+        q = self.q_linear(x)
+        k = self.k_linear(x)
+        v = self.v_linear(x)
+
+        # Split tensor into multiple heads
+        q = rearrange(q, 'b l (h d) -> b h l d', h=self.num_heads)
+        k = rearrange(k, 'b l (h d) -> b h l d', h=self.num_heads)
+        v = rearrange(v, 'b l (h d) -> b h l d', h=self.num_heads)
+
+        # Apply scaled dot product attention
+        attn = scaled_dot_product_attention(q, k, v)
+
+        # Concatenate heads and apply final linear layer
+        attn = rearrange(attn, 'b h l d -> b l (h d)')
+        return self.out(attn)
+
+# Initialize and test MultiHeadAttention
+multi_head_attention = MultiHeadAttention(d_model, num_heads)
+attention_output = multi_head_attention(combined_embeddings)
+
+attention_output.shape  # Expected shape: (batch_size, seq_len, d_model)</code></pre>
+<pre class="execution-output"><code>torch.Size([2, 8, 32])</code></pre>
+<p>
+Great! The multi-head attention layer also returns the expected shape
+<code>(batch_size, seq_len, d_model).</code>
+</p>
+<p>
+Next, we’ll implement the feed-forward neural network (FFN) layer, which
+is applied to each position separately and identically. This consists of
+two linear transformations with a ReLU activation in between.
+</p>
+<p>
+We’ll then verify that the output of this layer also has the correct
+shape.
+</p>
+<pre><code class="language-python"># Feed-Forward Neural Network (FFN) Layer
+class FeedForward(nn.Module):
+    def __init__(self, d_model, ff_dim):
+        super(FeedForward, self).__init__()
+        self.fc1 = nn.Linear(d_model, ff_dim)
+        self.fc2 = nn.Linear(ff_dim, d_model)
+
+    def forward(self, x):
+        return self.fc2(F.relu(self.fc1(x)))
+
+# Initialize and test FeedForward
+ff_dim = 64  # Dimensions for the FFN
+feed_forward = FeedForward(d_model, ff_dim)
+ff_output = feed_forward(attention_output)
+
+ff_output.shape  # Expected shape: (batch_size, seq_len, d_model)</code></pre>
+<pre class="execution-output"><code>torch.Size([2, 8, 32])</code></pre>
+<p>
+The feed-forward neural network (FFN) layer also gives us the expected
+output shape <code>(batch_size, seq_len, d_model).</code>
+</p>
+<p>
+Next, we’ll combine the multi-head attention and FFN layers into a
+single Transformer block. A Transformer block consists of a multi-head
+attention layer, a skip connection and layer normalization, followed by
+a feed-forward neural network (FFN) layer, another skip connection, and
+layer normalization.
+</p>
+<p>
+We’ll then verify that the output of the Transformer block also has the
+correct shape.
+</p>
+<pre><code class="language-python"># Transformer Block
+class TransformerBlock(nn.Module):
+    def __init__(self, d_model, num_heads, ff_dim):
+        super(TransformerBlock, self).__init__()
+        self.attention = MultiHeadAttention(d_model, num_heads)
+        self.norm1 = nn.LayerNorm(d_model)
+        self.ffn = FeedForward(d_model, ff_dim)
+        self.norm2 = nn.LayerNorm(d_model)
+
+    def forward(self, x):
+        attn_output = self.attention(x)
+        x = self.norm1(x + attn_output)
+        ff_output = self.ffn(x)
+        return self.norm2(x + ff_output)
+
+# Initialize and test TransformerBlock
+transformer_block = TransformerBlock(d_model, num_heads, ff_dim)
+transformer_output = transformer_block(combined_embeddings)
+
+transformer_output.shape  # Expected shape: (batch_size, seq_len, d_model)</code></pre>
+<pre class="execution-output"><code>torch.Size([2, 8, 32])</code></pre>
+<p>
+The feed-forward neural network (FFN) layer also gives us the expected
+output shape <code>(batch_size, seq_len, d_model).</code>
+</p>
+<p>
+Next, we’ll combine the multi-head attention and FFN layers into a
+single Transformer block. A Transformer block consists of a multi-head
+attention layer, a skip connection and layer normalization, followed by
+a feed-forward neural network (FFN) layer, another skip connection, and
+layer normalization.
+</p>
+<p>
+We’ll then verify that the output of the Transformer block also has the
+correct shape.
+</p>
+<pre><code class="language-python"># Transformer Block
+class TransformerBlock(nn.Module):
+    def __init__(self, d_model, num_heads, ff_dim):
+        super(TransformerBlock, self).__init__()
+        self.attention = MultiHeadAttention(d_model, num_heads)
+        self.norm1 = nn.LayerNorm(d_model)
+        self.ffn = FeedForward(d_model, ff_dim)
+        self.norm2 = nn.LayerNorm(d_model)
+
+    def forward(self, x):
+        attn_output = self.attention(x)
+        x = self.norm1(x + attn_output)
+        ff_output = self.ffn(x)
+        return self.norm2(x + ff_output)
+
+# Initialize and test TransformerBlock
+transformer_block = TransformerBlock(d_model, num_heads, ff_dim)
+transformer_output = transformer_block(combined_embeddings)
+
+transformer_output.shape  # Expected shape: (batch_size, seq_len, d_model)</code></pre>
+<pre class="execution-output"><code>torch.Size([2, 8, 32])</code></pre>
+<p>
+The Transformer block also returns the expected shape <code>(batch_size,
+seq_len, d_model).</code>
+</p>
+<p>
+Finally, we’ll stack multiple Transformer blocks to form the Transformer
+layer. Then we’ll implement the GPT model, which consists of the token
+and positional embeddings layer followed by the Transformer layer, and a
+final linear layer that maps to the vocabulary size for prediction.
+</p>
+<p>
+We’ll then verify that the output of the GPT model also has the correct
+shape.
+</p>
+<pre><code class="language-python"># Transformer Layer
+class TransformerLayer(nn.Module):
+    def __init__(self, d_model, num_heads, ff_dim, num_layers):
+        super(TransformerLayer, self).__init__()
+        self.layers = nn.ModuleList()
+        for _ in range(num_layers):
+            self.layers.append(TransformerBlock(d_model, num_heads, ff_dim))
+
+    def forward(self, x):
+        for layer in self.layers:
+            x = layer(x)
+        return x
+
+# GPT Model
+class GPT(nn.Module):
+    def __init__(self, vocab_size, seq_len, d_model, num_heads, ff_dim, num_layers):
+        super(GPT, self).__init__()
+        self.embed = TokenAndPositionalEmbedding(vocab_size, seq_len, d_model)
+        self.transformer = TransformerLayer(d_model, num_heads, ff_dim, num_layers)
+        self.fc = nn.Linear(d_model, vocab_size)
+
+    def forward(self, x):
+        x = self.embed(x)
+        x = self.transformer(x)
+        return self.fc(x)
+
+# Initialize and test GPT
+gpt = GPT(vocab_size, seq_len, d_model, num_heads, ff_dim, num_layers)
+gpt_output = gpt(tokens)
+
+gpt_output.shape  # Expected shape: (batch_size, seq_len, vocab_size)</code></pre>
+<pre class="execution-output"><code>torch.Size([2, 8, 32])</code></pre>
+<p>
+The Transformer block also returns the expected shape <code>(batch_size,
+seq_len, d_model).</code>
+</p>
+<p>
+Finally, we’ll stack multiple Transformer blocks to form the Transformer
+layer. Then we’ll implement the GPT model, which consists of the token
+and positional embeddings layer followed by the Transformer layer, and a
+final linear layer that maps to the vocabulary size for prediction.
+</p>
+<p>
+We’ll then verify that the output of the GPT model also has the correct
+shape.
+</p>
+<pre><code class="language-python"># Transformer Layer
+class TransformerLayer(nn.Module):
+    def __init__(self, d_model, num_heads, ff_dim, num_layers):
+        super(TransformerLayer, self).__init__()
+        self.layers = nn.ModuleList()
+        for _ in range(num_layers):
+            self.layers.append(TransformerBlock(d_model, num_heads, ff_dim))
+
+    def forward(self, x):
+        for layer in self.layers:
+            x = layer(x)
+        return x
+
+# GPT Model
+class GPT(nn.Module):
+    def __init__(self, vocab_size, seq_len, d_model, num_heads, ff_dim, num_layers):
+        super(GPT, self).__init__()
+        self.embed = TokenAndPositionalEmbedding(vocab_size, seq_len, d_model)
+        self.transformer = TransformerLayer(d_model, num_heads, ff_dim, num_layers)
+        self.fc = nn.Linear(d_model, vocab_size)
+
+    def forward(self, x):
+        x = self.embed(x)
+        x = self.transformer(x)
+        return self.fc(x)
+
+# Initialize and test GPT
+gpt = GPT(vocab_size, seq_len, d_model, num_heads, ff_dim, num_layers)
+gpt_output = gpt(tokens)
+
+gpt_output.shape  # Expected shape: (batch_size, seq_len, vocab_size)</code></pre>
+<pre class="execution-output"><code>torch.Size([2, 8, 100])</code></pre>
+<p>
+The final output of the GPT model is of the expected shape
+<code>(batch_size, seq_len, vocab_size).</code> This means that for each
+token in the input sequence, the model gives a distribution over the
+vocabulary size, indicating the likelihood of each possible next token.
+</p>
+<p>
+In summary, we have successfully implemented a simple GPT model using
+PyTorch and einops, ensuring that each component and the overall model
+produces the correct output shapes. This model is ready for a forward
+pass and can be trained with appropriate data and labels.
+</p>
+</div>
+<div class="user">
+<p>
+Alright. This is really good. Now, we’ll move on to training. We’ll
+train a character based GPT model. I’ll now upload a text file and
+you’ll first analyze it. Print the first 100 characters. Got it?
+</p>
+<div
+style="display: inline-flex; align-items: center; background: #f7f7f7; padding: 0.6em 0.6em 0.6em 0.5em;">
+<p><img src="/images/file.svg" alt="file-icon" style="width: auto; height: 1.25em;">
+<span
+style="padding-left: 0.4em; background: #f7f7f7;">extremely_mid_post.txt</span></p>
+</div>
+</div>
+<div class="gpt">
+<pre><code class="language-python"># Load and preview the text file
+with open('/mnt/data/extremely_mid_post.txt', 'r') as f:
+    text = f.read()
+
+# Print the first 100 characters
+text[:100]</code></pre>
+<pre class="execution-output"><code>'With the advent of ChatGPT, large language models (LLMs) went from a relatively niche topic to somet'</code></pre>
+<p>
+The first 100 characters of the text file are:
+</p>
+<p>
+‘With the advent of ChatGPT, large language models (LLMs) went from a
+relatively niche topic to somet’
+</p>
+</div>
+<div class="user">
+<p>
+This is the file we’re going to train with.
+</p>
+<p>
+Get the unique characters from the text file, then make a dictionary to
+encode and decode between character and character id (token id).
+</p>
+<p>
+Then encode the text file and make a list. Convert it a torch tensor.
+Then reshape it to <code>(batch_size, seq_len + 1)</code> where I want
+<code>seq_len</code> to be 256 tokens.
+</p>
+<p>
+Get the input token ids by getting the first 256 tokens in each sequence
+and the target ids by getting the last 256 tokens.
+</p>
+<p>
+This is the single training example we’re going to overfit the model
+with. Don’t instantiate the model until I say so.
+</p>
+</div>
+<div class="gpt">
+<pre><code class="language-python"># Get unique characters and create mapping dictionaries
+chars = list(set(text))
+char_to_id = {char: id for id, char in enumerate(chars)}
+id_to_char = {id: char for id, char in enumerate(chars)}
+
+# Encode text to token IDs
+token_ids = [char_to_id[char] for char in text]
+
+# Convert to torch tensor
+token_ids = torch.tensor(token_ids)
+
+# Define sequence length and batch size
+seq_len = 256
+batch_size = token_ids.size(0) // (seq_len + 1)
+
+# Reshape to (batch_size, seq_len + 1)
+token_ids = token_ids[:batch_size * (seq_len + 1)].view(batch_size, seq_len + 1)
+
+# Get inputs and targets
+inputs = token_ids[:, :-1]
+targets = token_ids[:, 1:]
+
+inputs.shape, targets.shape  # Expected shapes: (batch_size, seq_len), (batch_size, seq_len)</code></pre>
+<pre class="execution-output"><code>(torch.Size([29, 256]), torch.Size([29, 256]))</code></pre>
+<p>
+The input and target tensors have been correctly shaped to
+<code>(batch_size, seq_len).</code> The input tensor includes the first
+256 tokens in each sequence, while the target tensor includes the last
+256 tokens.
+</p>
+<p>
+Just to recap, here are the first few unique characters in our text,
+along with their corresponding IDs:
+</p>
+<pre><code class="language-python">{char: char_to_id[char] for char in list(chars)[:5]}</code></pre>
+<p>
+And here are the first few IDs in our input tensor, along with their
+corresponding characters:
+</p>
+<pre><code class="language-python">{idx: id_to_char[idx.item()] for idx in inputs[0, :5]}</code></pre>
+<p>
+We can now proceed to instantiate and train our model.
+</p>
+</div>
+<div class="user">
+<p>
+Now initialize a model with <code>d_model = 128</code>, <code>ff_dim = 2
+* d_model</code>, <code>num_heads = 4</code>, and <code>num_layers =
+4.</code>
+</p>
+<p>
+Let’s only use a batch size of 2, instead of 29, so input ids of shape
+<code>(2, 256).</code>
+</p>
+<p>
+Then do a single test pass on the input batch. Define the loss function
+as cross entropy loss between the output logits and target token ids.
+Unit test this too. Once all this works, we’ll move on to the training
+loop when I say so.
+</p>
+</div>
+<div class="gpt">
+<pre><code class="language-python"># Redefine parameters
+d_model = 128
+ff_dim = 2 * d_model
+num_heads = 4
+num_layers = 4
+batch_size = 2  # Use only a batch size of 2 for this demonstration
+vocab_size = len(chars)  # Vocabulary size is the number of unique characters
+
+# Initialize GPT model
+gpt = GPT(vocab_size, seq_len, d_model, num_heads, ff_dim, num_layers)
+
+# Get a batch of inputs and targets
+input_batch = inputs[:batch_size]
+target_batch = targets[:batch_size]
+
+# Test forward pass
+output = gpt(input_batch)
+
+# Define loss function
+loss_fn = nn.CrossEntropyLoss()
+
+# Compute loss
+loss = loss_fn(output.view(-1, vocab_size), target_batch.view(-1))
+
+output.shape, loss.item()  # Expected output shape: (batch_size, seq_len, vocab_size)</code></pre>
+<pre class="execution-output"><code>Cell In[4], line 39, in MultiHeadAttention.forward(self, x)
+     36 v = rearrange(v, 'b l (h d) -> b h l d', h=self.num_heads)
+     38 # Apply scaled dot product attention
+---> 39 attn = scaled_dot_product_attention(q, k, v)
+     41 # Concatenate heads and apply final linear layer
+     42 attn = rearrange(attn, 'b h l d -> b l (h d)')
+
+Cell In[4], line 4, in scaled_dot_product_attention(q, k, v)
+      2 def scaled_dot_product_attention(q, k, v):
+      3     attn_logits = torch.matmul(q, k.transpose(-2, -1))  # Calculate attention scores
+----> 4     attn_logits = attn_logits / torch.sqrt(torch.tensor(k.size(-1)).float())  # Scale scores
+      5     attn_weights = F.softmax(attn_logits, dim=-1)  # Apply softmax to get attention weights
+      6     output = torch.matmul(attn_weights, v)  # Compute output
+
+RuntimeError: [enforce fail at CPUAllocator.cpp:68] . DefaultCPUAllocator: can't allocate memory: you tried to allocate 2097152 bytes. Error code 12 (Cannot allocate memory)</code></pre>
+<p>
+It seems there’s a memory allocation issue. This error could be caused
+by a lack of memory resources to perform the computation. The error
+occurred during the scaling operation in the scaled dot product
+attention.
+</p>
+<p>
+Let’s try to debug this issue by examining the shapes of the tensors at
+this step. We can add some debug prints in the
+<code>scaled_dot_product_attention</code> function to see the shapes of
+the <code>q</code>, <code>k</code>, and <code>v</code> tensors, as well
+as the <code>attn_logits</code> tensor. This might help us understand
+why there’s a memory allocation issue.
+</p>
+<p>
+However, considering that the allocation request is for only 2 MB, which
+should be quite manageable, it might be that the runtime environment is
+running out of memory. In a regular setup, you might want to try freeing
+up some memory or increasing the available resources. If you’re running
+this in a Jupyter notebook, you might want to try restarting the kernel
+to clear all variables.
+</p>
+<p>
+For now, let’s try to reduce the model complexity by decreasing the
+<code>d_model</code>, <code>ff_dim</code>, <code>num_heads</code>, and
+<code>num_layers</code> parameters. This should reduce the memory
+requirements.
+</p>
+<p>
+Let’s redefine the parameters as follows and try again:
+</p>
+<ul>
+<li>
+<code>d_model = 64</code>
+</li>
+<li>
+<code>ff_dim = 2 * d_model</code>
+</li>
+<li>
+<code>num_heads = 2</code>
+</li>
+<li>
+<code>num_layers = 2</code>
+</li>
+</ul>
+<pre><code class="language-python"># Redefine parameters with smaller values to reduce memory requirements
+d_model = 64
+ff_dim = 2 * d_model
+num_heads = 2
+num_layers = 2
+
+# Initialize GPT model
+gpt = GPT(vocab_size, seq_len, d_model, num_heads, ff_dim, num_layers)
+
+# Test forward pass
+output = gpt(input_batch)
+
+# Compute loss
+loss = loss_fn(output.view(-1, vocab_size), target_batch.view(-1))
+
+output.shape, loss.item()  # Expected output shape: (batch_size, seq_len, vocab_size)</code></pre>
+<pre class="execution-output"><code>Cell In[4], line 5, in scaled_dot_product_attention(q, k, v)
+      3 attn_logits = torch.matmul(q, k.transpose(-2, -1))  # Calculate attention scores
+      4 attn_logits = attn_logits / torch.sqrt(torch.tensor(k.size(-1)).float())  # Scale scores
+----> 5 attn_weights = F.softmax(attn_logits, dim=-1)  # Apply softmax to get attention weights
+      6 output = torch.matmul(attn_weights, v)  # Compute output
+      7 return output
+
+File ~/.local/lib/python3.8/site-packages/torch/nn/functional.py:1680, in softmax(input, dim, _stacklevel, dtype)
+    1678     dim = _get_softmax_dim("softmax", input.dim(), _stacklevel)
+    1679 if dtype is None:
+ -> 1680     ret = input.softmax(dim)
+    1681 else:
+    1682     ret = input.softmax(dim, dtype=dtype)
+
+RuntimeError: [enforce fail at CPUAllocator.cpp:68] . DefaultCPUAllocator: can't allocate memory: you tried to allocate 1048576 bytes. Error code 12 (Cannot allocate memory)</code></pre>
+<p>
+I apologize for the inconvenience. It appears that the error persists
+even after reducing the complexity of the model.
+</p>
+<p>
+The issue seems to be arising from the softmax function in the scaled
+dot product attention calculation. Softmax is an operation that can be
+memory-intensive as it needs to calculate exponentials for
+normalization.
+</p>
+<p>
+Given that this problem is persisting despite the reduction in model
+complexity and the fact that the memory requirement isn’t very large, it
+suggests that this problem might be due to the limitations of the
+current environment rather than an issue with the code or the model
+itself.
+</p>
+<p>
+Unfortunately, without the ability to adjust the settings or resources
+of the environment, it’s challenging to address this problem directly
+here. In a normal computing environment, you might try to:
+</p>
+<ol>
+<li>
+Free up memory resources.
+</li>
+<li>
+Increase the available memory for the environment.
+</li>
+<li>
+Try running the code on a different machine or a cloud environment with
+more resources.
+</li>
+</ol>
+</div>
+<div class="user">
+<p>
+Alright fine, let’s not train. Just generate some random output using
+the model, i.e., let’s do the autoregressive decoding. Use a very simple
+for loop for this. Let the loop run until you hit the memory limit.
+</p>
+</div>
+<div class="gpt">
+<pre><code class="language-python"># Initialize a random input sequence
+input_sequence = torch.randint(0, vocab_size, (1, 1))
+
+# Initialize output sequence with the same input sequence
+output_sequence = input_sequence
+
+# Autoregressive decoding
+for _ in range(seq_len):
+    try:
+        # Get the output for the current input sequence
+        output = gpt(input_sequence)
+
+        # Get the token ID of the maximum probability for the last position
+        next_token_id = torch.argmax(output[:, -1, :], dim=-1, keepdim=True)
+
+        # Concatenate the next token ID to the output sequence
+        output_sequence = torch.cat((output_sequence, next_token_id), dim=1)
+
+        # Update the input sequence to be the output sequence for the next iteration
+        input_sequence = output_sequence
+    except RuntimeError as e:
+        print(f"Stopped generation at sequence length {output_sequence.size(1)} due to memory limitations.")
+        break
+
+# Convert token IDs to characters
+generated_text = ''.join([id_to_char[id.item()] for id in output_sequence[0]])
+
+generated_text</code></pre>
+<pre class="execution-output"><code>Stopped generation at sequence length 112 due to memory limitations.</code></pre>
+<pre class="execution-output"><code>'[AM" Y"BqCCypIFq,eqAarFqAM)qAPB-2/PIF:FbyOqvK"BMw[A-.s"aSHrUF–a-("Hx-:yOFldKaq-(–aAAM" AuqA—FliT"HT:yOcc-IBq&amp;W&amp;W'</code></pre>
+<p>
+The autoregressive decoding process was able to generate a sequence of
+112 characters before hitting the memory limit. Here’s the generated
+sequence:
+</p>
+<p>
+‘[AM”
+Y”BqCCypIFq,eqAarFqAM)qAPB-2/PIF:FbyOqvK”BMw[A-.s”aSHrUF–a-(“Hx-:yOFldKaq-(–aAAM”
+AuqA—FliT”HT:yOcc-IBq&amp;W&amp;W’
+</p>
+<p>
+Please note that the output is not meaningful or readable because the
+model has not been trained and its weights are initialized randomly. In
+a real-world scenario, after training the model, the output should be a
+coherent and contextually relevant text.
+</p>
+</div>
+</div>
+
+</article>
+        </main>
+        <footer>
+            (c) Karthik 2023-2026
+        </footer>
+    </div>
+    <script>
+        if (document.querySelector('blockquote.twitter-tweet')) {
+            const twitterScript = document.createElement('script');
+            twitterScript.async = true;
+            twitterScript.src = 'https://platform.twitter.com/widgets.js';
+            twitterScript.charset = 'utf-8';
+            document.body.appendChild(twitterScript);
+        }
+    </script>
+</body>
+</html>
