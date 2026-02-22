@@ -202,7 +202,8 @@ p code, li code {
 }
 
 .katex-display > .katex > .katex-html:has(> .tag) {
-    padding-inline: 2ch;
+    padding-left: 4ch;
+    padding-right: 4ch;
 }
 
 /* Blockquotes */
