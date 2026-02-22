@@ -324,11 +324,4 @@ pre code.hljs {
         column-gap: 0.3em;
     }
 
-    .katex-display > .katex > .katex-html > .tag {
-        position: static;
-        display: inline-block;
-        margin-left: 0.8em;
-        vertical-align: baseline;
-    }
-
 }
