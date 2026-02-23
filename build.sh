@@ -179,19 +179,37 @@ touch "$out_dir/.nojekyll"
 post_manifest="${tmp_dir}/posts.txt"
 find "${repo_dir}/posts" -maxdepth 1 -type f -name '*.md' | sort -r > "$post_manifest"
 
-# Build index list items from current posts.
+# Build index list items from a single date-sorted source:
+# markdown posts + textbook PDF link + old page link.
+index_items_tsv="${tmp_dir}/index-items.tsv"
+: > "$index_items_tsv"
+
+while IFS= read -r post_file; do
+  slug="$(basename "$post_file" .md)"
+  title="$(read_meta title "$post_file")"
+  date="$(read_meta date "$post_file")"
+  printf '%s\t%s\t%s\n' "$date" "/posts/${slug}.html" "$title" >> "$index_items_tsv"
+done < "$post_manifest"
+
+printf '%s\t%s\t%s\n' \
+  "2023-09-06" \
+  "/pdf/The%20Elements%20of%20Computing%20Systems.pdf" \
+  "The Elements of Computing Systems" \
+  >> "$index_items_tsv"
+
+printf '%s\t%s\t%s\n' \
+  "0000-00-00" \
+  "/old.html" \
+  "Old" \
+  >> "$index_items_tsv"
+
 post_items_file="${tmp_dir}/index-post-items.html"
-{
-  while IFS= read -r post_file; do
-    slug="$(basename "$post_file" .md)"
-    title="$(read_meta title "$post_file")"
-    date="$(read_meta date "$post_file")"
-    printf '    <li>\n'
-    printf '        <span class="post-item-date">[%s]</span>\n' "$(html_escape "$date")"
-    printf '        <a href="/posts/%s.html">%s</a>\n' "$slug" "$(html_escape "$title")"
-    printf '    </li>\n\n'
-  done < "$post_manifest"
-} > "$post_items_file"
+sort -r -k1,1 "$index_items_tsv" | while IFS=$'\t' read -r date href title; do
+  printf '    <li>\n'
+  printf '        <span class="post-item-date">[%s]</span>\n' "$(html_escape "$date")"
+  printf '        <a href="%s">%s</a>\n' "$href" "$(html_escape "$title")"
+  printf '    </li>\n\n'
+done > "$post_items_file"
 
 index_template_body_file="${tmp_dir}/index-template-body.html"
 strip_frontmatter "${repo_dir}/index.html" > "$index_template_body_file"
