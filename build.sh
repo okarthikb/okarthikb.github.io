@@ -244,7 +244,7 @@ while IFS= read -r post_file; do
     printf '<article>\n'
     printf '    <h1 class="post-title">%s</h1>\n' "$(html_escape "$title")"
     printf '    <span class="post-date">%s</span>\n' "$(html_escape "$date")"
-    printf '    <p><a class="page-back" href="/" aria-label="Back to home">&#9756;</a></p>\n'
+    printf '    <p><a href="/">..</a></p>\n'
     cat "$post_content_file"
     printf '\n</article>\n'
   } > "$post_body_file"
