@@ -103,9 +103,6 @@ wrap_page() {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${escaped_title}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
@@ -167,7 +164,7 @@ rm -rf "$out_dir"
 mkdir -p "$out_dir/posts"
 
 # Copy static assets used by generated pages.
-for dir_name in css images pdf _archive; do
+for dir_name in css fonts images pdf _archive; do
   if [ -d "${repo_dir}/${dir_name}" ]; then
     cp -a "${repo_dir}/${dir_name}" "$out_dir/"
   fi
